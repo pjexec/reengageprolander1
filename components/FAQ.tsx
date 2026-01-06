@@ -6,7 +6,7 @@ const FAQItem: React.FC<{ q: string; a: string }> = ({ q, a }) => {
   const [open, setOpen] = useState(false);
   return (
     <div className={`mb-4 border border-white/10 rounded-2xl overflow-hidden transition-all duration-300 ${open ? 'bg-white/5 shadow-xl' : 'bg-transparent hover:bg-white/[0.02]'}`}>
-      <button 
+      <button
         onClick={() => setOpen(!open)}
         className="w-full p-6 sm:p-8 flex justify-between items-center text-left focus:outline-none group"
       >
@@ -57,7 +57,7 @@ const FAQ: React.FC = () => {
     },
     {
       q: "Is my subscriber data secure?",
-      a: "We use bank-grade AES-256 encryption for all data at rest and TLS 1.3 for data in transit. We are fully SOC2 Type II compliant and strictly adhere to GDPR and CCPA regulations."
+      a: "Your data is encrypted using AES-256 encryption for sensitive credentials, and all communications are secured via TLS. We provide GDPR data export and deletion capabilities, and are committed to protecting your privacy."
     }
   ];
 
@@ -72,7 +72,7 @@ const FAQ: React.FC = () => {
           <h2 className="text-4xl sm:text-5xl font-black text-white mb-6">Common Questions</h2>
           <p className="text-xl text-slate-400 max-w-2xl mx-auto">Everything you need to know about safely recovering your cold list.</p>
         </div>
-        
+
         <div className="space-y-4">
           {faqs.map((faq, idx) => <FAQItem key={idx} q={faq.q} a={faq.a} />)}
         </div>
@@ -83,7 +83,7 @@ const FAQ: React.FC = () => {
           </p>
         </div>
       </div>
-      
+
       {/* Decorative background text */}
       <div className="absolute top-1/2 left-0 -translate-y-1/2 text-[15rem] font-black text-white/[0.02] pointer-events-none select-none">
         ANSWERS
