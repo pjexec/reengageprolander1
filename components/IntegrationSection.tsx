@@ -11,7 +11,7 @@ const IntegrationSection: React.FC = () => {
 
         <div className="flex justify-center items-center">
           <img
-            src="/esp-logos.jpg"
+            src="/esp-logos.png"
             alt="Klaviyo, Kit, HubSpot, Mailchimp, ActiveCampaign"
             className="max-w-full h-auto w-full sm:w-auto sm:max-h-12 md:max-h-16 object-contain"
           />
