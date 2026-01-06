@@ -33,15 +33,8 @@ const AboutPage: React.FC = () => {
   return (
     <div className="bg-[#1C3166] min-h-screen pt-28">
       {/* Header Section */}
-      <section className="py-28 border-b border-white/5 bg-gradient-to-b from-slate-900 to-[#1C3166]">
+      <section className="py-20 border-b border-white/5 bg-gradient-to-b from-slate-900 to-[#1C3166]">
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <div className="flex justify-center mb-16">
-            <img 
-              src="https://app.reengage.pro/_next/image?url=%2Flogo.png&w=384&q=75" 
-              alt="ReEngage Pro Mark" 
-              className="h-24 w-auto"
-            />
-          </div>
           <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-6 py-2.5 rounded-full mb-10">
             <ShieldCheck className="w-5 h-5 text-emerald-400" />
             <span className="text-xs font-black text-emerald-400 uppercase tracking-widest">Principles & Governance</span>
@@ -50,7 +43,7 @@ const AboutPage: React.FC = () => {
             The Reputation-First <br className="hidden md:block" /> Operating Standard.
           </h1>
           <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed mb-12 font-medium">
-            ReEngage Pro was founded to solve the tension between revenue growth and deliverability risk. 
+            ReEngage Pro was founded to solve the tension between revenue growth and deliverability risk.
             We operate by a strict code of ethics designed to protect your most valuable digital asset.
           </p>
           <div className="flex justify-center">

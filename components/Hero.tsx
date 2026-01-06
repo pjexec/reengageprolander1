@@ -10,13 +10,13 @@ const Hero: React.FC = () => {
           <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
           <span className="text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Urgent: List Decay Alert</span>
         </div>
-        
+
         <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tight max-w-5xl mx-auto mb-10 leading-[1.05]">
           Stop Paying for Dead Subscribers That <span className="text-red-500 italic">Kill Your Performance</span>
         </h1>
-        
+
         <p className="text-xl sm:text-2xl text-slate-300/80 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-          ReEngage Pro identifies and revives cold subscribers, saving you money while boosting your sender reputation automatically.
+          ReEngage Pro identifies and revives cold subscribers, saving you money while protecting your sender reputation automatically.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
@@ -32,8 +32,8 @@ const Hero: React.FC = () => {
 
         <div className="flex flex-col items-center space-y-10">
           <div className="flex flex-col sm:flex-row items-center gap-5">
-            <a 
-              href="https://app.reengage.pro/register" 
+            <a
+              href="https://app.reengage.pro/register"
               className="group flex items-center space-x-4 bg-white text-[#1C3166] px-10 py-5 rounded-2xl text-xl font-black hover:bg-slate-50 transition-all duration-300 shadow-[0_0_50px_rgba(255,255,255,0.1)] transform hover:-translate-y-1"
             >
               <span>See Your Potential - Free</span>
@@ -43,7 +43,7 @@ const Hero: React.FC = () => {
               Watch 2-Min Demo
             </button>
           </div>
-          
+
           <div className="space-y-4">
             <p className="text-xs text-slate-400 max-w-md mx-auto font-bold uppercase tracking-widest leading-relaxed">
               <span className="text-orange-400">Every month you wait costs you hundreds in wasted email fees.</span>

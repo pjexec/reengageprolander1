@@ -28,31 +28,43 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
         <div className="flex justify-between items-center h-full">
           {/* Logo Area */}
           <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
-            <img 
-              src="https://app.reengage.pro/_next/image?url=%2Flogo.png&w=384&q=75" 
-              alt="ReEngage Pro Logo" 
+            <img
+              src="https://app.reengage.pro/_next/image?url=%2Flogo.png&w=384&q=75"
+              alt="ReEngage Pro Logo"
               className="h-20 w-auto"
             />
           </div>
-          
+
           {/* Navigation Links */}
           <div className="hidden lg:flex items-center space-x-12">
-            {currentPage === 'home' && navLinks.map(link => (
-              <a 
+            {navLinks.map(link => (
+              <a
                 key={link.id}
-                href={`#${link.id}`} 
+                href={`#${link.id}`}
+                onClick={(e) => {
+                  if (currentPage !== 'home') {
+                    e.preventDefault();
+                    navigateTo('home');
+                    // Wait for page to render then scroll to anchor
+                    setTimeout(() => {
+                      const element = document.getElementById(link.id);
+                      if (element) {
+                        element.scrollIntoView({ behavior: 'smooth' });
+                      }
+                    }, 100);
+                  }
+                }}
                 className="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-[#1C3166] transition-colors duration-300"
               >
                 {link.label}
               </a>
             ))}
-            <button 
-              onClick={() => navigateTo('about')} 
-              className={`text-xs font-black uppercase tracking-[0.25em] transition-colors duration-300 ${
-                currentPage === 'about' 
-                  ? 'text-emerald-600' 
+            <button
+              onClick={() => navigateTo('about')}
+              className={`text-xs font-black uppercase tracking-[0.25em] transition-colors duration-300 ${currentPage === 'about'
+                  ? 'text-emerald-600'
                   : 'text-slate-500 hover:text-[#1C3166]'
-              }`}
+                }`}
             >
               About
             </button>
@@ -60,15 +72,15 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
 
           {/* Action Buttons */}
           <div className="flex items-center space-x-8">
-            <a 
-              href="https://app.reengage.pro/login" 
+            <a
+              href="https://app.reengage.pro/login"
               className="hidden sm:block text-xs font-black uppercase tracking-[0.25em] text-slate-600 hover:text-[#1C3166] transition-colors duration-300"
             >
               Login
             </a>
-            <a 
-              href="https://app.reengage.pro/register" 
-              className="flex items-center space-x-3 px-8 py-4 rounded-2xl text-sm font-black bg-[#1C3166] text-white hover:bg-[#14244a] transition-all duration-300 shadow-xl shadow-[#1C3166]/10 hover:-translate-y-1"
+            <a
+              href="https://app.reengage.pro/register"
+              className="flex items-center space-x-3 px-8 py-4 rounded-2xl text-sm font-medium bg-[#1C3166] text-white hover:bg-[#14244a] transition-all duration-300 shadow-xl shadow-[#1C3166]/10 hover:-translate-y-1"
             >
               <span>Get Started</span>
               <ArrowRight size={18} />
