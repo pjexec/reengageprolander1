@@ -27,7 +27,7 @@ const App: React.FC = () => {
   // Observer for side progress indicator
   useEffect(() => {
     if (currentPage !== 'home') return;
-    
+
     const sections = ['hero', 'risk', 'calculator', 'how-it-works', 'comparison', 'safety', 'faq'];
     const observerOptions = { rootMargin: '-20% 0px -70% 0px' };
 
@@ -62,14 +62,14 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#1C3166] selection:bg-emerald-500 selection:text-white">
+    <div className="min-h-screen bg-[#1C3166] selection:bg-emerald-500 selection:text-white overflow-x-hidden">
       <Navbar navigateTo={navigateTo} currentPage={currentPage} />
-      
+
       {/* Side Progress Indicator */}
       {currentPage === 'home' && (
         <div id="side-progress" className="fixed right-6 top-1/2 -translate-y-1/2 z-40 hidden md:flex flex-col space-y-4">
           {progressDots.map((dot) => (
-            <a 
+            <a
               key={dot.id}
               href={`#${dot.id}`}
               className="group relative flex items-center justify-end"
@@ -77,11 +77,10 @@ const App: React.FC = () => {
               <span className={`mr-4 text-[10px] font-black uppercase tracking-widest text-white/40 opacity-0 group-hover:opacity-100 transition duration-300 ${activeSection === dot.id ? 'opacity-100 text-emerald-400' : ''}`}>
                 {dot.label}
               </span>
-              <div className={`w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 ${
-                activeSection === dot.id 
-                  ? 'bg-emerald-400 border-emerald-400 scale-125' 
+              <div className={`w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 ${activeSection === dot.id
+                  ? 'bg-emerald-400 border-emerald-400 scale-125'
                   : 'bg-transparent border-white/20 group-hover:border-white/60'
-              }`}></div>
+                }`}></div>
             </a>
           ))}
         </div>
