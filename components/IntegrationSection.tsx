@@ -18,7 +18,7 @@ const IntegrationSection: React.FC = () => {
         </div>
 
         <div className="text-center mt-12">
-          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">Plus more platforms via direct API integration</p>
+          <p className="text-xs font-bold text-slate-400 uppercase tracking-widest">More platforms coming soon</p>
         </div>
       </div>
     </section>
