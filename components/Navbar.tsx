@@ -34,6 +34,12 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
           element.scrollIntoView({ behavior: 'smooth' });
         }
       }, 100);
+    } else {
+      // Already on home page, just scroll to the anchor
+      const element = document.getElementById(linkId);
+      if (element) {
+        element.scrollIntoView({ behavior: 'smooth' });
+      }
     }
     setMobileMenuOpen(false);
   };
