@@ -49,13 +49,12 @@ const Hero: React.FC = () => {
               <span className="text-orange-400">Every month you wait costs you hundreds in wasted email fees.</span>
             </p>
             <div className="flex flex-col items-center">
-              <div className="flex items-center space-x-3 mb-3">
+              <div className="flex items-center space-x-3">
                 <div className="h-1.5 w-32 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 w-[78%]"></div>
+                  <div className="h-full bg-emerald-500 w-[58%]"></div>
                 </div>
-                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">12 Beta Slots Left</span>
+                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">7 Beta Slots Left</span>
               </div>
-              <p className="text-[9px] font-bold text-white/20 uppercase tracking-[0.1em]">Limited free accounts available during beta.</p>
             </div>
           </div>
         </div>
