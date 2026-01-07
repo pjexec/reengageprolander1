@@ -6,11 +6,11 @@ const AboutPage: React.FC = () => {
   const manifesto = [
     {
       title: "We refuse to send email blindly.",
-      body: "Re-engagement is not a volume problem—it’s a signal problem—and any system that pushes volume without live feedback is reckless by design. If the data isn’t there, the campaign doesn’t move. If the signals degrade, it stops. Period."
+      body: "Re-engagement is not a volume problem; it's a signal problem; and any system that pushes volume without live feedback is reckless by design. If the data isn't there, the campaign doesn't move. If the signals degrade, it stops. Period."
     },
     {
       title: "We refuse to pretend that one-size-fits-all best practices work.",
-      body: "Every domain, list, and sender history is different. Static rules, preset cadences, and copy-paste playbooks ignore reality and destroy reputations quietly over time. ReEngage Pro adapts to the sender—not the other way around."
+      body: "Every domain, list, and sender history is different. Static rules, preset cadences, and copy-paste playbooks ignore reality and destroy reputations quietly over time. ReEngage Pro adapts to the sender; not the other way around."
     },
     {
       title: "We refuse to prioritize short-term revenue over sender health.",
@@ -18,7 +18,7 @@ const AboutPage: React.FC = () => {
     },
     {
       title: "We refuse to hide risk behind automation.",
-      body: "Automation without brakes is just faster failure. That’s why safety systems, throttling governors, audit logs, and auto-pause mechanisms are not optional features—they’re structural requirements."
+      body: "Automation without brakes is just faster failure. That's why safety systems, throttling governors, audit logs, and auto-pause mechanisms are not optional features; they're structural requirements."
     },
     {
       title: "We refuse to treat deliverability as a black box.",
@@ -26,7 +26,7 @@ const AboutPage: React.FC = () => {
     },
     {
       title: "We refuse to build “growth hacks.”",
-      body: "No gray-area tactics. No exploitative tricks. No sending strategies that only work until they don’t. ReEngage Pro is designed to survive scrutiny—from inbox providers, compliance teams, and experienced operators—because long-term trust is the only advantage that compounds."
+      body: "No gray-area tactics. No exploitative tricks. No sending strategies that only work until they don't. ReEngage Pro is designed to survive scrutiny; from inbox providers, compliance teams, and experienced operators; because long-term trust is the only advantage that compounds."
     }
   ];
 
