@@ -6,9 +6,9 @@ const Hero: React.FC = () => {
   return (
     <section className="relative pt-32 sm:pt-40 lg:pt-56 pb-16 sm:pb-24 lg:pb-32 overflow-hidden bg-gradient-to-b from-slate-900 to-[#1C3166]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
-        <div className="inline-flex items-center space-x-2 bg-red-500/10 border border-red-500/20 px-4 py-1.5 rounded-full mb-10">
-          <span className="flex h-2 w-2 rounded-full bg-red-500 animate-pulse"></span>
-          <span className="text-[10px] font-black text-red-400 uppercase tracking-[0.2em]">Urgent: List Decay Alert</span>
+        <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full mb-10">
+          <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
+          <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Attention Email Marketers</span>
         </div>
 
         <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tight max-w-5xl mx-auto mb-10 leading-[1.05]">
