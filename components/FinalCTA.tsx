@@ -7,22 +7,22 @@ const FinalCTA: React.FC = () => {
     <section className="py-32 bg-slate-900 overflow-hidden relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
         <h2 className="text-4xl sm:text-6xl font-black text-white mb-10 leading-[1.1]">
-          Stop Wasting Your <br/>Marketing Budget.
+          Stop Wasting Your <br />Marketing Budget.
         </h2>
-        
+
         <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Join the waitlist for our next beta cohort and lock in your <span className="text-emerald-400 font-bold underline">grandfathered pricing</span> forever.
+          Sign up for beta access today and lock in your <span className="text-emerald-400 font-bold underline">grandfathered pricing</span> forever.
         </p>
 
         <div className="flex flex-col items-center space-y-8">
-          <a 
-            href="https://app.reengage.pro/register" 
+          <a
+            href="https://app.reengage.pro/register"
             className="group flex items-center space-x-4 bg-emerald-500 text-white px-12 py-6 rounded-[2rem] text-2xl font-black hover:bg-emerald-400 transition shadow-[0_20px_50px_rgba(16,185,129,0.3)] transform hover:-translate-y-2 active:translate-y-0"
           >
             <span>See Your Potential - Free</span>
             <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition" />
           </a>
-          
+
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-slate-500">
             <span className="flex items-center space-x-2 font-bold">
               <Zap className="w-4 h-4 text-orange-400" />
@@ -41,7 +41,7 @@ const FinalCTA: React.FC = () => {
           <div className="bg-white/5 border border-white/10 px-8 py-4 rounded-2xl max-w-md mx-auto">
             <p className="text-xs text-slate-400 font-medium">
               <span className="text-red-400 font-black uppercase tracking-widest block mb-2">Limited Availability</span>
-              Only <span className="text-white font-bold">12 free accounts</span> remaining for this month's intake.
+              Only <span className="text-white font-bold">7 beta spots</span> remaining for this month's intake.
             </p>
           </div>
         </div>
