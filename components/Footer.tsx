@@ -28,7 +28,7 @@ const Footer: React.FC<FooterProps> = ({ navigateTo }) => {
               <li><button onClick={() => navigateTo('about')} className="hover:text-slate-900 transition text-left">About Us</button></li>
               <li><button onClick={() => navigateTo('terms')} className="hover:text-slate-900 transition text-left">Terms of Service</button></li>
               <li><button onClick={() => navigateTo('privacy')} className="hover:text-slate-900 transition text-left">Privacy Policy</button></li>
-              <li><button className="hover:text-slate-900 transition text-left">Support</button></li>
+              <li><a href="mailto:support@reengage.pro?subject=Web%20Page%20Support%20Request" className="hover:text-slate-900 transition">Support</a></li>
             </ul>
           </div>
         </div>
