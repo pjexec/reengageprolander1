@@ -135,7 +135,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
                                     Get Early Access
                                 </h2>
                                 <p className="text-slate-400 text-sm">
-                                    Join the waitlist and lock in your grandfathered pricing.
+                                    Apply for beta account and lock in your grandfathered pricing.
                                 </p>
                             </div>
 

@@ -43,9 +43,6 @@ const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
               <span>See Your Potential - Free</span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </button>
-            <button className="text-white font-black px-6 sm:px-10 py-4 sm:py-5 border border-white/20 rounded-xl sm:rounded-2xl text-sm sm:text-base hover:bg-white/5 transition-colors duration-300">
-              Watch 2-Min Demo
-            </button>
           </div>
 
           <div className="space-y-4">
