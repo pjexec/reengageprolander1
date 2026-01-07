@@ -74,12 +74,12 @@ const App: React.FC = () => {
               href={`#${dot.id}`}
               className="group relative flex items-center justify-end"
             >
-              <span className={`mr-4 text-[10px] font-black uppercase tracking-widest text-white/40 opacity-0 group-hover:opacity-100 transition duration-300 ${activeSection === dot.id ? 'opacity-100 text-emerald-400' : ''}`}>
+              <span className={`mr-4 text-[10px] font-black uppercase tracking-widest px-2 py-1 rounded-md opacity-0 group-hover:opacity-100 transition duration-300 ${activeSection === dot.id ? 'opacity-100 bg-white/90 text-slate-800 shadow-sm' : 'bg-white/80 text-slate-700'}`}>
                 {dot.label}
               </span>
-              <div className={`w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 ${activeSection === dot.id
-                  ? 'bg-emerald-400 border-emerald-400 scale-125'
-                  : 'bg-transparent border-white/20 group-hover:border-white/60'
+              <div className={`w-2.5 h-2.5 rounded-full border-2 transition-all duration-300 shadow-sm ${activeSection === dot.id
+                ? 'bg-emerald-400 border-emerald-400 scale-125'
+                : 'bg-white/80 border-slate-400/50 group-hover:border-slate-500'
                 }`}></div>
             </a>
           ))}
