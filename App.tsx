@@ -17,6 +17,9 @@ import IntegrationSection from './components/IntegrationSection';
 import TermsOfService from './components/TermsOfService';
 import PrivacyPolicy from './components/PrivacyPolicy';
 import SignupModal from './components/SignupModal';
+import UnengagedSection from './components/UnengagedSection';
+import AIReengagementSection from './components/AIReengagementSection';
+import DeliverabilitySection from './components/DeliverabilitySection';
 
 type PageType = 'home' | 'about' | 'terms' | 'privacy';
 
@@ -102,9 +105,12 @@ const App: React.FC = () => {
             <div id="risk"><RiskSection /></div>
             <DilemmaSection onOpenSignup={openSignupModal} />
             <DataInsights onOpenSignup={openSignupModal} /> {/* ID is inside component */}
+            <UnengagedSection />
             <HowItWorks /> {/* ID is inside component */}
+            <AIReengagementSection />
             <IntegrationSection />
             <div id="comparison"><ComparisonSection onOpenSignup={openSignupModal} /></div>
+            <DeliverabilitySection />
             <SafetySystem /> {/* ID is inside component */}
             <FAQ /> {/* ID is inside component */}
             <Credibility />

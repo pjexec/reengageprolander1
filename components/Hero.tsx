@@ -59,6 +59,36 @@ const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
             </div>
           </div>
         </div>
+
+        {/* Dashboard Screenshot with Browser Frame */}
+        <div className="mt-16 sm:mt-24 max-w-5xl mx-auto px-4">
+          <div className="relative group">
+            {/* Browser Chrome */}
+            <div className="bg-slate-800 rounded-t-xl px-4 py-3 flex items-center space-x-2 border-b border-slate-700">
+              <div className="flex space-x-2">
+                <div className="w-3 h-3 rounded-full bg-red-500"></div>
+                <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
+                <div className="w-3 h-3 rounded-full bg-green-500"></div>
+              </div>
+              <div className="flex-1 ml-4">
+                <div className="bg-slate-700 rounded-md px-4 py-1.5 text-xs text-slate-400 max-w-xs mx-auto text-center">
+                  app.reengagepro.com/dashboard
+                </div>
+              </div>
+            </div>
+            {/* Screenshot */}
+            <div className="bg-slate-800 rounded-b-xl overflow-hidden shadow-2xl shadow-black/50">
+              <img
+                src="/screenshots/Screenshot-2026-01-07-at-4.30.37-PM.png"
+                alt="ReEngage Pro Dashboard - See your subscriber engagement at a glance"
+                className="w-full h-auto transform group-hover:scale-[1.02] transition-transform duration-500"
+                loading="eager"
+              />
+            </div>
+            {/* Glow effect */}
+            <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 via-transparent to-emerald-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>
+          </div>
+        </div>
       </div>
 
       {/* Modern Radial Gradients */}

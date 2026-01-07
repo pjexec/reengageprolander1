@@ -82,6 +82,28 @@ const FAQ: React.FC = () => {
             Have other questions? <a href="#" className="text-emerald-400 hover:text-emerald-300 underline font-bold transition">Speak with an expert</a>
           </p>
         </div>
+
+        {/* Team Feature Highlight */}
+        <div className="mt-20 bg-white/5 border border-white/10 rounded-3xl p-8 sm:p-12 max-w-4xl mx-auto">
+          <div className="flex flex-col lg:flex-row items-center gap-10">
+            <div className="lg:w-2/3 w-full">
+              <div className="rounded-xl overflow-hidden shadow-2xl border border-white/10">
+                <img
+                  src="/screenshots/Screenshot-2026-01-07-at-4.35.54-PM.png"
+                  alt="Invite team members to your ReEngage Pro account"
+                  className="w-full h-auto"
+                  loading="lazy"
+                />
+              </div>
+            </div>
+            <div className="lg:w-1/3 text-center lg:text-left">
+              <h4 className="text-2xl font-bold text-white mb-4">Built for Teams</h4>
+              <p className="text-slate-400 leading-relaxed text-lg">
+                Invite unlimited team members. Collaborate on campaigns, share insights, and keep everyone aligned.
+              </p>
+            </div>
+          </div>
+        </div>
       </div>
 
       {/* Decorative background text */}
