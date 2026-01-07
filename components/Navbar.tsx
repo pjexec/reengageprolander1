@@ -3,8 +3,8 @@ import React, { useState } from 'react';
 import { ArrowRight, Menu, X } from 'lucide-react';
 
 interface NavbarProps {
-  navigateTo: (page: 'home' | 'about') => void;
-  currentPage: 'home' | 'about';
+  navigateTo: (page: 'home' | 'about' | 'terms' | 'privacy') => void;
+  currentPage: 'home' | 'about' | 'terms' | 'privacy';
 }
 
 const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {

@@ -14,9 +14,13 @@ import Footer from './components/Footer';
 import AboutPage from './components/AboutPage';
 import ComparisonSection from './components/ComparisonSection';
 import IntegrationSection from './components/IntegrationSection';
+import TermsOfService from './components/TermsOfService';
+import PrivacyPolicy from './components/PrivacyPolicy';
+
+type PageType = 'home' | 'about' | 'terms' | 'privacy';
 
 const App: React.FC = () => {
-  const [currentPage, setCurrentPage] = useState<'home' | 'about'>('home');
+  const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [activeSection, setActiveSection] = useState<string>('hero');
 
   // Simple scroll to top on page change
@@ -47,7 +51,7 @@ const App: React.FC = () => {
     return () => observer.disconnect();
   }, [currentPage]);
 
-  const navigateTo = (page: 'home' | 'about') => {
+  const navigateTo = (page: PageType) => {
     setCurrentPage(page);
   };
 
@@ -87,7 +91,7 @@ const App: React.FC = () => {
       )}
 
       <main>
-        {currentPage === 'home' ? (
+        {currentPage === 'home' && (
           <>
             <div id="hero"><Hero /></div>
             <div id="risk"><RiskSection /></div>
@@ -100,9 +104,10 @@ const App: React.FC = () => {
             <Credibility />
             <FinalCTA />
           </>
-        ) : (
-          <AboutPage />
         )}
+        {currentPage === 'about' && <AboutPage />}
+        {currentPage === 'terms' && <TermsOfService />}
+        {currentPage === 'privacy' && <PrivacyPolicy />}
       </main>
       <Footer navigateTo={navigateTo} />
     </div>

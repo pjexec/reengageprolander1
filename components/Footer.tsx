@@ -2,7 +2,7 @@
 import React from 'react';
 
 interface FooterProps {
-  navigateTo: (page: 'home' | 'about') => void;
+  navigateTo: (page: 'home' | 'about' | 'terms' | 'privacy') => void;
 }
 
 const Footer: React.FC<FooterProps> = ({ navigateTo }) => {
@@ -12,9 +12,9 @@ const Footer: React.FC<FooterProps> = ({ navigateTo }) => {
         <div className="grid md:grid-cols-4 gap-12 mb-12">
           <div className="col-span-2">
             <div className="flex items-center space-x-2 mb-6 cursor-pointer" onClick={() => navigateTo('home')}>
-              <img 
-                src="https://app.reengage.pro/_next/image?url=%2Flogo.png&w=384&q=75" 
-                alt="ReEngage Pro Logo" 
+              <img
+                src="https://app.reengage.pro/_next/image?url=%2Flogo.png&w=384&q=75"
+                alt="ReEngage Pro Logo"
                 className="h-10 w-auto"
               />
             </div>
@@ -35,8 +35,8 @@ const Footer: React.FC<FooterProps> = ({ navigateTo }) => {
             <h5 className="text-slate-900 font-bold text-sm mb-6 uppercase tracking-widest">Company</h5>
             <ul className="space-y-4 text-sm font-medium">
               <li><button onClick={() => navigateTo('about')} className="hover:text-slate-900 transition text-left">About Us</button></li>
-              <li><button className="hover:text-slate-900 transition text-left">Terms of Service</button></li>
-              <li><button className="hover:text-slate-900 transition text-left">Privacy Policy</button></li>
+              <li><button onClick={() => navigateTo('terms')} className="hover:text-slate-900 transition text-left">Terms of Service</button></li>
+              <li><button onClick={() => navigateTo('privacy')} className="hover:text-slate-900 transition text-left">Privacy Policy</button></li>
               <li><button className="hover:text-slate-900 transition text-left">Support</button></li>
             </ul>
           </div>
