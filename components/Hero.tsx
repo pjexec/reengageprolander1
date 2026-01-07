@@ -16,7 +16,7 @@ const Hero: React.FC = () => {
         </h1>
 
         <p className="text-xl sm:text-2xl text-slate-300/80 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
-          ReEngage Pro identifies and revives cold subscribers, saving you money while protecting your sender reputation automatically.
+          <span className="font-black text-2xl sm:text-3xl text-white">ReEngage Pro</span> identifies and revives cold subscribers, saving you money while protecting your sender reputation automatically.
         </p>
 
         <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
