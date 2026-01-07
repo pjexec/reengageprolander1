@@ -5,9 +5,10 @@ import { ArrowRight, Menu, X } from 'lucide-react';
 interface NavbarProps {
   navigateTo: (page: 'home' | 'about' | 'terms' | 'privacy') => void;
   currentPage: 'home' | 'about' | 'terms' | 'privacy';
+  onOpenSignup: () => void;
 }
 
-const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
+const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, onOpenSignup }) => {
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
 
   const handleLogoClick = () => {
@@ -46,6 +47,11 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
 
   const handleAboutClick = () => {
     navigateTo('about');
+    setMobileMenuOpen(false);
+  };
+
+  const handleGetStartedClick = () => {
+    onOpenSignup();
     setMobileMenuOpen(false);
   };
 
@@ -99,13 +105,13 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
               >
                 Login
               </a>
-              <a
-                href="https://app.reengage.pro/register"
+              <button
+                onClick={handleGetStartedClick}
                 className="hidden sm:flex items-center space-x-2 sm:space-x-3 px-4 sm:px-6 lg:px-8 py-3 sm:py-4 rounded-xl sm:rounded-2xl text-xs sm:text-sm font-medium bg-[#1C3166] text-white hover:bg-[#14244a] transition-all duration-300 shadow-xl shadow-[#1C3166]/10 hover:-translate-y-1"
               >
                 <span>Get Started</span>
                 <ArrowRight size={16} className="sm:w-[18px] sm:h-[18px]" />
-              </a>
+              </button>
 
               {/* Mobile Menu Button */}
               <button
@@ -156,13 +162,13 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
                 >
                   Login
                 </a>
-                <a
-                  href="https://app.reengage.pro/register"
-                  className="flex items-center justify-center space-x-2 py-4 rounded-xl text-sm font-medium bg-[#1C3166] text-white hover:bg-[#14244a] transition-all"
+                <button
+                  onClick={handleGetStartedClick}
+                  className="w-full flex items-center justify-center space-x-2 py-4 rounded-xl text-sm font-medium bg-[#1C3166] text-white hover:bg-[#14244a] transition-all"
                 >
                   <span>Get Started</span>
                   <ArrowRight size={16} />
-                </a>
+                </button>
               </div>
             </div>
           </div>
@@ -173,3 +179,4 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage }) => {
 };
 
 export default Navbar;
+

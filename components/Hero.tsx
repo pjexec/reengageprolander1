@@ -2,7 +2,11 @@
 import React from 'react';
 import { ArrowRight, TrendingUp, DollarSign } from 'lucide-react';
 
-const Hero: React.FC = () => {
+interface HeroProps {
+  onOpenSignup: () => void;
+}
+
+const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
   return (
     <section className="relative pt-32 sm:pt-40 lg:pt-56 pb-16 sm:pb-24 lg:pb-32 overflow-hidden bg-gradient-to-b from-slate-900 to-[#1C3166]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -32,13 +36,13 @@ const Hero: React.FC = () => {
 
         <div className="flex flex-col items-center space-y-10">
           <div className="flex flex-col sm:flex-row items-center gap-5">
-            <a
-              href="https://app.reengage.pro/register"
+            <button
+              onClick={onOpenSignup}
               className="group flex items-center space-x-2 sm:space-x-4 bg-white text-[#1C3166] px-6 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl text-base sm:text-xl font-black hover:bg-slate-50 transition-all duration-300 shadow-[0_0_50px_rgba(255,255,255,0.1)] transform hover:-translate-y-1"
             >
               <span>See Your Potential - Free</span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
-            </a>
+            </button>
             <button className="text-white font-black px-6 sm:px-10 py-4 sm:py-5 border border-white/20 rounded-xl sm:rounded-2xl text-sm sm:text-base hover:bg-white/5 transition-colors duration-300">
               Watch 2-Min Demo
             </button>
@@ -70,3 +74,4 @@ const Hero: React.FC = () => {
 };
 
 export default Hero;
+

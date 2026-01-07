@@ -2,11 +2,15 @@
 import React, { useState, useEffect } from 'react';
 import { Calculator, DollarSign, TrendingUp, Users } from 'lucide-react';
 
-const DataInsights: React.FC = () => {
+interface DataInsightsProps {
+  onOpenSignup: () => void;
+}
+
+const DataInsights: React.FC<DataInsightsProps> = ({ onOpenSignup }) => {
   const [listSize, setListSize] = useState<number>(50000);
   const [monthlyCost, setMonthlyCost] = useState<number>(500);
   const [dormantPercent, setDormantPercent] = useState<number>(30);
-  
+
   const [wastedAnnual, setWastedAnnual] = useState<number>(0);
   const [potentialLift, setPotentialLift] = useState<number>(0);
 
@@ -15,7 +19,7 @@ const DataInsights: React.FC = () => {
     const costPerUser = monthlyCost / listSize;
     const wastedMonthly = dormantCount * costPerUser;
     setWastedAnnual(Math.round(wastedMonthly * 12));
-    
+
     // Estimate potential lift (rough heuristic for demonstration)
     setPotentialLift(Math.round(dormantCount * 0.05 * 45)); // 5% recovery at $45 LTV
   }, [listSize, monthlyCost, dormantPercent]);
@@ -46,8 +50,8 @@ const DataInsights: React.FC = () => {
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Total List Size</label>
                   <span className="text-xl font-black text-[#1C3166]">{listSize.toLocaleString()}</span>
                 </div>
-                <input 
-                  type="range" min="1000" max="1000000" step="1000" 
+                <input
+                  type="range" min="1000" max="1000000" step="1000"
                   value={listSize} onChange={(e) => setListSize(parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#1C3166]"
                 />
@@ -58,8 +62,8 @@ const DataInsights: React.FC = () => {
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest">ESP Monthly Bill ($)</label>
                   <span className="text-xl font-black text-[#1C3166]">${monthlyCost.toLocaleString()}</span>
                 </div>
-                <input 
-                  type="range" min="50" max="10000" step="50" 
+                <input
+                  type="range" min="50" max="10000" step="50"
                   value={monthlyCost} onChange={(e) => setMonthlyCost(parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#1C3166]"
                 />
@@ -70,8 +74,8 @@ const DataInsights: React.FC = () => {
                   <label className="text-xs font-black text-slate-400 uppercase tracking-widest">Dormant Segment (%)</label>
                   <span className="text-xl font-black text-red-500">{dormantPercent}%</span>
                 </div>
-                <input 
-                  type="range" min="5" max="80" step="1" 
+                <input
+                  type="range" min="5" max="80" step="1"
                   value={dormantPercent} onChange={(e) => setDormantPercent(parseInt(e.target.value))}
                   className="w-full h-2 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-red-500"
                 />
@@ -104,12 +108,12 @@ const DataInsights: React.FC = () => {
                 </p>
               </div>
 
-              <a 
-                href="https://app.reengage.pro/register" 
+              <button
+                onClick={onOpenSignup}
                 className="w-full block bg-emerald-500 text-center py-5 rounded-2xl font-black text-lg hover:bg-emerald-400 transition shadow-xl shadow-emerald-900/40"
               >
                 Claim This Revenue
-              </a>
+              </button>
             </div>
           </div>
         </div>

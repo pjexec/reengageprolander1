@@ -16,12 +16,17 @@ import ComparisonSection from './components/ComparisonSection';
 import IntegrationSection from './components/IntegrationSection';
 import TermsOfService from './components/TermsOfService';
 import PrivacyPolicy from './components/PrivacyPolicy';
+import SignupModal from './components/SignupModal';
 
 type PageType = 'home' | 'about' | 'terms' | 'privacy';
 
 const App: React.FC = () => {
   const [currentPage, setCurrentPage] = useState<PageType>('home');
   const [activeSection, setActiveSection] = useState<string>('hero');
+  const [isSignupModalOpen, setIsSignupModalOpen] = useState(false);
+
+  const openSignupModal = () => setIsSignupModalOpen(true);
+  const closeSignupModal = () => setIsSignupModalOpen(false);
 
   // Simple scroll to top on page change
   useEffect(() => {
@@ -67,7 +72,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#1C3166] selection:bg-emerald-500 selection:text-white overflow-x-hidden">
-      <Navbar navigateTo={navigateTo} currentPage={currentPage} />
+      <Navbar navigateTo={navigateTo} currentPage={currentPage} onOpenSignup={openSignupModal} />
 
       {/* Side Progress Indicator */}
       {currentPage === 'home' && (
@@ -93,16 +98,17 @@ const App: React.FC = () => {
       <main>
         {currentPage === 'home' && (
           <>
-            <div id="hero"><Hero /></div>
+            <div id="hero"><Hero onOpenSignup={openSignupModal} /></div>
             <div id="risk"><RiskSection /></div>
-            <DataInsights /> {/* ID is inside component */}
+            <DilemmaSection onOpenSignup={openSignupModal} />
+            <DataInsights onOpenSignup={openSignupModal} /> {/* ID is inside component */}
             <HowItWorks /> {/* ID is inside component */}
             <IntegrationSection />
-            <div id="comparison"><ComparisonSection /></div>
+            <div id="comparison"><ComparisonSection onOpenSignup={openSignupModal} /></div>
             <SafetySystem /> {/* ID is inside component */}
             <FAQ /> {/* ID is inside component */}
             <Credibility />
-            <FinalCTA />
+            <FinalCTA onOpenSignup={openSignupModal} />
           </>
         )}
         {currentPage === 'about' && <AboutPage />}
@@ -110,6 +116,7 @@ const App: React.FC = () => {
         {currentPage === 'privacy' && <PrivacyPolicy />}
       </main>
       <Footer navigateTo={navigateTo} />
+      <SignupModal isOpen={isSignupModalOpen} onClose={closeSignupModal} />
     </div>
   );
 };

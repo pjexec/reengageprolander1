@@ -2,7 +2,11 @@
 import React from 'react';
 import { ArrowRight, Lock, ShieldCheck, Zap } from 'lucide-react';
 
-const FinalCTA: React.FC = () => {
+interface FinalCTAProps {
+  onOpenSignup: () => void;
+}
+
+const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenSignup }) => {
   return (
     <section className="py-32 bg-slate-900 overflow-hidden relative">
       <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 text-center relative z-10">
@@ -15,13 +19,13 @@ const FinalCTA: React.FC = () => {
         </p>
 
         <div className="flex flex-col items-center space-y-8">
-          <a
-            href="https://app.reengage.pro/register"
+          <button
+            onClick={onOpenSignup}
             className="group flex items-center space-x-4 bg-emerald-500 text-white px-12 py-6 rounded-[2rem] text-2xl font-black hover:bg-emerald-400 transition shadow-[0_20px_50px_rgba(16,185,129,0.3)] transform hover:-translate-y-2 active:translate-y-0"
           >
             <span>See Your Potential - Free</span>
             <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition" />
-          </a>
+          </button>
 
           <div className="flex flex-wrap justify-center items-center gap-8 text-sm text-slate-500">
             <span className="flex items-center space-x-2 font-bold">
@@ -54,3 +58,4 @@ const FinalCTA: React.FC = () => {
 };
 
 export default FinalCTA;
+

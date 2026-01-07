@@ -2,7 +2,11 @@
 import React from 'react';
 import { XCircle, Trash2, ArrowRight } from 'lucide-react';
 
-const DilemmaSection: React.FC = () => {
+interface DilemmaSectionProps {
+  onOpenSignup: () => void;
+}
+
+const DilemmaSection: React.FC<DilemmaSectionProps> = ({ onOpenSignup }) => {
   return (
     <section className="py-24 bg-[#1C3166]">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -39,13 +43,13 @@ const DilemmaSection: React.FC = () => {
             <span>What if there was a third option?</span>
             <span className="h-px w-16 bg-white/10"></span>
           </p>
-          <a 
-            href="https://app.reengage.pro/register" 
+          <button
+            onClick={onOpenSignup}
             className="text-emerald-400 font-black text-lg flex items-center space-x-3 mx-auto hover:text-emerald-300 transition group tracking-wide"
           >
             <span>DISCOVER THE REENGAGE PRO WAY</span>
             <ArrowRight className="w-6 h-6 group-hover:translate-x-2 transition" />
-          </a>
+          </button>
         </div>
       </div>
     </section>
@@ -53,3 +57,4 @@ const DilemmaSection: React.FC = () => {
 };
 
 export default DilemmaSection;
+
