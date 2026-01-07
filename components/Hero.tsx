@@ -19,7 +19,7 @@ const Hero: React.FC = () => {
           <span className="font-black text-2xl sm:text-3xl text-white">ReEngage Pro</span> identifies and revives cold subscribers, saving you money while protecting your sender reputation automatically.
         </p>
 
-        <div className="flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
+        <div className="hidden sm:flex flex-col sm:flex-row items-center justify-center gap-4 mb-16">
           <div className="flex items-center space-x-3 text-emerald-400 font-black text-sm bg-emerald-400/5 px-6 py-3 rounded-2xl border border-emerald-400/10 backdrop-blur-sm">
             <TrendingUp size={20} />
             <span className="tracking-wide">+42% Avg. Open Rate Lift</span>
