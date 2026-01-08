@@ -16,7 +16,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
         </div>
 
         <h1 className="text-4xl sm:text-7xl font-black text-white tracking-tight max-w-5xl mx-auto mb-10 leading-[1.05]">
-          Stop Paying for Dead Subscribers That <span className="text-red-500 italic">Kill Your Performance</span>
+          Stop Paying for Cold Subscribers That <span className="text-red-500 italic">Kill Your Performance</span>
         </h1>
 
         <p className="text-xl sm:text-2xl text-slate-300/80 max-w-3xl mx-auto mb-12 leading-relaxed font-medium">
