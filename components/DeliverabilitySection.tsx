@@ -64,10 +64,7 @@ const DeliverabilitySection: React.FC = () => {
 
                 {/* Caption */}
                 <div className="mt-12 text-center">
-                    <p className="text-lg text-slate-600 font-medium">
-                        Our safety features ensure re-engagement doesn't hurt your sender reputation
-                    </p>
-                    <div className="mt-6 flex flex-wrap justify-center gap-6">
+                    <div className="flex flex-wrap justify-center gap-6">
                         <div className="flex items-center space-x-2 text-sm text-slate-500">
                             <div className="w-2 h-2 rounded-full bg-emerald-500"></div>
                             <span>Real-time bounce monitoring</span>
