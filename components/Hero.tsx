@@ -40,7 +40,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
               onClick={onOpenSignup}
               className="group flex items-center space-x-2 sm:space-x-4 bg-white text-[#1C3166] px-6 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl text-base sm:text-xl font-black hover:bg-slate-50 transition-all duration-300 shadow-[0_0_50px_rgba(255,255,255,0.1)] transform hover:-translate-y-1"
             >
-              <span>See Your Potential - Free</span>
+              <span>Request Beta Access</span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
@@ -77,13 +77,29 @@ const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
               </div>
             </div>
             {/* Screenshot */}
-            <div className="bg-slate-800 rounded-b-xl overflow-hidden shadow-2xl shadow-black/50">
+            <div className="bg-slate-800 rounded-b-xl overflow-hidden shadow-2xl shadow-black/50 relative">
               <img
                 src="/screenshots/Screenshot-2026-01-07-at-4.30.37-PM.png"
                 alt="ReEngage Pro Dashboard - See your subscriber engagement at a glance"
                 className="w-full h-auto transform group-hover:scale-[1.02] transition-transform duration-500"
                 loading="eager"
               />
+
+              {/* Left arrow - Subscribers Re-Engaged */}
+              <div className="screenshot-highlight absolute top-[32%] left-[22%] animate-bounce-arrow" style={{ animationDelay: '0s' }}>
+                <div className="flex items-center space-x-1 bg-emerald-500 text-white px-2 py-1.5 rounded-lg shadow-lg text-xs font-bold">
+                  <span>↑</span>
+                  <span>Results</span>
+                </div>
+              </div>
+
+              {/* Right arrow - Sender Health */}
+              <div className="screenshot-highlight absolute top-[32%] right-[22%] animate-bounce-arrow" style={{ animationDelay: '0.5s' }}>
+                <div className="flex items-center space-x-1 bg-blue-500 text-white px-2 py-1.5 rounded-lg shadow-lg text-xs font-bold">
+                  <span>✓</span>
+                  <span>Safety</span>
+                </div>
+              </div>
             </div>
             {/* Glow effect */}
             <div className="absolute -inset-4 bg-gradient-to-r from-emerald-500/20 via-transparent to-emerald-500/20 blur-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-500 -z-10"></div>

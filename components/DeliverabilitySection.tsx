@@ -22,8 +22,8 @@ const DeliverabilitySection: React.FC = () => {
                 {/* Side by side screenshots */}
                 <div className="grid md:grid-cols-2 gap-8 max-w-6xl mx-auto">
                     {/* Left screenshot - Health Dashboard */}
-                    <div className="group">
-                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 transform group-hover:-translate-y-1 transition-transform duration-300">
+                    <div className="group relative">
+                        <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 transform group-hover:-translate-y-1 transition-transform duration-300 animate-glow-green">
                             <div className="bg-[#1C3166] px-4 py-3 flex items-center space-x-2">
                                 <Activity className="w-4 h-4 text-emerald-400" />
                                 <span className="text-sm font-bold text-white">Deliverability Health</span>
@@ -35,10 +35,14 @@ const DeliverabilitySection: React.FC = () => {
                                 loading="lazy"
                             />
                         </div>
+                        {/* Green checkmark badge */}
+                        <div className="screenshot-highlight absolute top-4 right-4 bg-emerald-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg animate-pulse-ring">
+                            <span className="text-lg">✓</span>
+                        </div>
                     </div>
 
                     {/* Right screenshot - Safety Monitor */}
-                    <div className="group">
+                    <div className="group relative">
                         <div className="bg-white rounded-2xl shadow-xl overflow-hidden border border-slate-200 transform group-hover:-translate-y-1 transition-transform duration-300">
                             <div className="bg-[#1C3166] px-4 py-3 flex items-center space-x-2">
                                 <Shield className="w-4 h-4 text-emerald-400" />
@@ -50,6 +54,10 @@ const DeliverabilitySection: React.FC = () => {
                                 className="w-full h-auto"
                                 loading="lazy"
                             />
+                        </div>
+                        {/* Warning indicator badge */}
+                        <div className="screenshot-highlight absolute top-4 right-4 bg-amber-500 text-white w-8 h-8 rounded-full flex items-center justify-center shadow-lg animate-shake-warning">
+                            <span className="text-lg font-bold">!</span>
                         </div>
                     </div>
                 </div>

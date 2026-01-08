@@ -5,9 +5,7 @@ import { Award, ShieldCheck, Lock, Globe } from 'lucide-react';
 const Credibility: React.FC = () => {
   const certifications = [
     { icon: <ShieldCheck size={20} />, label: "GDPR Compliant" },
-    { icon: <Lock size={20} />, label: "SOC2 Type II Ready" },
-    { icon: <Award size={20} />, label: "Expert Certified" },
-    { icon: <Globe size={20} />, label: "CCPA Compliant" }
+    { icon: <Lock size={20} />, label: "Data Encrypted" }
   ];
 
   return (

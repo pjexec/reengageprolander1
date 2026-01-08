@@ -32,7 +32,7 @@ const UnengagedSection: React.FC = () => {
                         </div>
 
                         {/* Annotation bubble */}
-                        <div className="absolute top-1/4 -right-4 sm:right-4 lg:-right-8 transform translate-x-0 bg-red-500 text-white px-4 py-3 rounded-xl shadow-xl max-w-[200px] sm:max-w-[240px] animate-pulse-slow">
+                        <div className="absolute top-[35%] -right-4 sm:right-4 lg:-right-8 transform translate-x-0 bg-red-500 text-white px-4 py-3 rounded-xl shadow-xl max-w-[200px] sm:max-w-[240px] animate-bounce-arrow">
                             <div className="flex items-start space-x-2">
                                 <DollarSign className="w-5 h-5 flex-shrink-0 mt-0.5" />
                                 <p className="text-sm font-bold leading-snug">

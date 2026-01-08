@@ -53,6 +53,122 @@
         display: none;
       }
     }
+
+    /* Screenshot highlight animations */
+    @keyframes pulse-ring {
+      0% {
+        transform: scale(1);
+        opacity: 1;
+      }
+
+      50% {
+        transform: scale(1.05);
+        opacity: 0.7;
+      }
+
+      100% {
+        transform: scale(1);
+        opacity: 1;
+      }
+    }
+
+    @keyframes bounce-arrow {
+
+      0%,
+      100% {
+        transform: translateY(0);
+      }
+
+      50% {
+        transform: translateY(-6px);
+      }
+    }
+
+    @keyframes glow-green {
+
+      0%,
+      100% {
+        box-shadow: 0 0 8px rgba(16, 185, 129, 0.4);
+      }
+
+      50% {
+        box-shadow: 0 0 20px rgba(16, 185, 129, 0.7);
+      }
+    }
+
+    @keyframes shake-warning {
+
+      0%,
+      100% {
+        transform: translateX(0);
+      }
+
+      10%,
+      30%,
+      50%,
+      70%,
+      90% {
+        transform: translateX(-2px);
+      }
+
+      20%,
+      40%,
+      60%,
+      80% {
+        transform: translateX(2px);
+      }
+    }
+
+    @keyframes fade-in-up {
+      from {
+        opacity: 0;
+        transform: translateY(10px);
+      }
+
+      to {
+        opacity: 1;
+        transform: translateY(0);
+      }
+    }
+
+    .animate-pulse-ring {
+      animation: pulse-ring 2.5s ease-in-out infinite;
+    }
+
+    .animate-bounce-arrow {
+      animation: bounce-arrow 1.5s ease-in-out infinite;
+    }
+
+    .animate-glow-green {
+      animation: glow-green 3s ease-in-out infinite;
+    }
+
+    .animate-shake-warning {
+      animation: shake-warning 3s ease-in-out infinite;
+    }
+
+    .animate-fade-in-up {
+      animation: fade-in-up 0.5s ease-out forwards;
+    }
+
+    /* Reduce motion for accessibility */
+    @media (prefers-reduced-motion: reduce) {
+
+      .animate-pulse-ring,
+      .animate-bounce-arrow,
+      .animate-glow-green,
+      .animate-shake-warning,
+      .animate-fade-in-up {
+        animation: none;
+      }
+    }
+
+    /* Hide animations on mobile for performance */
+    @media (max-width: 640px) {
+      .screenshot-highlight {
+        display: none;
+      }
+    }
   </style>
   <script type="importmap">
 {

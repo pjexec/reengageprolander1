@@ -23,7 +23,7 @@ const AIReengagementSection: React.FC = () => {
                     {/* Screenshot container */}
                     <div className="relative group">
                         {/* Browser chrome styling */}
-                        <div className="bg-slate-800 rounded-t-xl px-4 py-3 flex items-center space-x-2 border-b border-slate-700">
+                        <div className="bg-slate-800 rounded-t-xl px-4 py-3 flex items-center space-x-2 border-b border-slate-700 relative">
                             <div className="flex space-x-2">
                                 <div className="w-3 h-3 rounded-full bg-red-500"></div>
                                 <div className="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -35,8 +35,19 @@ const AIReengagementSection: React.FC = () => {
                                     <span>Activity & Transparency</span>
                                 </div>
                             </div>
+
+                            {/* Immutable logs annotation - positioned to the left of center label */}
+                            <div className="screenshot-highlight absolute left-[15%] top-1/2 -translate-y-1/2 animate-bounce-arrow z-10">
+                                <div className="bg-emerald-500 text-white px-3 py-2 rounded-xl shadow-xl max-w-[260px] text-center relative">
+                                    <p className="text-xs font-bold leading-snug">
+                                        Trust your data with immutable action logs permanently recorded and impossible to change.
+                                    </p>
+                                    {/* Arrow pointing down */}
+                                    <div className="absolute left-1/2 bottom-0 translate-y-full -translate-x-1/2 w-0 h-0 border-l-8 border-r-8 border-t-8 border-transparent border-t-emerald-500"></div>
+                                </div>
+                            </div>
                         </div>
-                        <div className="bg-slate-800 rounded-b-xl overflow-hidden shadow-2xl shadow-black/50">
+                        <div className="bg-slate-800 rounded-b-xl overflow-hidden shadow-2xl shadow-black/50 relative">
                             <img
                                 src="/screenshots/SCR-20260107-opld.png"
                                 alt="AI-powered email campaign creation with personalized messaging"

@@ -23,7 +23,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenSignup }) => {
             onClick={onOpenSignup}
             className="group flex items-center space-x-4 bg-emerald-500 text-white px-12 py-6 rounded-[2rem] text-2xl font-black hover:bg-emerald-400 transition shadow-[0_20px_50px_rgba(16,185,129,0.3)] transform hover:-translate-y-2 active:translate-y-0"
           >
-            <span>See Your Potential - Free</span>
+            <span>Request Beta Access</span>
             <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition" />
           </button>
 
@@ -34,7 +34,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenSignup }) => {
             </span>
             <span className="flex items-center space-x-2 font-bold">
               <ShieldCheck className="w-4 h-4 text-emerald-400" />
-              <span>GDPR & CCPA Compliant</span>
+              <span>GDPR Compliant</span>
             </span>
             <span className="flex items-center space-x-2 font-bold">
               <Lock className="w-4 h-4 text-slate-400" />
