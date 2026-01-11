@@ -135,7 +135,7 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
                                     Get Early Access
                                 </h2>
                                 <p className="text-slate-400 text-sm">
-                                    Apply for a Beta Account and lock in your grandfathered pricing.
+                                    Apply for a Beta Account and be among the first to try ReEngage Pro.
                                 </p>
                             </div>
 

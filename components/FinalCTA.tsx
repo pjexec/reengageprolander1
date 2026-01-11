@@ -15,7 +15,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenSignup }) => {
         </h2>
 
         <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Sign up for beta access today and lock in your <span className="text-emerald-400 font-bold underline">grandfathered pricing</span> forever.
+          Join the beta today and start recovering revenue from your unengaged subscribers.
         </p>
 
         <div className="flex flex-col items-center space-y-8">
