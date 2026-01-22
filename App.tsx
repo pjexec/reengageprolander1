@@ -1,3 +1,4 @@
+import SequenceScroll from "./components/SequenceScroll";
 
 import React, { useState, useEffect } from 'react';
 import Navbar from './components/Navbar';
@@ -75,7 +76,7 @@ const App: React.FC = () => {
 
   return (
     <div className="min-h-screen bg-[#1C3166] selection:bg-emerald-500 selection:text-white overflow-x-hidden">
-      <Navbar navigateTo={navigateTo} currentPage={currentPage} onOpenSignup={openSignupModal} />
+      <SequenceScroll /><Navbar navigateTo={navigateTo} currentPage={currentPage} onOpenSignup={openSignupModal} />
 
       {/* Side Progress Indicator */}
       {currentPage === 'home' && (
