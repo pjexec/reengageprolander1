@@ -75,7 +75,7 @@ const App: React.FC = () => {
   ];
 
   return (
-    <div className="min-h-screen bg-[#1C3166] selection:bg-emerald-500 selection:text-white overflow-x-hidden">
+    <div className="min-h-screen bg-[#1C3166] selection:bg-emerald-500 selection:text-white">
       <SequenceScroll /><Navbar navigateTo={navigateTo} currentPage={currentPage} onOpenSignup={openSignupModal} />
 
       {/* Side Progress Indicator */}

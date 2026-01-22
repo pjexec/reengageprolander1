@@ -134,19 +134,36 @@ export default function SequenceScroll() {
     const canvasTypeWidth = canvas.width;
     const canvasTypeHeight = canvas.height;
 
+    // Aspect Ratios
     const imgRatio = img.width / img.height;
     const canvasRatio = canvasTypeWidth / canvasTypeHeight;
 
     let renderW, renderH;
 
-    if (canvasRatio > imgRatio) {
-      // Canvas is wider than image -> fit to width to cover
+    // containment logic (fit to screen) instead of cover
+    // Smart logic: 
+    // If we are on mobile (Portrait canvas) and have a Landscape image, 
+    // using 'cover' zooms in too much and ruins the image.
+    // In that specific case, we should use 'contain' (letterbox).
+    // Otherwise (Desktop, or matching aspect ratios), we use 'cover' for the immersive feel.
+
+    const isPortraitScreen = canvasRatio < 1;
+    const isLandscapeImage = imgRatio > 1;
+    const useContain = isPortraitScreen && isLandscapeImage;
+
+    if (useContain) {
+      // Fit to width (Mobile Cinematic view)
       renderW = canvasTypeWidth;
       renderH = img.height * (canvasTypeWidth / img.width);
     } else {
-      // Canvas is taller than image -> fit to height to cover
-      renderH = canvasTypeHeight;
-      renderW = img.width * (canvasTypeHeight / img.height);
+      // Cover logic (Desktop / Full fill)
+      if (canvasRatio > imgRatio) {
+        renderW = canvasTypeWidth;
+        renderH = img.height * (canvasTypeWidth / img.width);
+      } else {
+        renderH = canvasTypeHeight;
+        renderW = img.width * (canvasTypeHeight / img.height);
+      }
     }
 
     const x = (canvasTypeWidth - renderW) / 2;
@@ -179,7 +196,7 @@ export default function SequenceScroll() {
 
 
   return (
-    <div ref={containerRef} className="relative h-[600vh] bg-[#DDDCDC]">
+    <div ref={containerRef} className="hidden md:block relative h-[600vh] bg-[#DDDCDC]">
 
       {/* Fixed Canvas Container */}
       <div className="sticky top-0 z-0 h-screen w-full overflow-hidden">
@@ -256,20 +273,20 @@ function OverlayItem({ item, scrollProgress }: { item: any, scrollProgress: any 
       className={`absolute inset-0 flex flex-col ${alignmentClasses[item.align] || alignmentClasses['center']}`}
     >
       <div className={`
-        ${item.compact ? 'max-w-lg md:max-w-xl p-6' : 'max-w-xl md:max-w-2xl p-8'} 
+        ${item.compact ? 'max-w-lg md:max-w-xl p-5 md:p-6' : 'max-w-xl md:max-w-2xl p-6 md:p-8'} 
         ${item.lighterBg ? 'bg-white/20' : 'bg-white/40'} 
-        backdrop-blur-md border border-white/20 shadow-lg rounded-3xl transition-all duration-300
+        backdrop-blur-md border border-white/20 shadow-lg rounded-2xl md:rounded-3xl transition-all duration-300
       `}>
         {item.image ? (
           <img
             src={item.image}
             alt={item.title}
-            className="h-32 md:h-48 w-auto mb-2 mx-auto object-contain"
+            className="h-24 md:h-48 w-auto mb-2 mx-auto object-contain"
           />
         ) : (
           <h2 className={`
-            font-serif font-bold text-gray-900 mb-4 leading-tight
-            ${item.compact ? 'text-3xl md:text-5xl' : 'text-4xl md:text-6xl'}
+            font-serif font-bold text-gray-900 mb-2 md:mb-4 leading-tight
+            ${item.compact ? 'text-2xl md:text-5xl' : 'text-3xl md:text-6xl'}
           `}>
             {item.title}
           </h2>
@@ -277,7 +294,7 @@ function OverlayItem({ item, scrollProgress }: { item: any, scrollProgress: any 
         {item.sub && (
           <p className={`
             font-sans text-gray-600 font-light
-            ${item.compact ? 'text-base md:text-lg' : 'text-lg md:text-xl'}
+            ${item.compact ? 'text-sm md:text-lg' : 'text-base md:text-xl'}
           `}>
             {item.sub}
           </p>

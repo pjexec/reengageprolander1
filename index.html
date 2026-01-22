@@ -44,7 +44,15 @@
     html,
     body {
       font-family: 'Inter', sans-serif;
-      overflow-x: hidden;
+    }
+
+    /* Prevent horizontal scroll "floating" on mobile */
+    @media (max-width: 768px) {
+
+      html,
+      body {
+        overflow-x: hidden;
+      }
     }
 
     .grayscale-hover {
@@ -193,7 +201,7 @@
 </head>
 
 <body>
-  <div id="root"></div>
+  <div id="root" style="overflow: visible;"></div>
   <script type="module" src="/index.tsx"></script>
   <!-- Live Chat Widget -->
   <script src="/socket.io/socket.io.js"></script>
