@@ -129,13 +129,13 @@ const SignupModal: React.FC<SignupModalProps> = ({ isOpen, onClose }) => {
                             <div className="text-center mb-8">
                                 <div className="inline-flex items-center space-x-2 bg-emerald-500/10 border border-emerald-500/20 px-4 py-1.5 rounded-full mb-4">
                                     <span className="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Limited Beta Access</span>
+                                    <span className="text-[10px] font-black text-emerald-400 uppercase tracking-[0.2em]">Limited Availability</span>
                                 </div>
                                 <h2 className="text-2xl sm:text-3xl font-black text-white mb-2">
                                     Get Early Access
                                 </h2>
                                 <p className="text-slate-400 text-sm">
-                                    Apply for a Beta Account and be among the first to try ReEngage Pro.
+                                    Join the waitlist and be among the first to try ReEngage Pro.
                                 </p>
                             </div>
 

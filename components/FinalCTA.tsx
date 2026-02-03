@@ -15,7 +15,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenSignup }) => {
         </h2>
 
         <p className="text-xl text-slate-400 mb-12 max-w-2xl mx-auto leading-relaxed">
-          Join the beta today and start recovering revenue from your unengaged subscribers.
+          Join the waitlist today and start recovering revenue from your unengaged subscribers.
         </p>
 
         <div className="flex flex-col items-center space-y-8">
@@ -23,7 +23,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenSignup }) => {
             onClick={onOpenSignup}
             className="group flex items-center space-x-4 bg-emerald-500 text-white px-12 py-6 rounded-[2rem] text-2xl font-black hover:bg-emerald-400 transition shadow-[0_20px_50px_rgba(16,185,129,0.3)] transform hover:-translate-y-2 active:translate-y-0"
           >
-            <span>Request Beta Access</span>
+            <span>Join the Waitlist</span>
             <ArrowRight className="w-8 h-8 group-hover:translate-x-2 transition" />
           </button>
 
@@ -42,12 +42,7 @@ const FinalCTA: React.FC<FinalCTAProps> = ({ onOpenSignup }) => {
             </span>
           </div>
 
-          <div className="bg-white/5 border border-white/10 px-8 py-4 rounded-2xl max-w-md mx-auto">
-            <p className="text-xs text-slate-400 font-medium">
-              <span className="text-red-400 font-black uppercase tracking-widest block mb-2">Limited Availability</span>
-              Only <span className="text-white font-bold">7 beta spots</span> remaining for this month's intake.
-            </p>
-          </div>
+
         </div>
       </div>
 

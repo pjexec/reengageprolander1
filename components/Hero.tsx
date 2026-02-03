@@ -40,7 +40,7 @@ const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
               onClick={onOpenSignup}
               className="group flex items-center space-x-2 sm:space-x-4 bg-white text-[#1C3166] px-6 sm:px-10 py-4 sm:py-5 rounded-xl sm:rounded-2xl text-base sm:text-xl font-black hover:bg-slate-50 transition-all duration-300 shadow-[0_0_50px_rgba(255,255,255,0.1)] transform hover:-translate-y-1"
             >
-              <span>Request Beta Access</span>
+              <span>Join the Waitlist</span>
               <ArrowRight className="w-6 h-6 group-hover:translate-x-1 transition-transform" />
             </button>
           </div>
@@ -49,14 +49,6 @@ const Hero: React.FC<HeroProps> = ({ onOpenSignup }) => {
             <p className="text-xs text-slate-400 max-w-md mx-auto font-bold uppercase tracking-widest leading-relaxed">
               <span className="text-orange-400">Every month you wait costs you hundreds in wasted email fees.</span>
             </p>
-            <div className="flex flex-col items-center">
-              <div className="flex items-center space-x-3">
-                <div className="h-1.5 w-32 bg-white/10 rounded-full overflow-hidden">
-                  <div className="h-full bg-emerald-500 w-[58%]"></div>
-                </div>
-                <span className="text-[10px] font-black text-white/30 uppercase tracking-[0.3em]">7 Beta Slots Left</span>
-              </div>
-            </div>
           </div>
         </div>
 
