@@ -1,5 +1,6 @@
 
 import React, { useState } from 'react';
+import logoUrl from '../public/reengage-logo.png';
 import { ArrowRight, Menu, X } from 'lucide-react';
 
 interface NavbarProps {
@@ -103,7 +104,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, onOpenSignup }
             {/* Logo Area */}
             <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
               <img
-                src="/reengage-logo.png"
+                src={logoUrl}
                 alt="ReEngage Pro Logo"
                 className="h-12 sm:h-16 lg:h-20 w-auto"
               />

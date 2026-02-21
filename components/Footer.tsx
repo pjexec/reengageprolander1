@@ -1,5 +1,6 @@
 
 import React from 'react';
+import logoUrl from '../public/reengage-logo.png';
 
 interface FooterProps {
   navigateTo: (page: 'home' | 'about' | 'terms' | 'privacy') => void;
@@ -13,7 +14,7 @@ const Footer: React.FC<FooterProps> = ({ navigateTo }) => {
           <div className="col-span-2">
             <div className="flex items-center space-x-2 mb-6 cursor-pointer" onClick={() => navigateTo('home')}>
               <img
-                src="/reengage-logo.png"
+                src={logoUrl}
                 alt="ReEngage Pro Logo"
                 className="h-10 w-auto"
               />
