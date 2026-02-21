@@ -103,7 +103,7 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, onOpenSignup }
             {/* Logo Area */}
             <div className="flex items-center cursor-pointer" onClick={handleLogoClick}>
               <img
-                src="https://app.reengage.pro/_next/image?url=%2Flogo.png&w=384&q=75"
+                src="/reengage-logo.png"
                 alt="ReEngage Pro Logo"
                 className="h-12 sm:h-16 lg:h-20 w-auto"
               />

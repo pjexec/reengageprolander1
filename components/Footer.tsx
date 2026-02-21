@@ -13,7 +13,7 @@ const Footer: React.FC<FooterProps> = ({ navigateTo }) => {
           <div className="col-span-2">
             <div className="flex items-center space-x-2 mb-6 cursor-pointer" onClick={() => navigateTo('home')}>
               <img
-                src="https://app.reengage.pro/_next/image?url=%2Flogo.png&w=384&q=75"
+                src="/reengage-logo.png"
                 alt="ReEngage Pro Logo"
                 className="h-10 w-auto"
               />
