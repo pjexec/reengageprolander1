@@ -25,7 +25,7 @@ git push
 
 4. Deploy to Railway:
 ```bash
-cd /Users/chuckmullaney/Documents/ReengagePro/lander1 && railway up --detach
+cd /Users/chuckmullaney/Documents/PainlessAI/reengage_lander2/reengageprolander1-repo && railway up --detach
 ```
 
 The deployment will be queued and built on Railway. The user can check the build logs at the Railway dashboard if needed.
