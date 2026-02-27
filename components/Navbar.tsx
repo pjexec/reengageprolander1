@@ -56,42 +56,8 @@ const Navbar: React.FC<NavbarProps> = ({ navigateTo, currentPage, onOpenSignup }
     setMobileMenuOpen(false);
   };
 
-  // Scroll visibility logic
-  const [isVisible, setIsVisible] = React.useState(false);
-
-  React.useEffect(() => {
-    // Only apply this logic on the home page where the sequence exists
-    if (currentPage !== 'home') {
-      setIsVisible(true);
-      return;
-    }
-
-    const handleScroll = () => {
-      // If mobile (width < 768), always show navbar since sequence is hidden
-      if (window.innerWidth < 768) {
-        setIsVisible(true);
-        return;
-      }
-
-      // The sequence is 600vh tall. We want the navbar to appear after we scroll past it.
-      // We can use window.innerHeight * 5 as a safe threshold (approaching end of sequence)
-      const threshold = window.innerHeight * 5.5;
-      if (window.scrollY > threshold) {
-        setIsVisible(true);
-      } else {
-        setIsVisible(false);
-      }
-    };
-
-    window.addEventListener('scroll', handleScroll);
-    window.addEventListener('resize', handleScroll); // Also check on resize
-    handleScroll(); // Check initial state
-
-    return () => {
-      window.removeEventListener('scroll', handleScroll);
-      window.removeEventListener('resize', handleScroll);
-    };
-  }, [currentPage]);
+  // Navbar is always visible (SequenceScroll removed)
+  const isVisible = true;
 
   return (
     <>
