@@ -14,6 +14,11 @@
     gray700: '#374151'
   };
 
+  // Email collection state
+  let emailCollected = false;
+  let emailPromptTimer = null;
+  const EMAIL_PROMPT_DELAY = 2 * 60 * 1000; // 2 minutes
+
   // Inject styles
   const styles = `
     #chat-widget-container {
@@ -448,6 +453,11 @@
           unreadCount++;
           updateBadge();
         }
+        // Admin replied — cancel the email prompt timer
+        if (message.from === 'admin' && !message.auto) {
+          clearTimeout(emailPromptTimer);
+          emailPromptTimer = null;
+        }
       });
 
       socket.on('admin-typing', () => {
@@ -520,6 +530,70 @@
     socket.emit('visitor-message', text);
     input.value = '';
     sendButton.disabled = true;
+
+    // Start email prompt timer if email not yet collected
+    if (!emailCollected) {
+      clearTimeout(emailPromptTimer);
+      emailPromptTimer = setTimeout(() => {
+        showEmailPrompt();
+      }, EMAIL_PROMPT_DELAY);
+    }
+  }
+
+  // Show email collection prompt in chat
+  function showEmailPrompt() {
+    if (emailCollected) return;
+
+    const welcome = messagesContainer.querySelector('.welcome-message');
+    if (welcome) welcome.remove();
+
+    const promptDiv = document.createElement('div');
+    promptDiv.className = 'chat-message admin';
+    promptDiv.id = 'email-prompt';
+    promptDiv.innerHTML = `
+      <div style="margin-bottom: 8px;">It looks like our team is away right now. Leave your email and we'll follow up with you directly!</div>
+      <div style="display: flex; gap: 6px;">
+        <input type="email" id="visitor-email-input" placeholder="your@email.com" style="
+          flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid ${COLORS.gray200};
+          font-size: 13px; font-family: inherit; outline: none;
+        ">
+        <button id="visitor-email-submit" style="
+          padding: 8px 14px; border-radius: 8px; border: none;
+          background: ${COLORS.accent}; color: white; font-size: 13px;
+          cursor: pointer; font-family: inherit; font-weight: 600;
+        ">Send</button>
+      </div>
+    `;
+
+    messagesContainer.appendChild(promptDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Attach email submit handler
+    const emailInput = document.getElementById('visitor-email-input');
+    const emailSubmit = document.getElementById('visitor-email-submit');
+
+    emailSubmit.addEventListener('click', () => submitEmail(emailInput.value));
+    emailInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitEmail(emailInput.value);
+    });
+  }
+
+  // Submit visitor email
+  function submitEmail(email) {
+    email = email.trim();
+    if (!email || !email.includes('@') || !socket) return;
+
+    emailCollected = true;
+    socket.emit('visitor-email', email);
+
+    // Replace prompt with confirmation
+    const prompt = document.getElementById('email-prompt');
+    if (prompt) {
+      prompt.innerHTML = `
+        <div>Thanks! We'll reach out to <strong>${escapeHtml(email)}</strong> shortly. \u2705</div>
+        <span class="time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+      `;
+    }
   }
 
   // Event listeners

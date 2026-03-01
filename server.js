@@ -145,7 +145,8 @@ function createTicket(visitorId, reason) {
             os: visitor.os,
             device: visitor.device,
             returning: visitor.returning,
-            visitCount: visitor.visitCount
+            visitCount: visitor.visitCount,
+            email: visitor.email || null
         },
         messages: [...messages]
     };
@@ -228,6 +229,62 @@ async function sendTicketEmail(ticket) {
         }
     } catch (err) {
         console.error('Failed to send ticket email:', err);
+    }
+}
+
+// Send confirmation email to the visitor
+async function sendVisitorConfirmationEmail(visitorEmail, visitorId) {
+    if (!RESEND_API_KEY) {
+        console.log('Resend API key not configured — skipping visitor confirmation email');
+        return;
+    }
+
+    const visitor = visitors.get(visitorId);
+    const messages = chatSessions.get(visitorId) || [];
+    const visitorMessages = messages.filter(m => m.from === 'visitor');
+
+    const htmlBody = `
+        <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #1C3166; color: white; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
+                <h2 style="margin: 0;">We received your message!</h2>
+                <p style="margin: 8px 0 0; opacity: 0.8;">Our team will get back to you shortly.</p>
+            </div>
+            <div style="background: white; padding: 24px; border: 1px solid #e2e8f0;">
+                <p style="margin: 0 0 16px; color: #334155; font-size: 14px;">Hi there! Thanks for reaching out to ReEngage Pro. We've received your message and a member of our team will follow up with you soon.</p>
+                <div style="background: #f8fafc; padding: 16px; border-radius: 8px; border-left: 3px solid #1C3166;">
+                    <p style="margin: 0 0 4px; font-size: 12px; color: #94a3b8;">Your message:</p>
+                    ${visitorMessages.map(m => `<p style="margin: 4px 0; color: #334155; font-size: 14px;">${m.text}</p>`).join('')}
+                </div>
+            </div>
+            <div style="background: #f8fafc; padding: 16px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; text-align: center;">
+                <p style="margin: 0; font-size: 12px; color: #94a3b8;">ReEngage Pro &bull; <a href="https://reengage.pro" style="color: #1C3166;">reengage.pro</a></p>
+            </div>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${RESEND_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                from: 'ReEngage Pro <support@reengage.pro>',
+                to: [visitorEmail],
+                subject: 'We received your message — ReEngage Pro',
+                html: htmlBody
+            })
+        });
+
+        if (!response.ok) {
+            const err = await response.text();
+            console.error('Visitor confirmation email error:', err);
+        } else {
+            console.log(`Confirmation email sent to visitor ${visitorEmail}`);
+        }
+    } catch (err) {
+        console.error('Failed to send visitor confirmation email:', err);
     }
 }
 
@@ -458,6 +515,33 @@ io.on('connection', async (socket) => {
         // Visitor typing indicator
         socket.on('visitor-typing', () => {
             io.to('admins').emit('visitor-typing', { visitorId });
+        });
+
+        // Visitor provides their email
+        socket.on('visitor-email', (email) => {
+            const visitor = visitors.get(visitorId);
+            if (visitor) {
+                visitor.email = email;
+                visitors.set(visitorId, visitor);
+                console.log(`Visitor ${visitorId} provided email: ${email}`);
+
+                // Update any open tickets for this visitor with the email
+                for (const ticket of tickets.values()) {
+                    if (ticket.visitorId === visitorId && ticket.status === 'open') {
+                        ticket.visitorInfo.email = email;
+                        io.to('admins').emit('ticket-updated', ticket);
+                    }
+                }
+
+                // Notify admins of the email update
+                io.to('admins').emit('visitor-activity', {
+                    visitorId,
+                    email
+                });
+
+                // Send confirmation email to the visitor
+                sendVisitorConfirmationEmail(email, visitorId);
+            }
         });
 
         // Visitor activity updates
