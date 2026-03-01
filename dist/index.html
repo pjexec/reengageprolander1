@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ReEngage Pro | Enterprise Email Re-engagement Platform</title>
+    <meta name="description"
+        content="ReEngage Pro provides infrastructure first email hygiene and precise automated email subscriber reengagement. Identify dormant subscribers, recover lost revenue, and protect your sender reputation automatically.">
+    <!-- Microsoft Clarity Analytics -->
+    <script type="text/javascript">
+        (function (c, l, a, r, i, t, y) {
+            c[a] = c[a] || function () { (c[a].q = c[a].q || []).push(arguments) };
+            t = l.createElement(r); t.async = 1; t.src = "https://www.clarity.ms/tag/" + i;
+            y = l.getElementsByTagName(r)[0]; y.parentNode.insertBefore(t, y);
+        })(window, document, "clarity", "script", "uyc2sm9vdl");
+    </script>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+                    borderRadius: { sm: '1px', DEFAULT: '3px', md: '4px', lg: '5.6px', xl: '9.6px', '2xl': '14px' },
+                    colors: {
+                        navy: { 50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8', 400: '#829ab1', 500: '#627d98', 600: '#486581', 700: '#334e68', 800: '#243b53', 900: '#102a43' },
+                        brand: { DEFAULT: '#2b3a67', light: '#3d5291', dark: '#1a2440' },
+                        accent: { DEFAULT: '#5a7d8f', light: '#7a9daf' },
+                        surface: { DEFAULT: '#f3f3f3', card: '#f7f7f7' },
+                    },
+                    boxShadow: {
+                        'hard-sm': '0px 2px 0px 0px rgba(30,30,30,0.07)',
+                        'hard': '0px 2px 0px 0px rgba(30,30,30,0.12), 0px 1px 2px -1px rgba(30,30,30,0.10)',
+                        'hard-md': '0px 2px 0px 0px rgba(30,30,30,0.12), 0px 2px 4px -1px rgba(30,30,30,0.10)',
+                        'hard-lg': '0px 2px 0px 0px rgba(30,30,30,0.12), 0px 4px 6px -1px rgba(30,30,30,0.10)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f3f3f3;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #2b3a67 0%, #5a7d8f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .slider-track {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 100%;
+            height: 5px;
+            border-radius: 3px;
+            background: #ddd;
+            outline: none;
+        }
+
+        .slider-track::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 18px;
+            height: 18px;
+            border-radius: 3px;
+            background: #2b3a67;
+            cursor: pointer;
+            border: 2px solid white;
+            box-shadow: 0px 2px 0px 0px rgba(30, 30, 30, 0.12);
+        }
+
+        .faq-content {
+            max-height: 0;
+            overflow: hidden;
+            transition: max-height 0.4s ease-out, padding 0.3s ease-out;
+            padding-top: 0;
+            padding-bottom: 0;
+        }
+
+        .faq-content.open {
+            max-height: 500px;
+            padding-top: 0;
+            padding-bottom: 1.25rem;
+        }
+
+        .stat-card {
+            transition: transform 0.15s ease, box-shadow 0.15s ease;
+        }
+
+        .stat-card:hover {
+            transform: translateY(-1px);
+            box-shadow: 0px 2px 0px 0px rgba(30, 30, 30, 0.12), 0px 4px 6px -1px rgba(30, 30, 30, 0.10);
+        }
+
+        /* Signup modal animation */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-animate {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .backdrop-animate {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile menu */
+        .mobile-menu-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-panel {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-slate-800 antialiased">
+
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <nav id="navbar"
+        class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-300 shadow-hard-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-1">
+                <a href="#" class="flex items-center" onclick="scrollToTop(event)">
+                    <img src="reengage-logo.png" alt="ReEngage Pro" class="h-14 lg:h-20 w-auto">
+                </a>
+                <!-- Desktop Nav -->
+                <div class="hidden lg:flex items-center space-x-8 xl:space-x-10">
+                    <a href="#features"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">Features</a>
+                    <a href="#roi"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">ROI</a>
+                    <a href="#faq"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">FAQ</a>
+                    <a href="about.html"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">About</a>
+                    <a href="https://app.reengage.pro/login"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">Login</a>
+                </div>
+                <!-- Action Buttons -->
+                <div class="flex items-center space-x-3">
+                    <a href="https://cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo" target="_blank"
+                        rel="noopener noreferrer"
+                        class="hidden sm:inline-flex px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-white bg-brand rounded-md hover:bg-brand-light transition-colors">Schedule
+                        a Demo</a>
+                    <button onclick="openSignupModal()"
+                        class="hidden sm:inline-flex px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-600 border border-gray-300 rounded-md hover:border-slate-400 hover:text-slate-800 transition-colors">Join
+                        Waitlist</button>
+                    <!-- Mobile hamburger -->
+                    <button onclick="toggleMobileMenu()"
+                        class="lg:hidden p-2 text-slate-600 hover:text-brand transition-colors" aria-label="Toggle menu"
+                        id="hamburgerBtn">
+                        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                            id="hamburgerIcon">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <svg class="w-7 h-7 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2" id="closeIcon">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 lg:hidden hidden">
+        <div class="absolute inset-0 bg-black/50 mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+        <div
+            class="absolute top-[60px] sm:top-[68px] left-0 right-0 bg-white border-b border-slate-200 shadow-xl mobile-menu-panel">
+            <div class="px-4 py-6 space-y-4">
+                <a href="#features" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border-b border-slate-100">Features</a>
+                <a href="#roi" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border-b border-slate-100">ROI</a>
+                <a href="#faq" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border-b border-slate-100">FAQ</a>
+                <a href="about.html" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border-b border-slate-100">About</a>
+                <div class="pt-4 space-y-3">
+                    <a href="https://app.reengage.pro/login"
+                        class="block text-center py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border border-slate-200 rounded-xl">Login</a>
+                    <button onclick="openSignupModal(); toggleMobileMenu();"
+                        class="w-full flex items-center justify-center space-x-2 py-4 rounded-xl text-sm font-medium bg-brand text-white hover:bg-brand-light transition-all">
+                        <span>Get Started</span>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- HERO -->
+    <!-- ============================================ -->
+    <section class="pt-32 lg:pt-40 pb-16 lg:pb-24 bg-gradient-to-b from-surface to-surface-card">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="max-w-3xl mx-auto text-center reveal">
+                <h1 class="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 leading-tight tracking-tight">
+                    Resolve your cold subscribers <span class="gradient-text">without risking your sender
+                        reputation.</span>
+                </h1>
+                <p class="mt-6 text-lg lg:text-xl text-slate-500 leading-relaxed max-w-2xl mx-auto">
+                    <span class="font-bold text-slate-700">ReEngage Pro</span> provides infrastructure first email
+                    hygiene and precise automated email subscriber reengagement.
+                </p>
+                <!-- Stat pills (enterprise version of the hero stats) -->
+                <div class="hidden sm:flex flex-wrap items-center justify-center gap-4 mt-8">
+                    <div
+                        class="flex items-center space-x-2 text-brand font-bold text-sm bg-brand/5 px-5 py-2.5 rounded-lg border border-brand/10">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg>
+                        <span>AES-256 Encrypted Connections</span>
+                    </div>
+                    <div
+                        class="flex items-center space-x-2 text-brand font-bold text-sm bg-brand/5 px-5 py-2.5 rounded-lg border border-brand/10">
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                        </svg>
+                        <span>4-Level Safety Escalation</span>
+                    </div>
+                </div>
+                <div class="mt-10 flex flex-col sm:flex-row items-center justify-center gap-3">
+                    <a href="https://cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo" target="_blank"
+                        rel="noopener noreferrer"
+                        class="px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-white bg-brand rounded-md hover:bg-brand-light transition-colors shadow-hard">
+                        Schedule a Demo →
+                    </a>
+                    <button onclick="openSignupModal()"
+                        class="px-6 py-2.5 text-xs font-semibold uppercase tracking-wider text-slate-600 border border-gray-300 rounded-md hover:border-slate-400 hover:text-slate-800 transition-colors">
+                        Join Waitlist
+                    </button>
+                </div>
+            </div>
+            <!-- Social proof logos -->
+            <div class="mt-16 lg:mt-20 reveal">
+                <p class="text-center text-xs font-semibold text-slate-400 uppercase tracking-widest mb-8">Works
+                    seamlessly with your email platform</p>
+                <div class="flex flex-wrap items-center justify-center gap-8 lg:gap-14">
+                    <span class="text-2xl font-bold text-slate-600">Klaviyo</span>
+                    <span class="text-2xl font-bold text-slate-600">ActiveCampaign</span>
+                    <span class="text-2xl font-bold text-slate-600">Kit</span>
+                    <span class="text-2xl font-bold text-slate-400 opacity-40">Mailchimp <span
+                            class="text-xs font-semibold">(Coming Soon)</span></span>
+                    <span class="text-2xl font-bold text-slate-400 opacity-40">HubSpot <span
+                            class="text-xs font-semibold">(Coming Soon)</span></span>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- REPUTATION MISSION -->
+    <section class="py-20 lg:py-28 bg-brand text-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="max-w-3xl reveal">
+                <h2 class="text-3xl sm:text-4xl lg:text-5xl font-bold leading-tight">Your reputation comes
+                    first.<br><span class="text-white/60">Revenue comes second.</span></h2>
+                <p class="mt-6 text-lg text-white/70 leading-relaxed max-w-xl">Our safety logic is built on conservative
+                    deliverability principles. We prioritize the health of your primary domain above all else.</p>
+            </div>
+            <div class="mt-12 grid sm:grid-cols-2 lg:grid-cols-4 gap-6 reveal">
+                <div class="bg-white/10 rounded-lg p-6 backdrop-blur-sm border border-white/10">
+                    <svg class="w-8 h-8 text-emerald-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                    </svg>
+                    <h3 class="font-bold mb-2">Automatic Monitoring</h3>
+                    <p class="text-sm text-white/60">Bounces, complaints, and domain health tracked in real time across
+                        every major inbox provider.</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-6 backdrop-blur-sm border border-white/10">
+                    <svg class="w-8 h-8 text-emerald-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                    </svg>
+                    <h3 class="font-bold mb-2">Instant Protection</h3>
+                    <p class="text-sm text-white/60">Campaigns pause automatically before damage occurs. The system
+                        reacts
+                        faster than any human can.</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-6 backdrop-blur-sm border border-white/10">
+                    <svg class="w-8 h-8 text-emerald-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M10.5 6h9.75M10.5 6a1.5 1.5 0 11-3 0m3 0a1.5 1.5 0 10-3 0M3.75 6H7.5m3 12h9.75m-9.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-3.75 0H7.5m9-6h3.75m-3.75 0a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m-9.75 0h9.75" />
+                    </svg>
+                    <h3 class="font-bold mb-2">You Stay in Control</h3>
+                    <p class="text-sm text-white/60">Manual stop, start, or threshold adjustment at any time. We follow
+                        your
+                        rules, not the other way around.</p>
+                </div>
+                <div class="bg-white/10 rounded-lg p-6 backdrop-blur-sm border border-white/10">
+                    <svg class="w-8 h-8 text-emerald-300 mb-4" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="1.5">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg>
+                    <h3 class="font-bold mb-2">Immutable Transparency</h3>
+                    <p class="text-sm text-white/60">Every decision, pause, and change is permanently logged. View
+                        exactly
+                        why the system took action.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- DELIVERABILITY & SAFETY -->
+    <section class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-14 reveal">
+                <span
+                    class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-100 px-4 py-1.5 rounded-full mb-6"><svg
+                        class="w-4 h-4 text-emerald-600" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg><span class="text-xs font-bold text-emerald-600 uppercase tracking-widest">Reputation
+                        Protection</span></span>
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Protect Your Sender Reputation
+                </h2>
+                <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">Monitor deliverability metrics in real-time
+                    while you re-engage. Our safety features ensure campaigns never hurt your sender reputation.</p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-6 max-w-5xl mx-auto reveal">
+                <div class="bg-surface rounded-lg p-6 border border-gray-300">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4">Deliverability Health</h3>
+                    <div class="flex items-center gap-4 mb-6">
+                        <div class="text-5xl font-bold text-slate-900">98</div>
+                        <div><span
+                                class="text-sm font-semibold text-emerald-500 bg-emerald-50 px-3 py-1 rounded-full">Excellent</span>
+                            <p class="text-xs text-slate-400 mt-2">Reputation Score</p>
+                        </div>
+                    </div>
+                    <div class="grid grid-cols-3 gap-3">
+                        <div class="bg-white rounded-lg p-3 text-center border border-gray-300">
+                            <p class="text-xs text-slate-400">Bounce</p>
+                            <p class="text-lg font-bold text-slate-800">0.3%</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center border border-gray-300">
+                            <p class="text-xs text-slate-400">Complaints</p>
+                            <p class="text-lg font-bold text-slate-800">0.002%</p>
+                        </div>
+                        <div class="bg-white rounded-lg p-3 text-center border border-gray-300">
+                            <p class="text-xs text-slate-400">Inbox Rate</p>
+                            <p class="text-lg font-bold text-emerald-600">98.2%</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-surface rounded-lg p-6 border border-gray-300">
+                    <h3 class="text-sm font-bold text-slate-700 mb-4">Safety Monitor</h3>
+                    <div class="space-y-3">
+                        <div class="flex items-center justify-between bg-white rounded-lg p-4 border border-gray-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-emerald-400"></div><span
+                                    class="text-sm font-medium text-slate-700">Bounce Rate Threshold</span>
+                            </div><span class="text-sm font-bold text-emerald-500">PASS</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg p-4 border border-gray-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-emerald-400"></div><span
+                                    class="text-sm font-medium text-slate-700">Complaint Rate</span>
+                            </div><span class="text-sm font-bold text-emerald-500">PASS</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg p-4 border border-gray-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-emerald-400"></div><span
+                                    class="text-sm font-medium text-slate-700">Domain Health Scoring</span>
+                            </div><span class="text-sm font-bold text-emerald-500">PASS</span>
+                        </div>
+                        <div class="flex items-center justify-between bg-white rounded-lg p-4 border border-gray-300">
+                            <div class="flex items-center gap-3">
+                                <div class="w-3 h-3 rounded-full bg-emerald-400"></div><span
+                                    class="text-sm font-medium text-slate-700">Postmaster Integration</span>
+                            </div><span class="text-sm font-bold text-emerald-500">ACTIVE</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-10 text-center reveal">
+                <div class="flex flex-wrap justify-center gap-6">
+                    <div class="flex items-center space-x-2 text-sm text-slate-500">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span>Real time bounce monitoring</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm text-slate-500">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span>Automatic pause triggers</span>
+                    </div>
+                    <div class="flex items-center space-x-2 text-sm text-slate-500">
+                        <div class="w-2 h-2 rounded-full bg-emerald-500"></div><span>Domain health tracking</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!-- DILEMMA SECTION -->
+    <!-- ============================================ -->
+    <section class="py-20 lg:py-28 bg-brand text-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl sm:text-4xl font-bold mb-6">Email them or delete them?</h2>
+                <p class="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">Every email marketer with a growing
+                    list hits this wall. Both options have real consequences which also can result in indecisiveness.
+                </p>
+            </div>
+            <div class="grid md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-16 reveal">
+                <div class="bg-white/5 border border-white/10 rounded-lg p-8 hover:bg-white/[0.07] transition">
+                    <div
+                        class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6 ring-1 ring-white/10">
+                        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9.75 9.75l4.5 4.5m0-4.5l-4.5 4.5M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Option 1 – Email them</h3>
+                    <p class="text-slate-300 leading-relaxed">Send to your full list and risk bounces, complaints, and
+                        reputation damage that affects deliverability for everyone on your list. Not just the cold
+                        segment.</p>
+                </div>
+                <div class="bg-white/5 border border-white/10 rounded-lg p-8 hover:bg-white/[0.07] transition">
+                    <div
+                        class="w-12 h-12 bg-white/10 rounded-lg flex items-center justify-center mb-6 ring-1 ring-white/10">
+                        <svg class="w-6 h-6 text-white" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M14.74 9l-.346 9m-4.788 0L9.26 9m9.968-3.21c.342.052.682.107 1.022.166m-1.022-.165L18.16 19.673a2.25 2.25 0 01-2.244 2.077H8.084a2.25 2.25 0 01-2.244-2.077L4.772 5.79m14.456 0a48.108 48.108 0 00-3.478-.397m-12 .562c.34-.059.68-.114 1.022-.165m0 0a48.11 48.11 0 013.478-.397m7.5 0v-.916c0-1.18-.91-2.164-2.09-2.201a51.964 51.964 0 00-3.32 0c-1.18.037-2.09 1.022-2.09 2.201v.916m7.5 0a48.667 48.667 0 00-7.5 0" />
+                        </svg>
+                    </div>
+                    <h3 class="text-xl font-bold mb-4">Option 2 – Delete them</h3>
+                    <p class="text-slate-300 leading-relaxed">Remove them permanently and lose the acquisition cost you
+                        already spent. Some of those subscribers would have come back with the right approach at the
+                        right pace.</p>
+                </div>
+            </div>
+            <div class="text-center reveal">
+                <p class="text-2xl font-bold text-white mb-6 flex items-center justify-center space-x-4">
+                    <span class="h-px w-12 bg-white/10"></span>
+                    <span>What if there was a third option?</span>
+                    <span class="h-px w-12 bg-white/10"></span>
+                </p>
+                <button onclick="openSignupModal()"
+                    class="text-emerald-300 font-bold text-sm uppercase tracking-wider flex items-center space-x-2 mx-auto hover:text-emerald-200 transition group">
+                    <span>Discover the ReEngage Pro Way</span>
+                    <svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24"
+                        stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================ -->
+    <!-- HOW IT WORKS -->
+    <!-- ============================================ -->
+    <section id="features" class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-14 reveal">
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">How It Works</h2>
+                <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">Three steps. Connect your ESP, let the system
+                    classify your list, and re-engage your cold subscribers at a pace that protects your domain.</p>
+            </div>
+            <div class="grid md:grid-cols-3 gap-8 max-w-5xl mx-auto reveal">
+                <div
+                    class="relative bg-surface-card rounded-lg p-8 border border-gray-300 shadow-hard-sm hover:shadow-hard-md transition-shadow">
+                    <span
+                        class="absolute -top-4 left-8 bg-brand text-white text-xs font-bold px-3 py-1.5 rounded-full">01</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-4 mb-3">See who's cold and who's costing you</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Connect your ESP. The system reads your engagement
+                        data and identifies which subscribers have gone dormant and how long they have been inactive.
+                    </p>
+                    <p class="mt-4 text-xs font-semibold text-emerald-600 uppercase tracking-wider">List
+                        Clarity</p>
+                </div>
+                <div
+                    class="relative bg-surface-card rounded-lg p-8 border border-gray-300 shadow-hard-sm hover:shadow-hard-md transition-shadow">
+                    <span
+                        class="absolute -top-4 left-8 bg-brand text-white text-xs font-bold px-3 py-1.5 rounded-full">02</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-4 mb-3">Separate the recoverable from the risky</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Subscribers are classified by inactivity depth and
+                        risk level. The system identifies who is worth re-engaging and who could damage your domain if
+                        you mail them.</p>
+                    <p class="mt-4 text-xs font-semibold text-emerald-600 uppercase tracking-wider">Smart
+                        Classification</p>
+                </div>
+                <div
+                    class="relative bg-surface-card rounded-lg p-8 border border-gray-300 shadow-hard-sm hover:shadow-hard-md transition-shadow">
+                    <span
+                        class="absolute -top-4 left-8 bg-brand text-white text-xs font-bold px-3 py-1.5 rounded-full">03</span>
+                    <h3 class="text-lg font-bold text-slate-900 mt-4 mb-3">Re-engage safely on autopilot</h3>
+                    <p class="text-sm text-slate-500 leading-relaxed">Emails send one at a time with throttled pacing.
+                        The safety system watches bounce rates and complaint rates in real time. If anything looks
+                        wrong, sending pauses automatically.</p>
+                    <p class="mt-4 text-xs font-semibold text-emerald-600 uppercase tracking-wider">Protected
+                        Recovery</p>
+                </div>
+            </div>
+            <div class="mt-14 max-w-4xl mx-auto reveal">
+                <p class="text-center text-lg text-slate-500 mb-8">Every action is permanently logged. You see exactly
+                    what the system does and why.</p>
+                <div class="bg-white rounded-lg shadow-hard-lg border border-gray-300 overflow-hidden">
+                    <div class="bg-surface border-b border-gray-300 px-6 py-4 flex items-center justify-between">
+                        <div class="flex items-center gap-3"><img src="reengage-shield.png" alt="" class="h-6 w-6"><span
+                                class="text-sm font-bold text-slate-700">Activity &amp; Transparency</span></div>
+                        <div class="flex gap-2">
+                            <span class="px-3 py-1 text-xs font-semibold bg-brand text-white rounded-full">All
+                                Activity</span>
+                            <span
+                                class="px-3 py-1 text-xs font-medium text-slate-500 bg-white rounded-full border border-gray-300 hidden sm:inline-flex">Emails
+                                Sent</span>
+                            <span
+                                class="px-3 py-1 text-xs font-medium text-slate-500 bg-white rounded-full border border-gray-300 hidden sm:inline-flex">Safety
+                                Events</span>
+                        </div>
+                    </div>
+                    <div class="divide-y divide-slate-100">
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-surface transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center"><svg
+                                        class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M4.5 12.75l6 6 9-13.5" />
+                                    </svg></div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-800">Campaign 'winback 1' created</p>
+                                    <p class="text-xs text-slate-400">about 3 hours ago</p>
+                                </div>
+                            </div><span class="text-xs text-slate-400">12:02 PM</span>
+                        </div>
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-surface transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-blue-50 flex items-center justify-center"><svg
+                                        class="w-4 h-4 text-blue-500" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M21.75 6.75v10.5a2.25 2.25 0 01-2.25 2.25h-15a2.25 2.25 0 01-2.25-2.25V6.75m19.5 0A2.25 2.25 0 0019.5 4.5h-15a2.25 2.25 0 00-2.25 2.25m19.5 0v.243a2.25 2.25 0 01-1.07 1.916l-7.5 4.615a2.25 2.25 0 01-2.36 0L3.32 8.91a2.25 2.25 0 01-1.07-1.916V6.75" />
+                                    </svg></div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-800">Sent 63 emails to re-engagement
+                                        segment
+                                    </p>
+                                    <p class="text-xs text-slate-400">about 6 hours ago</p>
+                                </div>
+                            </div><span class="text-xs text-slate-400">8:16 AM</span>
+                        </div>
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-surface transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-amber-50 flex items-center justify-center"><svg
+                                        class="w-4 h-4 text-amber-500" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126z" />
+                                    </svg></div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-800">Safety threshold approached — sending
+                                        paused</p>
+                                    <p class="text-xs text-slate-400">about 8 hours ago</p>
+                                </div>
+                            </div><span class="text-xs text-slate-400">6:45 AM</span>
+                        </div>
+                        <div class="px-6 py-4 flex items-center justify-between hover:bg-surface transition-colors">
+                            <div class="flex items-center gap-3">
+                                <div class="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center"><svg
+                                        class="w-4 h-4 text-emerald-500" fill="none" viewBox="0 0 24 24"
+                                        stroke="currentColor" stroke-width="2">
+                                        <path stroke-linecap="round" stroke-linejoin="round"
+                                            d="M16.023 9.348h4.992v-.001M2.985 19.644v-4.992m0 0h4.992m-4.993 0l3.181 3.183a8.25 8.25 0 0013.803-3.7M4.031 9.865a8.25 8.25 0 0113.803-3.7l3.181 3.182" />
+                                    </svg></div>
+                                <div>
+                                    <p class="text-sm font-medium text-slate-800">ESP sync completed — 38,247
+                                        subscribers
+                                    </p>
+                                    <p class="text-xs text-slate-400">about 10 hours ago</p>
+                                </div>
+                            </div><span class="text-xs text-slate-400">6:16 AM</span>
+                        </div>
+                    </div>
+                    <div class="px-6 py-3 bg-surface border-t border-gray-300">
+                        <p class="text-xs text-slate-400 text-center">Every action is permanently logged. Immutable
+                            audit
+                            trail for complete transparency.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- ============================================ -->
+    <!-- PROACTIVE RISK MITIGATION -->
+    <!-- ============================================ -->
+    <section class="py-20 lg:py-28 bg-surface">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-14 reveal">
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">The problem hiding inside your
+                    ESP</h2>
+                <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">Cold subscribers cost you money. You pay your
+                    ESP to store them. Mailing them degrades your inbox deliverability. And of course, it becomes less
+                    likely to re engage them over time.</p>
+            </div>
+            <div class="grid lg:grid-cols-2 gap-12 items-start reveal">
+                <!-- Risk stats -->
+                <div class="space-y-6">
+                    <div
+                        class="flex items-start space-x-5 p-6 rounded-lg bg-white border border-gray-300 shadow-hard-sm hover:shadow-hard-md transition-shadow">
+                        <div
+                            class="w-12 h-12 bg-red-50 rounded-lg border border-red-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-red-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M2.25 6L9 12.75l4.286-4.286a11.948 11.948 0 014.306 6.43l.776 2.898m0 0l3.182-5.511m-3.182 5.51l-5.511-3.181" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-slate-900 leading-none mb-1">41%</div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">List Decay</div>
+                            <p class="text-sm text-slate-500 mt-1">Average subscribers inactive for 6+ months across
+                                typical email lists.</p>
+                        </div>
+                    </div>
+                    <div
+                        class="flex items-start space-x-5 p-6 rounded-lg bg-white border border-gray-300 shadow-hard-sm hover:shadow-hard-md transition-shadow">
+                        <div
+                            class="w-12 h-12 bg-orange-50 rounded-lg border border-orange-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-orange-400" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 6v12m-3-2.818l.879.659c1.171.879 3.07.879 4.242 0 1.172-.879 1.172-2.303 0-3.182C13.536 12.219 12.768 12 12 12c-.725 0-1.45-.22-2.003-.659-1.106-.879-1.106-2.303 0-3.182s2.9-.879 4.006 0l.415.33M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-slate-900 leading-none mb-1">$4.2k</div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Wasted Spend</div>
+                            <p class="text-sm text-slate-500 mt-1">Average annual cost for "dead" contacts sitting in
+                                your ESP.</p>
+                        </div>
+                    </div>
+                    <div
+                        class="flex items-start space-x-5 p-6 rounded-lg bg-white border border-gray-300 shadow-hard-sm hover:shadow-hard-md transition-shadow">
+                        <div
+                            class="w-12 h-12 bg-red-50 rounded-lg border border-red-100 flex items-center justify-center flex-shrink-0">
+                            <svg class="w-6 h-6 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2">
+                                <path stroke-linecap="round" stroke-linejoin="round"
+                                    d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+                            </svg>
+                        </div>
+                        <div>
+                            <div class="text-3xl font-black text-slate-900 leading-none mb-1">Spam</div>
+                            <div class="text-xs font-bold text-slate-400 uppercase tracking-wider">Deliverability Risk
+                            </div>
+                            <p class="text-sm text-slate-500 mt-1">Poor engagement rates push you closer to the spam
+                                folder for your entire list.</p>
+                        </div>
+                    </div>
+                    <!-- Domain exposure quote -->
+                    <div class="bg-brand text-white p-8 rounded-lg shadow-hard-lg">
+                        <p class="text-base font-semibold leading-relaxed mb-4">"When your engaged subscribers stop
+                            seeing your emails because cold contacts dragged your reputation down, you have a
+                            deliverability problem that no subject line can fix."</p>
+                        <p class="text-xs text-slate-300 italic">— This is why sender reputation matters more than list
+                            size.</p>
+                    </div>
+                </div>
+                <!-- Dashboard mockup -->
+                <div class="bg-white rounded-lg shadow-hard-lg border border-gray-300 overflow-hidden">
+                    <div class="bg-slate-100 border-b border-gray-300 px-4 py-3 flex items-center gap-2">
+                        <div class="flex gap-1.5"><span class="w-3 h-3 rounded-full bg-red-400"></span><span
+                                class="w-3 h-3 rounded-full bg-amber-400"></span><span
+                                class="w-3 h-3 rounded-full bg-green-400"></span></div>
+                        <div class="flex-1 ml-4">
+                            <div class="bg-white rounded-lg px-4 py-1.5 text-xs text-slate-400 max-w-md">
+                                app.reengage.pro</div>
+                        </div>
+                    </div>
+                    <div class="p-6 lg:p-8">
+                        <div class="flex items-center justify-between mb-6">
+                            <div class="flex items-center gap-3">
+                                <img src="reengage-logo.png" alt="" class="h-8">
+                                <span class="text-lg font-bold text-slate-800">Dashboard</span>
+                            </div>
+                            <span class="text-xs text-slate-400">Last sync: 2 min ago</span>
+                        </div>
+                        <div class="grid grid-cols-2 gap-3 mb-6">
+                            <div class="stat-card bg-surface rounded-lg p-4 border border-gray-300">
+                                <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                                    Reputation Score</p>
+                                <p class="text-2xl font-bold text-slate-900">94</p>
+                                <p class="text-xs font-medium text-emerald-500">Excellent</p>
+                            </div>
+                            <div class="stat-card bg-surface rounded-lg p-4 border border-gray-300">
+                                <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Re
+                                    engaged</p>
+                                <p class="text-2xl font-bold text-slate-900">1,104</p>
+                                <p class="text-xs font-medium text-emerald-500">Engaged</p>
+                            </div>
+                            <div class="stat-card bg-surface rounded-lg p-4 border border-gray-300">
+                                <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">Spam
+                                    Rate</p>
+                                <p class="text-2xl font-bold text-slate-900">0.009%</p>
+                                <p class="text-xs font-medium text-emerald-500">Well below threshold</p>
+                            </div>
+                            <div class="stat-card bg-surface rounded-lg p-4 border border-gray-300">
+                                <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">
+                                    Revenue Recovered</p>
+                                <p class="text-2xl font-bold text-emerald-600">$12,847</p>
+                                <p class="text-xs font-medium text-slate-400">This quarter</p>
+                            </div>
+                        </div>
+                        <!-- Sender score bar -->
+                        <div class="p-4 bg-surface rounded-lg border border-gray-300 space-y-2 mb-4">
+                            <div
+                                class="flex justify-between text-[10px] font-bold uppercase tracking-wider text-slate-400">
+                                <span>Sender Score</span><span class="text-emerald-500">98 / 100</span>
+                            </div>
+                            <div class="h-2 w-full bg-gray-200 rounded-full overflow-hidden">
+                                <div class="h-full bg-emerald-500 rounded-full" style="width:98%"></div>
+                            </div>
+                        </div>
+                        <!-- Mini chart -->
+                        <div class="bg-surface rounded-lg border border-gray-300 p-4 h-32 flex items-end gap-1">
+                            <div class="flex-1 bg-brand/20 rounded-t" style="height:40%"></div>
+                            <div class="flex-1 bg-brand/25 rounded-t" style="height:55%"></div>
+                            <div class="flex-1 bg-brand/30 rounded-t" style="height:45%"></div>
+                            <div class="flex-1 bg-brand/35 rounded-t" style="height:60%"></div>
+                            <div class="flex-1 bg-brand/40 rounded-t" style="height:70%"></div>
+                            <div class="flex-1 bg-brand/45 rounded-t" style="height:65%"></div>
+                            <div class="flex-1 bg-brand/50 rounded-t" style="height:75%"></div>
+                            <div class="flex-1 bg-brand/55 rounded-t" style="height:85%"></div>
+                            <div class="flex-1 bg-brand/60 rounded-t" style="height:80%"></div>
+                            <div class="flex-1 bg-brand/70 rounded-t" style="height:90%"></div>
+                            <div class="flex-1 bg-brand/80 rounded-t" style="height:95%"></div>
+                            <div class="flex-1 bg-brand rounded-t" style="height:100%"></div>
+                        </div>
+                        <p class="text-[10px] text-slate-400 mt-2 text-center">Revenue Recovered — Last 12 Months</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- ROI CALCULATOR -->
+    <!-- ============================================ -->
+    <section id="roi" class="py-20 lg:py-28 bg-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-14 reveal">
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Calculate Your List's Hidden
+                    Cost</h2>
+                <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">Every "dead" subscriber is a silent tax on your
+                    marketing budget. See how much you could save (and recover) in 30 seconds.</p>
+            </div>
+            <div class="max-w-4xl mx-auto reveal">
+                <div class="grid lg:grid-cols-5 gap-0 rounded-lg overflow-hidden shadow-hard-lg border border-gray-300">
+                    <!-- Sliders -->
+                    <div class="lg:col-span-3 p-8 bg-surface-card">
+                        <div class="flex items-center space-x-3 mb-8 pb-4 border-b border-gray-300">
+                            <div
+                                class="w-8 h-8 bg-white rounded-lg flex items-center justify-center border border-gray-300">
+                                <svg class="w-5 h-5 text-brand" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path stroke-linecap="round" stroke-linejoin="round"
+                                        d="M15.75 15.75V18m-7.5-6.75V18m15-8.25l-8.159 3.264a2.25 2.25 0 01-1.682 0L3.75 9.75m16.5 0L12 13.014 3.75 9.75m16.5 0v-.75A2.25 2.25 0 0018 6.75H6A2.25 2.25 0 003.75 9v.75" />
+                                </svg>
+                            </div>
+                            <h3 class="text-base font-bold text-slate-800">Savings Calculator</h3>
+                        </div>
+                        <div class="space-y-8">
+                            <div>
+                                <div class="flex justify-between mb-3"><label
+                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider">Total List
+                                        Size</label><span id="listSizeVal"
+                                        class="text-sm font-bold text-brand">50,000</span></div>
+                                <input type="range" min="1000" max="1000000" step="1000" value="50000"
+                                    class="slider-track w-full" id="listSize" oninput="updateCalc()">
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-3"><label
+                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider">ESP Monthly
+                                        Bill ($)</label><span id="espBillVal"
+                                        class="text-sm font-bold text-brand">$500</span></div>
+                                <input type="range" min="50" max="10000" step="50" value="500"
+                                    class="slider-track w-full" id="espBill" oninput="updateCalc()">
+                            </div>
+                            <div>
+                                <div class="flex justify-between mb-3"><label
+                                        class="text-xs font-bold text-slate-500 uppercase tracking-wider">Dormant
+                                        Segment (%)</label><span id="dormantVal"
+                                        class="text-sm font-bold text-red-500">30%</span></div>
+                                <input type="range" min="5" max="80" value="30" class="slider-track w-full" id="dormant"
+                                    oninput="updateCalc()">
+                            </div>
+                        </div>
+                    </div>
+                    <!-- Results -->
+                    <div class="lg:col-span-2 p-8 bg-brand text-white flex flex-col justify-center">
+                        <div class="mb-6">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-white/50 mb-3">Annual Wasted
+                                Spend</p>
+                            <p id="wastedSpend" class="text-3xl sm:text-4xl font-black text-red-300">$1,800</p>
+                            <p class="text-xs text-white/40 mt-3 italic">*Budget spent on subscribers who never open
+                                your emails.</p>
+                        </div>
+                        <div class="mb-6 pt-6 border-t border-white/20">
+                            <p class="text-[10px] font-bold uppercase tracking-widest text-emerald-300/60 mb-3">Est.
+                                Recovery Revenue</p>
+                            <p id="recoveryRevenue" class="text-3xl sm:text-4xl font-black text-emerald-300">$33,750</p>
+                            <p class="text-sm text-slate-300 mt-3">By winning back <span
+                                    class="text-emerald-300 font-bold">5%</span> of your cold list.</p>
+                        </div>
+                        <button onclick="openSignupModal()"
+                            class="w-full text-center px-6 py-3 text-xs font-semibold uppercase tracking-wider bg-emerald-500 text-white rounded-md hover:bg-emerald-400 transition-colors shadow-hard">
+                            See Your Savings
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- COMPARISON -->
+    <section class="py-20 lg:py-28 bg-surface">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-14 reveal">
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">What happens when you do
+                    nothing
+                </h2>
+                <p class="mt-4 text-lg text-slate-500 max-w-2xl mx-auto">Most teams either blast their cold subscribers
+                    and
+                    hope for the best, or delete them and lose their earning potential.</p>
+            </div>
+            <div
+                class="max-w-4xl mx-auto grid md:grid-cols-2 gap-0 rounded-lg overflow-hidden shadow-hard-lg border border-gray-300 reveal">
+                <div class="bg-slate-100 p-8 lg:p-10 border-b md:border-b-0 md:border-r border-gray-300">
+                    <h3 class="text-lg font-bold text-slate-500 mb-6">Doing Nothing</h3>
+                    <div class="space-y-5">
+                        <div class="flex items-start gap-3"><span class="mt-0.5 text-red-400 font-bold">✕</span>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700">Steady list decay</p>
+                                <p class="text-xs text-slate-400 mt-1">Chances of re engagement decline weekly.
+                                    Without a system, they stay there.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3"><span class="mt-0.5 text-red-400 font-bold">✕</span>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700">Reputation erosion</p>
+                                <p class="text-xs text-slate-400 mt-1">ISPs read low engagement as a signal to
+                                    deprioritize your sends. It affects your entire program.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3"><span class="mt-0.5 text-red-400 font-bold">✕</span>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700">Wasted acquisition cost</p>
+                                <p class="text-xs text-slate-400 mt-1">You already paid for these subscribers. Every
+                                    month they sit dormant, that investment decays.</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="bg-white p-8 lg:p-10 shadow-hard-md relative">
+                    <h3 class="text-lg font-bold text-brand mb-6">With ReEngage Pro</h3>
+                    <div class="space-y-5">
+                        <div class="flex items-start gap-3"><span class="mt-0.5 text-emerald-500 font-bold">✓</span>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700">Continuous recovery</p>
+                                <p class="text-xs text-slate-400 mt-1">Cold subscribers are identified and enter safe,
+                                    throttled re-engagement paths automatically.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3"><span class="mt-0.5 text-emerald-500 font-bold">✓</span>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700">Domain protection</p>
+                                <p class="text-xs text-slate-400 mt-1">The safety system monitors bounce rates,
+                                    complaint rates, and domain health in real time. Campaigns pause before damage
+                                    occurs.</p>
+                            </div>
+                        </div>
+                        <div class="flex items-start gap-3"><span class="mt-0.5 text-emerald-500 font-bold">✓</span>
+                            <div>
+                                <p class="text-sm font-semibold text-slate-700">Revenue from subscribers you already own
+                                </p>
+                                <p class="text-xs text-slate-400 mt-1">Recover 5-15% of your dormant list without
+                                    spending on new acquisition.</p>
+                            </div>
+                        </div>
+                    </div>
+                    <a href="https://cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo" target="_blank"
+                        rel="noopener noreferrer"
+                        class="mt-8 block w-full text-center px-6 py-3 bg-brand text-white font-semibold rounded-md hover:bg-brand-light transition-colors">Schedule
+                        a Demo</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+
+    <!-- FAQ -->
+    <section id="faq" class="py-20 lg:py-28 bg-white">
+        <div class="max-w-3xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-14 reveal">
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 tracking-tight">Common Questions</h2>
+                <p class="mt-4 text-slate-500">Everything you need to know about safely recovering your cold list.</p>
+            </div>
+            <div class="space-y-3 reveal">
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <button onclick="toggleFaq(this)"
+                        class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface transition-colors"><span
+                            class="text-sm font-semibold text-slate-800">How does ReEngage Pro integrate with my email
+                            platform?</span><svg class="w-5 h-5 text-slate-400 transition-transform faq-icon"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg></button>
+                    <div class="faq-content px-6">
+                        <p class="text-sm text-slate-500 leading-relaxed">You connect your ESP account through our
+                            encrypted integration. We currently support Klaviyo, ActiveCampaign, and Kit, with Mailchimp
+                            and HubSpot coming soon. Your data stays in your ESP. We read engagement data and trigger
+                            sends through your existing platform.
+                        </p>
+                    </div>
+                </div>
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <button onclick="toggleFaq(this)"
+                        class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface transition-colors"><span
+                            class="text-sm font-semibold text-slate-800">Will re-engagement campaigns hurt my sender
+                            reputation?</span><svg class="w-5 h-5 text-slate-400 transition-transform faq-icon"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg></button>
+                    <div class="faq-content px-6">
+                        <p class="text-sm text-slate-500 leading-relaxed">That is the entire reason this platform
+                            exists. The safety system monitors bounce rates, complaint rates, and domain health in real
+                            time. If any metric approaches a risk threshold, sending pauses automatically. You can also
+                            set your own thresholds and pause or stop campaigns manually at any time.</p>
+                    </div>
+                </div>
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <button onclick="toggleFaq(this)"
+                        class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface transition-colors"><span
+                            class="text-sm font-semibold text-slate-800">What happens to subscribers who don't
+                            re-engage?</span><svg class="w-5 h-5 text-slate-400 transition-transform faq-icon"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg></button>
+                    <div class="faq-content px-6">
+                        <p class="text-sm text-slate-500 leading-relaxed">They stay in your ESP. ReEngage Pro classifies
+                            them but never deletes subscriber data. You decide what to do with subscribers who do not
+                            respond to re-engagement. We give you the information to make that call.</p>
+                    </div>
+                </div>
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <button onclick="toggleFaq(this)"
+                        class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface transition-colors"><span
+                            class="text-sm font-semibold text-slate-800">Can I customize the re-engagement
+                            sequences?</span><svg class="w-5 h-5 text-slate-400 transition-transform faq-icon"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg></button>
+                    <div class="faq-content px-6">
+                        <p class="text-sm text-slate-500 leading-relaxed">Yes. The AI generates personalized email
+                            content based on subscriber history and behavior patterns, but you review and approve
+                            everything before it sends. You can also write your own copy and use the platform purely for
+                            its throttle engine and safety monitoring.</p>
+                    </div>
+                </div>
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <button onclick="toggleFaq(this)"
+                        class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface transition-colors"><span
+                            class="text-sm font-semibold text-slate-800">How quickly will I see results?</span><svg
+                            class="w-5 h-5 text-slate-400 transition-transform faq-icon" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg></button>
+                    <div class="faq-content px-6">
+                        <p class="text-sm text-slate-500 leading-relaxed">Re-engagement is not instant. The system sends
+                            slowly and carefully on purpose. Most campaigns run over 2-4 weeks depending on list size.
+                            You will see real-time progress in the dashboard as subscribers respond.</p>
+                    </div>
+                </div>
+                <div class="border border-gray-300 rounded-lg overflow-hidden">
+                    <button onclick="toggleFaq(this)"
+                        class="w-full px-6 py-5 flex justify-between items-center text-left hover:bg-surface transition-colors"><span
+                            class="text-sm font-semibold text-slate-800">Is my subscriber data secure?</span><svg
+                            class="w-5 h-5 text-slate-400 transition-transform faq-icon" fill="none" viewBox="0 0 24 24"
+                            stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M12 4.5v15m7.5-7.5h-15" />
+                        </svg></button>
+                    <div class="faq-content px-6">
+                        <p class="text-sm text-slate-500 leading-relaxed">All ESP connections use AES-256 encryption.
+                            Your subscriber data stays in your ESP. We read it through the API to classify and trigger
+                            sends, but we do not store your full subscriber list on our servers. We are GDPR compliant
+                            with full data export and deletion capabilities.</p>
+                    </div>
+                </div>
+            </div>
+            <div class="mt-12 text-center reveal">
+                <p class="text-slate-500 font-medium">Have other questions? <a
+                        href="https://cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo" target="_blank"
+                        rel="noopener noreferrer"
+                        class="text-brand hover:text-brand-light underline font-bold transition">Speak with an
+                        expert</a>
+                </p>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- CREDIBILITY -->
+    <section id="about" class="py-20 lg:py-28 bg-brand text-white">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8 text-center reveal">
+            <h2 class="text-3xl sm:text-4xl font-bold mb-8 tracking-tight">Built by email deliverability veterans</h2>
+            <p class="text-lg text-slate-300 max-w-3xl mx-auto leading-relaxed mb-12">Created by operators who've
+                managed
+                millions of sends and navigated every major deliverability shift from Gmail, Yahoo, and Apple over the
+                last
+                15 years. No theory. No shortcuts. Just disciplined execution.</p>
+            <div class="inline-flex flex-wrap justify-center gap-4 mb-12">
+                <div class="flex items-center space-x-3 bg-white/5 border border-white/10 px-5 py-3 rounded-lg"><svg
+                        class="w-5 h-5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg><span class="text-xs font-bold text-white/60 uppercase tracking-wider">GDPR Compliant</span>
+                </div>
+                <div class="flex items-center space-x-3 bg-white/5 border border-white/10 px-5 py-3 rounded-lg"><svg
+                        class="w-5 h-5 text-emerald-300" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                    </svg><span class="text-xs font-bold text-white/60 uppercase tracking-wider">Data Encrypted</span>
+                </div>
+            </div>
+            <div class="pt-8 border-t border-white/10">
+                <p class="text-[10px] font-bold text-white/30 uppercase tracking-[0.4em] mb-3">Security &amp; Compliance
+                    Infrastructure</p>
+                <p class="text-xs font-bold text-emerald-300/40 uppercase tracking-widest">End-to-End ESP Data
+                    Encryption
+                </p>
+            </div>
+        </div>
+    </section>
+
+    <!-- FINAL CTA -->
+    <section id="cta" class="py-24 lg:py-32 bg-slate-900 relative overflow-hidden">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center relative z-10 reveal">
+            <h2 class="text-3xl sm:text-5xl font-bold text-white mb-8 leading-tight">Ready to resolve your<br>cold
+                subscribers?</h2>
+            <p class="text-lg text-slate-400 mb-10 max-w-2xl mx-auto leading-relaxed">Join the waitlist. When we launch,
+                you will be first in line to safely re-engage your dormant list without putting your sender reputation
+                at risk.</p>
+            <div class="flex flex-col items-center space-y-6">
+                <button onclick="openSignupModal()"
+                    class="group flex items-center space-x-3 bg-emerald-500 text-white px-10 py-5 rounded-lg text-lg font-bold hover:bg-emerald-400 transition shadow-lg transform hover:-translate-y-1"><span>Join
+                        the Waitlist</span><svg class="w-6 h-6 group-hover:translate-x-1 transition-transform"
+                        fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                    </svg></button>
+                <div class="flex flex-wrap justify-center items-center gap-6 text-sm text-slate-500">
+                    <span class="flex items-center space-x-2 font-bold"><svg class="w-4 h-4 text-orange-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 13.5l10.5-11.25L12 10.5h8.25L9.75 21.75 12 13.5H3.75z" />
+                        </svg><span>No credit card required</span></span>
+                    <span class="flex items-center space-x-2 font-bold"><svg class="w-4 h-4 text-emerald-400"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                        </svg><span>GDPR Compliant</span></span>
+                    <span class="flex items-center space-x-2 font-bold"><svg class="w-4 h-4 text-slate-400" fill="none"
+                            viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                        </svg><span>Bank-grade ESP encryption</span></span>
+                </div>
+            </div>
+        </div>
+        <div
+            class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-emerald-500/5 rounded-full blur-[120px] pointer-events-none">
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white text-slate-600 py-16 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-12 mb-12">
+                <div class="col-span-2">
+                    <div class="flex items-center space-x-2 mb-6"><img src="reengage-logo.png" alt="ReEngage Pro Logo"
+                            class="h-10 w-auto"></div>
+                    <p class="text-sm max-w-xs leading-relaxed font-medium text-slate-500">Automating the careful
+                        re-engagement of dormant subscribers to protect deliverability and recover lost revenue.</p>
+                </div>
+                <div>
+                    <h5 class="text-slate-900 font-bold text-sm mb-6 uppercase tracking-widest">Company</h5>
+                    <ul class="space-y-4 text-sm font-medium">
+                        <li><a href="about.html" class="hover:text-slate-900 transition">About Us</a></li>
+                        <li><a href="terms.html" class="hover:text-slate-900 transition">Terms of Service</a></li>
+                        <li><a href="privacy.html" class="hover:text-slate-900 transition">Privacy Policy</a></li>
+                        <li><a href="mailto:support@reengage.pro?subject=Web%20Page%20Support%20Request"
+                                class="hover:text-slate-900 transition">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                class="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-xs font-semibold">
+                <p>&copy;
+                    <script>document.write(new Date().getFullYear())</script> ReEngage Pro. All rights reserved.
+                </p><span class="text-slate-400">Built by deliverability veterans.</span>
+            </div>
+        </div>
+    </footer><!-- SIGNUP MODAL -->
+    <div id="signupModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm backdrop-animate" onclick="closeSignupModal()">
+        </div>
+        <div
+            class="relative w-full max-w-md bg-white rounded-lg shadow-hard-lg border border-gray-300 overflow-hidden modal-animate">
+            <button onclick="closeSignupModal()"
+                class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors rounded-full hover:bg-slate-100"
+                aria-label="Close modal"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg></button>
+            <div class="p-8 sm:p-10" id="signupFormContainer">
+                <div class="text-center mb-8">
+                    <span
+                        class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-100 px-4 py-1.5 rounded-full mb-4"><span
+                            class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span><span
+                            class="text-[10px] font-bold text-emerald-600 uppercase tracking-[0.2em]">Limited
+                            Availability</span></span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Get Early Access</h2>
+                    <p class="text-slate-500 text-sm">Join the waitlist and be among the first to try ReEngage Pro.</p>
+                </div>
+                <form id="signupForm" onsubmit="handleSignup(event)" class="space-y-4">
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">First
+                            Name</label><input type="text" id="signupFirstName" placeholder="Enter your first name"
+                            class="w-full px-4 py-3.5 bg-surface border border-gray-300 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all">
+                    </div>
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email
+                            Address</label><input type="email" id="signupEmail" placeholder="you@company.com"
+                            class="w-full px-4 py-3.5 bg-surface border border-gray-300 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all">
+                    </div>
+                    <div id="signupError"
+                        class="hidden items-center space-x-2 text-red-600 text-sm bg-red-50 border border-red-100 rounded-md px-4 py-3">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                        </svg><span id="signupErrorText"></span>
+                    </div>
+                    <button type="submit" id="signupSubmitBtn"
+                        class="w-full flex items-center justify-center space-x-3 bg-brand text-white px-6 py-4 rounded-md text-base font-bold hover:bg-brand-light transition-all duration-300 shadow-hard mt-6 group"><span>Get
+                            Early Access</span><svg class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg></button>
+                </form>
+                <p class="text-center text-xs text-slate-400 mt-6">No spam. Unsubscribe anytime.</p>
+            </div>
+            <div class="p-8 sm:p-10 hidden" id="signupSuccess">
+                <div class="text-center py-8">
+                    <div class="w-16 h-16 mx-auto mb-6 bg-emerald-50 rounded-full flex items-center justify-center"><svg
+                            class="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-3">You're In!</h3>
+                    <p class="text-slate-500 mb-6">We'll reach out shortly with your next steps. Check your inbox!</p>
+                    <button onclick="closeSignupModal()"
+                        class="text-sm font-bold text-brand hover:text-brand-light transition-colors">Close this
+                        window</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ROI Calculator
+        function updateCalc() {
+            const listSize = parseInt(document.getElementById('listSize').value);
+            const espBill = parseInt(document.getElementById('espBill').value);
+            const dormant = parseInt(document.getElementById('dormant').value);
+            document.getElementById('listSizeVal').textContent = listSize.toLocaleString();
+            document.getElementById('espBillVal').textContent = '$' + espBill.toLocaleString();
+            document.getElementById('dormantVal').textContent = dormant + '%';
+            const dormantCount = listSize * (dormant / 100);
+            const costPerUser = espBill / listSize;
+            const wastedAnnual = Math.round(dormantCount * costPerUser * 12);
+            const recoveryRevenue = Math.round(dormantCount * 0.05 * 45);
+            document.getElementById('wastedSpend').textContent = '$' + wastedAnnual.toLocaleString();
+            document.getElementById('recoveryRevenue').textContent = '$' + recoveryRevenue.toLocaleString();
+        }
+        updateCalc();
+
+        // FAQ Toggle
+        function toggleFaq(btn) {
+            const content = btn.nextElementSibling;
+            const icon = btn.querySelector('.faq-icon');
+            const isOpen = content.classList.contains('open');
+            document.querySelectorAll('.faq-content').forEach(c => c.classList.remove('open'));
+            document.querySelectorAll('.faq-icon').forEach(i => { i.style.transform = ''; });
+            if (!isOpen) { content.classList.add('open'); icon.style.transform = 'rotate(45deg)'; }
+        }
+
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.getElementById('hamburgerIcon');
+            const close = document.getElementById('closeIcon');
+            menu.classList.toggle('hidden');
+            hamburger.classList.toggle('hidden');
+            close.classList.toggle('hidden');
+        }
+
+        // Scroll to top
+        function scrollToTop(e) { e.preventDefault(); window.scrollTo({ top: 0, behavior: 'smooth' }); }
+
+        // Signup Modal
+        function openSignupModal() {
+            document.getElementById('signupModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('signupFormContainer').classList.remove('hidden');
+            document.getElementById('signupSuccess').classList.add('hidden');
+            document.getElementById('signupError').classList.add('hidden');
+            document.getElementById('signupError').classList.remove('flex');
+            document.getElementById('signupFirstName').value = '';
+            document.getElementById('signupEmail').value = '';
+        }
+        function closeSignupModal() {
+            document.getElementById('signupModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        function handleSignup(e) {
+            e.preventDefault();
+            const firstName = document.getElementById('signupFirstName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const errorEl = document.getElementById('signupError');
+            const errorText = document.getElementById('signupErrorText');
+            errorEl.classList.add('hidden'); errorEl.classList.remove('flex');
+            if (!firstName || !email) { errorText.textContent = 'Please fill in all fields.'; errorEl.classList.remove('hidden'); errorEl.classList.add('flex'); return; }
+            if (!email.includes('@') || !email.includes('.')) { errorText.textContent = 'Please enter a valid email address.'; errorEl.classList.remove('hidden'); errorEl.classList.add('flex'); return; }
+            const btn = document.getElementById('signupSubmitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Submitting...</span>';
+            fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ firstName, email }) })
+                .then(r => r.json().then(d => ({ ok: r.ok, data: d })))
+                .then(({ ok, data }) => {
+                    if (!ok) throw new Error(data.error || 'Failed to submit.');
+                    document.getElementById('signupFormContainer').classList.add('hidden');
+                    document.getElementById('signupSuccess').classList.remove('hidden');
+                })
+                .catch(err => {
+                    errorText.textContent = err.message || 'Something went wrong.';
+                    errorEl.classList.remove('hidden'); errorEl.classList.add('flex');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Get Early Access</span><svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';
+                });
+        }
+
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
+        }, { rootMargin: '-50px 0px', threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+    <!-- Live Chat Widget -->
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="/js/chat-widget.js"></script>
+</body>
+
+</html>

@@ -1,0 +1,1133 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard | ReEngage Pro</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary: #1C3166;
+            --primary-dark: #152548;
+            --accent: #10B981;
+            --accent-dark: #059669;
+            --bg-dark: #0f172a;
+            --bg-darker: #020617;
+            --bg-card: #1e293b;
+            --bg-card-hover: #334155;
+            --text: #f1f5f9;
+            --text-muted: #94a3b8;
+            --border: #334155;
+            --online: #22c55e;
+            --offline: #6b7280;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, sans-serif;
+            background: var(--bg-darker);
+            color: var(--text);
+            min-height: 100vh;
+        }
+
+        /* Layout */
+        .app-container {
+            display: flex;
+            height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: 320px;
+            background: var(--bg-dark);
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+        }
+
+        .sidebar-header {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .sidebar-header h1 {
+            font-size: 18px;
+            font-weight: 700;
+            background: linear-gradient(135deg, var(--accent) 0%, #34d399 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .hamburger {
+            display: none;
+            background: none;
+            border: none;
+            color: var(--text);
+            cursor: pointer;
+            padding: 8px;
+        }
+
+        .hamburger svg {
+            width: 24px;
+            height: 24px;
+        }
+
+        .stats-bar {
+            display: flex;
+            gap: 12px;
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .stat-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+        }
+
+        .stat-item .dot {
+            width: 8px;
+            height: 8px;
+            border-radius: 50%;
+        }
+
+        .stat-item .dot.online {
+            background: var(--online);
+            box-shadow: 0 0 8px var(--online);
+        }
+
+        .stat-item .dot.total {
+            background: var(--primary);
+        }
+
+        .block-ip-btn {
+            margin-left: auto;
+            padding: 6px 12px;
+            background: transparent;
+            border: 1px solid #ef4444;
+            color: #ef4444;
+            border-radius: 6px;
+            font-size: 11px;
+            font-weight: 500;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+
+        .block-ip-btn:hover {
+            background: #ef4444;
+            color: white;
+        }
+
+        .block-ip-btn.blocked {
+            background: #ef4444;
+            color: white;
+            opacity: 0.6;
+            cursor: default;
+        }
+
+        .visitor-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+        }
+
+        .visitor-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+        }
+
+        .visitor-item:hover {
+            background: var(--bg-card);
+        }
+
+        .visitor-item.selected {
+            background: var(--bg-card);
+            border: 1px solid var(--accent);
+        }
+
+        .visitor-avatar {
+            width: 42px;
+            height: 42px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 600;
+            font-size: 16px;
+            position: relative;
+            flex-shrink: 0;
+        }
+
+        .visitor-avatar .status-dot {
+            position: absolute;
+            bottom: 0;
+            right: 0;
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            border: 2px solid var(--bg-dark);
+        }
+
+        .visitor-avatar .status-dot.online {
+            background: var(--online);
+        }
+
+        .visitor-avatar .status-dot.offline {
+            background: var(--offline);
+        }
+
+        .visitor-info {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .visitor-name {
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 2px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .visitor-location {
+            font-size: 12px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .visitor-badge {
+            font-size: 10px;
+            padding: 2px 6px;
+            border-radius: 4px;
+            background: var(--accent);
+            color: white;
+            font-weight: 500;
+        }
+
+        .visitor-badge.new {
+            background: #ef4444;
+            box-shadow: 0 0 12px rgba(239, 68, 68, 0.6);
+            animation: bounce-badge 0.8s ease infinite;
+        }
+
+        .visitor-item.has-unread {
+            background: rgba(239, 68, 68, 0.1);
+            border-left: 3px solid #ef4444;
+        }
+
+        .notification-dot {
+            position: absolute;
+            top: -2px;
+            right: -2px;
+            width: 14px;
+            height: 14px;
+            background: #ef4444;
+            border-radius: 50%;
+            border: 2px solid var(--bg-dark);
+            animation: bounce-badge 0.8s ease infinite;
+        }
+
+        @keyframes bounce-badge {
+
+            0%,
+            100% {
+                transform: scale(1) translateY(0);
+            }
+
+            25% {
+                transform: scale(1.15) translateY(-2px);
+            }
+
+            50% {
+                transform: scale(1) translateY(0);
+            }
+
+            75% {
+                transform: scale(1.1) translateY(-1px);
+            }
+        }
+
+        @keyframes pulse {
+
+            0%,
+            100% {
+                opacity: 1;
+            }
+
+            50% {
+                opacity: 0.6;
+            }
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            min-width: 0;
+        }
+
+        .content-header {
+            height: 70px;
+            padding: 0 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            background: var(--bg-dark);
+        }
+
+        .content-header h2 {
+            font-size: 18px;
+            font-weight: 600;
+        }
+
+        .content-header .online-badge {
+            padding: 4px 10px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 500;
+        }
+
+        .content-header .online-badge.online {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--online);
+        }
+
+        .content-header .online-badge.offline {
+            background: rgba(107, 114, 128, 0.2);
+            color: var(--offline);
+        }
+
+        .content-body {
+            flex: 1;
+            display: flex;
+            overflow: hidden;
+        }
+
+        /* Analytics Panel */
+        .analytics-panel {
+            width: 360px;
+            border-right: 1px solid var(--border);
+            overflow-y: auto;
+            padding: 20px;
+            background: var(--bg-dark);
+            flex-shrink: 0;
+        }
+
+        .analytics-section {
+            margin-bottom: 24px;
+        }
+
+        .analytics-section h3 {
+            font-size: 11px;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            margin-bottom: 12px;
+            font-weight: 600;
+        }
+
+        .analytics-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .analytics-card {
+            background: var(--bg-card);
+            border-radius: 10px;
+            padding: 14px;
+        }
+
+        .analytics-card.full {
+            grid-column: 1 / -1;
+        }
+
+        .analytics-card .label {
+            font-size: 11px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        .analytics-card .value {
+            font-size: 15px;
+            font-weight: 600;
+        }
+
+        .analytics-card .value.large {
+            font-size: 24px;
+        }
+
+        /* Chat Panel */
+        .chat-panel {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            background: var(--bg-darker);
+        }
+
+        .chat-messages {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+        }
+
+        .chat-message {
+            max-width: 70%;
+            padding: 12px 16px;
+            border-radius: 16px;
+            font-size: 14px;
+            line-height: 1.5;
+            position: relative;
+        }
+
+        .chat-message.admin {
+            align-self: flex-end;
+            background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+            color: white;
+            border-bottom-right-radius: 4px;
+        }
+
+        .chat-message.visitor {
+            align-self: flex-start;
+            background: var(--bg-card);
+            color: var(--text);
+            border-bottom-left-radius: 4px;
+        }
+
+        .chat-message .time {
+            font-size: 10px;
+            opacity: 0.6;
+            margin-top: 4px;
+            display: block;
+        }
+
+        .typing-indicator {
+            padding: 8px 20px;
+            font-size: 13px;
+            color: var(--text-muted);
+            font-style: italic;
+            display: none;
+        }
+
+        .chat-input-container {
+            padding: 16px 20px;
+            background: var(--bg-dark);
+            border-top: 1px solid var(--border);
+            display: flex;
+            gap: 12px;
+        }
+
+        .chat-input-container input {
+            flex: 1;
+            padding: 14px 18px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 24px;
+            color: var(--text);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.2s;
+        }
+
+        .chat-input-container input:focus {
+            border-color: var(--accent);
+        }
+
+        .chat-input-container button {
+            padding: 14px 24px;
+            background: linear-gradient(135deg, var(--accent) 0%, var(--accent-dark) 100%);
+            border: none;
+            border-radius: 24px;
+            color: white;
+            font-weight: 600;
+            font-size: 14px;
+            cursor: pointer;
+            transition: transform 0.2s, opacity 0.2s;
+        }
+
+        .chat-input-container button:hover {
+            transform: scale(1.02);
+        }
+
+        .chat-input-container button:disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        /* Empty State / Overview */
+        .overview-state {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 40px;
+            text-align: center;
+        }
+
+        .overview-cards {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            max-width: 500px;
+            margin-bottom: 40px;
+        }
+
+        .overview-card {
+            background: var(--bg-card);
+            border-radius: 16px;
+            padding: 32px;
+            text-align: center;
+        }
+
+        .overview-card .icon {
+            width: 48px;
+            height: 48px;
+            margin: 0 auto 16px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .overview-card .icon.online {
+            background: rgba(34, 197, 94, 0.2);
+            color: var(--online);
+        }
+
+        .overview-card .icon.total {
+            background: rgba(28, 49, 102, 0.3);
+            color: var(--primary);
+        }
+
+        .overview-card .number {
+            font-size: 48px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+
+        .overview-card .label {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .overview-hint {
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .overview-hint svg {
+            vertical-align: middle;
+            margin-right: 8px;
+        }
+
+        /* Notification Sound */
+        .notification-sound {
+            display: none;
+        }
+
+        /* Mobile Responsive */
+        @media (max-width: 1024px) {
+            .analytics-panel {
+                width: 280px;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .sidebar {
+                position: fixed;
+                left: -320px;
+                top: 0;
+                height: 100%;
+                z-index: 100;
+                transition: left 0.3s;
+            }
+
+            .sidebar.open {
+                left: 0;
+            }
+
+            .hamburger {
+                display: block;
+            }
+
+            .mobile-header {
+                display: flex;
+                height: 60px;
+                padding: 0 16px;
+                align-items: center;
+                background: var(--bg-dark);
+                border-bottom: 1px solid var(--border);
+            }
+
+            .analytics-panel {
+                display: none;
+            }
+
+            .content-body {
+                flex-direction: column;
+            }
+
+            .overview-cards {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (min-width: 769px) {
+            .mobile-header {
+                display: none;
+            }
+        }
+
+        .sidebar-overlay {
+            display: none;
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.5);
+            z-index: 99;
+        }
+
+        .sidebar-overlay.open {
+            display: block;
+        }
+    </style>
+</head>
+
+<body>
+    <div class="app-container">
+        <!-- Mobile Header -->
+        <div class="mobile-header">
+            <button class="hamburger" onclick="toggleSidebar()">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <line x1="3" y1="12" x2="21" y2="12"></line>
+                    <line x1="3" y1="6" x2="21" y2="6"></line>
+                    <line x1="3" y1="18" x2="21" y2="18"></line>
+                </svg>
+            </button>
+            <h1 style="font-size: 16px; margin-left: 12px;">Admin Dashboard</h1>
+        </div>
+
+        <!-- Sidebar Overlay -->
+        <div class="sidebar-overlay" id="sidebar-overlay" onclick="toggleSidebar()"></div>
+
+        <!-- Sidebar -->
+        <aside class="sidebar" id="sidebar">
+            <div class="sidebar-header">
+                <h1>ReEngage Pro</h1>
+            </div>
+            <div class="stats-bar">
+                <div class="stat-item">
+                    <span class="dot online"></span>
+                    <span id="online-count">0</span> online
+                </div>
+                <div class="stat-item">
+                    <span class="dot total"></span>
+                    <span id="total-count">0</span> total
+                </div>
+                <button class="block-ip-btn" id="block-ip-btn" onclick="blockMyIP()">Block My IP</button>
+            </div>
+            <div class="visitor-list" id="visitor-list">
+                <!-- Visitors will be populated here -->
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Content Header (shown when visitor selected) -->
+            <div class="content-header" id="content-header" style="display: none;">
+                <h2 id="selected-visitor-name">Visitor</h2>
+                <span class="online-badge" id="selected-visitor-status">Online</span>
+            </div>
+
+            <div class="content-body">
+                <!-- Overview State (shown when no visitor selected) -->
+                <div class="overview-state" id="overview-state">
+                    <div class="overview-cards">
+                        <div class="overview-card">
+                            <div class="icon online">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <circle cx="12" cy="12" r="10"></circle>
+                                    <polyline points="12,6 12,12 16,14"></polyline>
+                                </svg>
+                            </div>
+                            <div class="number" id="overview-online">0</div>
+                            <div class="label">Currently Online</div>
+                        </div>
+                        <div class="overview-card">
+                            <div class="icon total">
+                                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                                    stroke-width="2">
+                                    <path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="9" cy="7" r="4"></circle>
+                                    <path d="M23 21v-2a4 4 0 0 0-3-3.87"></path>
+                                    <path d="M16 3.13a4 4 0 0 1 0 7.75"></path>
+                                </svg>
+                            </div>
+                            <div class="number" id="overview-total">0</div>
+                            <div class="label">Total Visitors</div>
+                        </div>
+                    </div>
+                    <p class="overview-hint">
+                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor"
+                            stroke-width="2">
+                            <path d="M5 12h14"></path>
+                            <path d="M12 5l7 7-7 7"></path>
+                        </svg>
+                        Select a visitor from the sidebar to view analytics and chat
+                    </p>
+                </div>
+
+                <!-- Analytics Panel (shown when visitor selected) -->
+                <div class="analytics-panel" id="analytics-panel" style="display: none;">
+                    <div class="analytics-section">
+                        <h3>📍 Location</h3>
+                        <div class="analytics-grid">
+                            <div class="analytics-card full">
+                                <div class="label">City / Country</div>
+                                <div class="value" id="analytics-location">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h3>🎯 Traffic Source</h3>
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <div class="label">UTM Source</div>
+                                <div class="value" id="analytics-utm-source">-</div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="label">Campaign</div>
+                                <div class="value" id="analytics-utm-campaign">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h3>⏱️ Engagement</h3>
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <div class="label">Time on Site</div>
+                                <div class="value" id="analytics-time">-</div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="label">Scroll Depth</div>
+                                <div class="value" id="analytics-scroll">-</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="analytics-section">
+                        <h3>📱 Device Info</h3>
+                        <div class="analytics-grid">
+                            <div class="analytics-card">
+                                <div class="label">Browser</div>
+                                <div class="value" id="analytics-browser">-</div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="label">OS</div>
+                                <div class="value" id="analytics-os">-</div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="label">Device</div>
+                                <div class="value" id="analytics-device">-</div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="label">Screen</div>
+                                <div class="value" id="analytics-screen">-</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Chat Panel (shown when visitor selected) -->
+                <div class="chat-panel" id="chat-panel" style="display: none;">
+                    <div class="chat-messages" id="chat-messages"></div>
+                    <div class="typing-indicator" id="typing-indicator">Visitor is typing...</div>
+                    <div class="chat-input-container">
+                        <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
+                        <button id="chat-send" disabled>Send</button>
+                    </div>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <!-- Notification Sound -->
+    <audio id="notification-sound" preload="auto">
+        <source
+            src="data:audio/wav;base64,UklGRnoGAABXQVZFZm10IBAAAAABAAEAQB8AAEAfAAABAAgAZGF0YQoGAACBhYqFbF1iZmlvcHBfXl9kZ2x4fXt3dHJycnR5enx7fH19fn5/f39/fn19fHt5d3VycW5rZ2RhXVlWU09MSklJSUlKS01QUlVYW15hZGhsb3J1d3p7fX5/f39/fn18enl3dHFvamdjX1tXU09LSEdFREVFRUZISUtNUFNWWl1gZGhqbXFzdnl7fH5+fn59fHt5d3VycW5pZmJeW1hTT0xKRURDQkNDREVHSUtOUVRXW15hZGhsbnJ0d3l7fX5+fn19e3l3dHJvamZjX1tXVFBNSkdFQ0JCQUFBQkNFR0lMT1JUWFtfYmdqbXBzdnl7fH1+fn18enl2dHFtaWZiXVlWUk5LSEZDQkFAQEBAQEBBQkRGSEtOUVVYW15iZWlsb3N2eHt8fX19fHt5eHVzb2xoZGBcWFRQTUpHRUNBQD8/Pz4+Pz9AQUNFSEpNUFRXWl5hZWhsb3J1d3p7fH1+fXx6eHZzcG1pZWFdWVVRTkpIREJAPz4+PT09PT0+Pz9BQkRHSk1QVFdaXmFlaGxvcnV3ent8fH18e3l3dXJvbGhkYFxYVFBMSUZDQUA+PT08PDs7Ozw8PT4/QUJFR0pOUVRYW15iZWlsb3N1eHp7fHx8e3p4dnNwbWlmYl5aVlJPS0hFQj8+PDo6OTk5OTk6Ojs8Pj9BQ0ZJTFBTVlleYmVpbG9zdnh6e3x8fHt6eHZzcG1qZmJeWlZSTkxIRUA+PTw6OTg4NzY2Nzc4OTo7PT9BQ0ZJS05RVVhcX2NmaW1wcnV3eXt7fHt6eHZzcW5qZ2NfW1dTT0xIRUI/PTw6OTg2NjU0NDQ0NTY3OTo8PkBCRUhLT1JVWVxfY2Zqb3F0dnl6e3t7ent4dnRxbWpmY19bV1NPTEZCP0E7Ojg3NjU0MzIyMjIzNDU2ODo7PT9CREdKTlFUV1teYmZpa3BzdXd5e3t7ent4dXNwbGlmYl5aVlJOSUZCQD48Ojg3NTQzMjExMDAwMTEyMzU2ODo8PkBDRklMT1NWWl1hZGhrcHJ0d3l6e3t6eXd1cm9sZ2RgXFlVUU1JRkJAPTs6ODY1NDIxMTAwLy8vLzAxMjM1Nzg6PEBCRU="
+            type="audio/wav">
+    </audio>
+
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+        // Get admin key from URL
+        const urlParams = new URLSearchParams(window.location.search);
+        const adminKey = urlParams.get('key');
+
+        if (!adminKey) {
+            document.body.innerHTML = '<div style="display:flex;align-items:center;justify-content:center;height:100vh;color:#fff;font-size:18px;">Access denied. Please provide the admin key.</div>';
+            throw new Error('No admin key provided');
+        }
+
+        // State
+        let socket = null;
+        let visitors = {};
+        let selectedVisitorId = null;
+        let myIP = null;
+
+        // DOM elements
+        const visitorList = document.getElementById('visitor-list');
+        const onlineCount = document.getElementById('online-count');
+        const totalCount = document.getElementById('total-count');
+        const overviewOnline = document.getElementById('overview-online');
+        const overviewTotal = document.getElementById('overview-total');
+        const overviewState = document.getElementById('overview-state');
+        const contentHeader = document.getElementById('content-header');
+        const analyticsPanel = document.getElementById('analytics-panel');
+        const chatPanel = document.getElementById('chat-panel');
+        const chatMessages = document.getElementById('chat-messages');
+        const chatInput = document.getElementById('chat-input');
+        const chatSend = document.getElementById('chat-send');
+        const typingIndicator = document.getElementById('typing-indicator');
+        const notificationSound = document.getElementById('notification-sound');
+        const blockIPBtn = document.getElementById('block-ip-btn');
+
+        // Connect to Socket.IO as admin
+        function connect() {
+            socket = io({
+                query: {
+                    admin: 'true',
+                    key: adminKey
+                }
+            });
+
+            socket.on('connect', () => {
+                console.log('Admin connected');
+            });
+
+            socket.on('error', (msg) => {
+                alert('Error: ' + msg);
+                window.location.href = '/';
+            });
+
+            socket.on('visitors-list', (list) => {
+                visitors = {};
+                list.forEach(v => {
+                    visitors[v.visitorId] = v;
+                });
+                renderVisitorList();
+                updateStats();
+            });
+
+            socket.on('visitor-connected', (visitor) => {
+                visitors[visitor.visitorId] = visitor;
+                renderVisitorList();
+                updateStats();
+                if (!myIP) myIP = visitor.ip; // First visitor to track admin IP
+            });
+
+            socket.on('visitor-disconnected', ({ visitorId }) => {
+                if (visitors[visitorId]) {
+                    visitors[visitorId].online = false;
+                    renderVisitorList();
+                    updateStats();
+                    if (selectedVisitorId === visitorId) {
+                        updateSelectedVisitorUI();
+                    }
+                }
+            });
+
+            socket.on('visitor-activity', (data) => {
+                if (visitors[data.visitorId]) {
+                    Object.assign(visitors[data.visitorId], data);
+                    if (selectedVisitorId === data.visitorId) {
+                        updateAnalytics(visitors[data.visitorId]);
+                    }
+                }
+            });
+
+            socket.on('visitor-message', ({ visitorId, message }) => {
+                if (!visitors[visitorId]) return;
+                if (!visitors[visitorId].messages) visitors[visitorId].messages = [];
+                visitors[visitorId].messages.push(message);
+
+                // Play notification sound
+                playNotification();
+
+                // Mark visitor as having new message
+                visitors[visitorId].hasNewMessage = true;
+                renderVisitorList();
+
+                if (selectedVisitorId === visitorId) {
+                    addChatMessage(message);
+                    visitors[visitorId].hasNewMessage = false;
+                    renderVisitorList();
+                }
+            });
+
+            socket.on('message-sent', ({ visitorId, message }) => {
+                if (!visitors[visitorId]) return;
+                if (!visitors[visitorId].messages) visitors[visitorId].messages = [];
+                visitors[visitorId].messages.push(message);
+
+                if (selectedVisitorId === visitorId) {
+                    addChatMessage(message);
+                }
+            });
+
+            socket.on('visitor-typing', ({ visitorId }) => {
+                if (selectedVisitorId === visitorId) {
+                    typingIndicator.style.display = 'block';
+                    chatMessages.scrollTop = chatMessages.scrollHeight;
+                    setTimeout(() => {
+                        typingIndicator.style.display = 'none';
+                    }, 3000);
+                }
+            });
+
+            socket.on('ip-blocked', ({ ip }) => {
+                blockIPBtn.textContent = 'IP Blocked';
+                blockIPBtn.classList.add('blocked');
+                blockIPBtn.disabled = true;
+            });
+        }
+
+        function playNotification() {
+            // Always play notification sound for new messages
+            notificationSound.currentTime = 0;
+            notificationSound.play().catch(() => { });
+        }
+
+        function renderVisitorList() {
+            const sortedVisitors = Object.values(visitors).sort((a, b) => {
+                // Sort by hasNewMessage first, then online status, then activity
+                if (a.hasNewMessage && !b.hasNewMessage) return -1;
+                if (!a.hasNewMessage && b.hasNewMessage) return 1;
+                if (a.online && !b.online) return -1;
+                if (!a.online && b.online) return 1;
+                return b.lastActivity - a.lastActivity;
+            });
+
+            visitorList.innerHTML = sortedVisitors.map(v => {
+                const initial = v.city ? v.city.charAt(0).toUpperCase() : '?';
+                const location = v.city && v.countryCode ? `${v.city}, ${v.countryCode}` : 'Unknown';
+                const isSelected = v.visitorId === selectedVisitorId;
+                const hasNew = v.hasNewMessage && !isSelected;
+
+                return `
+          <div class="visitor-item ${isSelected ? 'selected' : ''} ${hasNew ? 'has-unread' : ''}" onclick="selectVisitor('${v.visitorId}')">
+            <div class="visitor-avatar">
+              ${initial}
+              <span class="status-dot ${v.online ? 'online' : 'offline'}"></span>
+              ${hasNew ? '<span class="notification-dot"></span>' : ''}
+            </div>
+            <div class="visitor-info">
+              <div class="visitor-name">
+                ${v.visitorId.substring(0, 8)}
+                ${hasNew ? '<span class="visitor-badge new">NEW MSG</span>' : ''}
+              </div>
+              <div class="visitor-location">${location}</div>
+            </div>
+          </div>
+        `;
+            }).join('');
+        }
+
+        function updateStats() {
+            const online = Object.values(visitors).filter(v => v.online).length;
+            const total = Object.keys(visitors).length;
+
+            onlineCount.textContent = online;
+            totalCount.textContent = total;
+            overviewOnline.textContent = online;
+            overviewTotal.textContent = total;
+        }
+
+        function selectVisitor(visitorId) {
+            selectedVisitorId = visitorId;
+            const visitor = visitors[visitorId];
+
+            if (!visitor) return;
+
+            // Clear new message flag
+            visitor.hasNewMessage = false;
+            renderVisitorList();
+
+            // Show visitor details
+            overviewState.style.display = 'none';
+            contentHeader.style.display = 'flex';
+            analyticsPanel.style.display = 'block';
+            chatPanel.style.display = 'flex';
+
+            updateSelectedVisitorUI();
+            updateAnalytics(visitor);
+            renderChatMessages(visitor);
+
+            // Close sidebar on mobile
+            if (window.innerWidth <= 768) {
+                toggleSidebar();
+            }
+        }
+
+        function updateSelectedVisitorUI() {
+            const visitor = visitors[selectedVisitorId];
+            if (!visitor) return;
+
+            document.getElementById('selected-visitor-name').textContent =
+                `Visitor ${visitor.visitorId.substring(0, 8)}`;
+
+            const statusEl = document.getElementById('selected-visitor-status');
+            statusEl.textContent = visitor.online ? 'Online' : 'Offline';
+            statusEl.className = `online-badge ${visitor.online ? 'online' : 'offline'}`;
+        }
+
+        function updateAnalytics(visitor) {
+            document.getElementById('analytics-location').textContent =
+                visitor.city && visitor.country ? `${visitor.city}, ${visitor.country}` : 'Unknown';
+
+            document.getElementById('analytics-utm-source').textContent = visitor.utmSource || 'Direct';
+            document.getElementById('analytics-utm-campaign').textContent = visitor.utmCampaign || '-';
+
+            // Calculate time on site
+            const timeOnSite = Date.now() - visitor.connectedAt;
+            const minutes = Math.floor(timeOnSite / 60000);
+            const seconds = Math.floor((timeOnSite % 60000) / 1000);
+            document.getElementById('analytics-time').textContent = `${minutes}m ${seconds}s`;
+
+            document.getElementById('analytics-scroll').textContent = `${visitor.scrollDepth || 0}%`;
+            document.getElementById('analytics-browser').textContent = visitor.browser || 'Unknown';
+            document.getElementById('analytics-os').textContent = visitor.os || 'Unknown';
+            document.getElementById('analytics-device').textContent = visitor.device || 'Unknown';
+            document.getElementById('analytics-screen').textContent = visitor.screenResolution || 'Unknown';
+        }
+
+        function renderChatMessages(visitor) {
+            chatMessages.innerHTML = '';
+            if (visitor.messages && visitor.messages.length > 0) {
+                visitor.messages.forEach(msg => addChatMessage(msg));
+            } else {
+                chatMessages.innerHTML = '<div style="text-align:center;color:var(--text-muted);padding:40px;">No messages yet</div>';
+            }
+        }
+
+        function addChatMessage(message) {
+            // Remove "no messages" placeholder
+            const placeholder = chatMessages.querySelector('div[style*="text-align:center"]');
+            if (placeholder) placeholder.remove();
+
+            const div = document.createElement('div');
+            div.className = `chat-message ${message.from}`;
+            const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+            div.innerHTML = `
+        ${escapeHtml(message.text)}
+        <span class="time">${time}</span>
+      `;
+            chatMessages.appendChild(div);
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        function escapeHtml(text) {
+            const div = document.createElement('div');
+            div.textContent = text;
+            return div.innerHTML;
+        }
+
+        function sendMessage() {
+            const text = chatInput.value.trim();
+            if (!text || !selectedVisitorId) return;
+
+            socket.emit('admin-message', {
+                visitorId: selectedVisitorId,
+                message: text
+            });
+
+            chatInput.value = '';
+            chatSend.disabled = true;
+        }
+
+        function blockMyIP() {
+            if (!myIP) {
+                alert('Unable to determine your IP. Please wait for a visitor to connect.');
+                return;
+            }
+
+            if (confirm('This will hide your visits from analytics. Continue?')) {
+                socket.emit('block-ip', { ip: myIP });
+            }
+        }
+
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            const overlay = document.getElementById('sidebar-overlay');
+            sidebar.classList.toggle('open');
+            overlay.classList.toggle('open');
+        }
+
+        // Event listeners
+        chatInput.addEventListener('input', () => {
+            chatSend.disabled = !chatInput.value.trim();
+            if (chatInput.value.trim() && selectedVisitorId) {
+                socket.emit('admin-typing', { visitorId: selectedVisitorId });
+            }
+        });
+
+        chatInput.addEventListener('keypress', (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
+            }
+        });
+
+        chatSend.addEventListener('click', sendMessage);
+
+        // Update time on site every second
+        setInterval(() => {
+            if (selectedVisitorId && visitors[selectedVisitorId]) {
+                const visitor = visitors[selectedVisitorId];
+                const timeOnSite = Date.now() - visitor.connectedAt;
+                const minutes = Math.floor(timeOnSite / 60000);
+                const seconds = Math.floor((timeOnSite % 60000) / 1000);
+                document.getElementById('analytics-time').textContent = `${minutes}m ${seconds}s`;
+            }
+        }, 1000);
+
+        // Initialize
+        connect();
+    </script>
+</body>
+
+</html>
