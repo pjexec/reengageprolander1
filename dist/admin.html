@@ -232,9 +232,50 @@
             animation: bounce-badge 0.8s ease infinite;
         }
 
+        .visitor-badge.returning {
+            background: #8b5cf6;
+        }
+
+        .visitor-badge.unread-count {
+            background: #ef4444;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 10px;
+        }
+
         .visitor-item.has-unread {
             background: rgba(239, 68, 68, 0.1);
             border-left: 3px solid #ef4444;
+        }
+
+        .visitor-message-preview {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            margin-top: 2px;
+            max-width: 200px;
+        }
+
+        .visitor-message-preview.unread {
+            color: #ef4444;
+            font-weight: 500;
+        }
+
+        .visitor-wait-time {
+            font-size: 10px;
+            color: #f59e0b;
+            margin-top: 2px;
+            font-weight: 500;
+        }
+
+        .visitor-wait-time.urgent {
+            color: #ef4444;
         }
 
         .notification-dot {
@@ -557,6 +598,54 @@
             display: none;
         }
 
+        /* Quick Replies */
+        .quick-replies {
+            padding: 8px 20px 0;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+        }
+
+        .quick-reply-btn {
+            padding: 6px 12px;
+            background: var(--bg-card);
+            border: 1px solid var(--border);
+            border-radius: 16px;
+            color: var(--text-muted);
+            font-size: 11px;
+            cursor: pointer;
+            transition: all 0.2s;
+            white-space: nowrap;
+        }
+
+        .quick-reply-btn:hover {
+            background: var(--bg-card-hover);
+            color: var(--text);
+            border-color: var(--accent);
+        }
+
+        /* Pages Visited List */
+        .pages-visited-list {
+            list-style: none;
+            padding: 0;
+            margin: 8px 0 0;
+            max-height: 120px;
+            overflow-y: auto;
+        }
+
+        .pages-visited-list li {
+            font-size: 11px;
+            color: var(--text-muted);
+            padding: 4px 0;
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+            display: flex;
+            justify-content: space-between;
+        }
+
+        .pages-visited-list li:last-child {
+            border-bottom: none;
+        }
+
         /* Mobile Responsive */
         @media (max-width: 1024px) {
             .analytics-panel {
@@ -712,6 +801,25 @@
                 <!-- Analytics Panel (shown when visitor selected) -->
                 <div class="analytics-panel" id="analytics-panel" style="display: none;">
                     <div class="analytics-section">
+                        <h3>📄 Current Page</h3>
+                        <div class="analytics-grid">
+                            <div class="analytics-card full">
+                                <div class="label">Viewing Now</div>
+                                <div class="value" id="analytics-current-page">/</div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="label">Pages Viewed</div>
+                                <div class="value" id="analytics-page-views">1</div>
+                            </div>
+                            <div class="analytics-card">
+                                <div class="label">Visit #</div>
+                                <div class="value" id="analytics-visit-count">1</div>
+                            </div>
+                        </div>
+                        <ul class="pages-visited-list" id="analytics-pages-visited"></ul>
+                    </div>
+
+                    <div class="analytics-section">
                         <h3>📍 Location</h3>
                         <div class="analytics-grid">
                             <div class="analytics-card full">
@@ -731,6 +839,10 @@
                             <div class="analytics-card">
                                 <div class="label">Campaign</div>
                                 <div class="value" id="analytics-utm-campaign">-</div>
+                            </div>
+                            <div class="analytics-card full">
+                                <div class="label">Referrer</div>
+                                <div class="value" id="analytics-referrer">-</div>
                             </div>
                         </div>
                     </div>
@@ -776,6 +888,17 @@
                 <div class="chat-panel" id="chat-panel" style="display: none;">
                     <div class="chat-messages" id="chat-messages"></div>
                     <div class="typing-indicator" id="typing-indicator">Visitor is typing...</div>
+                    <div class="quick-replies" id="quick-replies">
+                        <button class="quick-reply-btn" data-reply="Thanks for reaching out! How can I help?">👋
+                            Greeting</button>
+                        <button class="quick-reply-btn" data-reply="Would you like to schedule a demo?">📅 Demo</button>
+                        <button class="quick-reply-btn"
+                            data-reply="Here's how to get started — sign up at reengage.pro and we'll walk you through everything.">🚀
+                            Get Started</button>
+                        <button class="quick-reply-btn"
+                            data-reply="Let me look into that for you. I'll get back to you shortly.">🔍 Looking Into
+                            It</button>
+                    </div>
                     <div class="chat-input-container">
                         <input type="text" id="chat-input" placeholder="Type a message..." autocomplete="off">
                         <button id="chat-send" disabled>Send</button>
@@ -808,6 +931,8 @@
         let visitors = {};
         let selectedVisitorId = null;
         let myIP = null;
+        let totalUnread = 0;
+        const originalTitle = document.title;
 
         // DOM elements
         const visitorList = document.getElementById('visitor-list');
@@ -825,6 +950,32 @@
         const typingIndicator = document.getElementById('typing-indicator');
         const notificationSound = document.getElementById('notification-sound');
         const blockIPBtn = document.getElementById('block-ip-btn');
+
+        // Update browser tab title with unread count
+        function updateTabTitle() {
+            totalUnread = Object.values(visitors).reduce((sum, v) => sum + (v.unreadCount || 0), 0);
+            document.title = totalUnread > 0
+                ? `(${totalUnread}) New Messages — ReEngage Pro`
+                : originalTitle;
+        }
+
+        // Calculate wait time for a visitor (time since last unanswered visitor message)
+        function getWaitTime(visitor) {
+            if (!visitor.messages || visitor.messages.length === 0) return null;
+            const lastMsg = visitor.messages[visitor.messages.length - 1];
+            if (lastMsg.from !== 'visitor') return null;
+            return Date.now() - lastMsg.timestamp;
+        }
+
+        function formatWaitTime(ms) {
+            if (!ms) return '';
+            const seconds = Math.floor(ms / 1000);
+            if (seconds < 60) return `${seconds}s`;
+            const minutes = Math.floor(seconds / 60);
+            if (minutes < 60) return `${minutes}m`;
+            const hours = Math.floor(minutes / 60);
+            return `${hours}h ${minutes % 60}m`;
+        }
 
         // Connect to Socket.IO as admin
         function connect() {
@@ -888,14 +1039,18 @@
                 // Play notification sound
                 playNotification();
 
-                // Mark visitor as having new message
+                // Mark visitor as having new message and track unread count
                 visitors[visitorId].hasNewMessage = true;
+                visitors[visitorId].unreadCount = (visitors[visitorId].unreadCount || 0) + 1;
                 renderVisitorList();
+                updateTabTitle();
 
                 if (selectedVisitorId === visitorId) {
                     addChatMessage(message);
                     visitors[visitorId].hasNewMessage = false;
+                    visitors[visitorId].unreadCount = 0;
                     renderVisitorList();
+                    updateTabTitle();
                 }
             });
 
@@ -927,18 +1082,45 @@
         }
 
         function playNotification() {
-            // Always play notification sound for new messages
-            notificationSound.currentTime = 0;
-            notificationSound.play().catch(() => { });
+            try {
+                const ctx = new (window.AudioContext || window.webkitAudioContext)();
+                const now = ctx.currentTime;
+
+                // Two-tone chime: E5 (659Hz) then G5 (784Hz)
+                [659, 784].forEach((freq, i) => {
+                    const osc = ctx.createOscillator();
+                    const gain = ctx.createGain();
+                    osc.type = 'sine';
+                    osc.frequency.value = freq;
+                    gain.gain.setValueAtTime(0.3, now + i * 0.15);
+                    gain.gain.exponentialRampToValueAtTime(0.001, now + i * 0.15 + 0.4);
+                    osc.connect(gain);
+                    gain.connect(ctx.destination);
+                    osc.start(now + i * 0.15);
+                    osc.stop(now + i * 0.15 + 0.4);
+                });
+
+                // Clean up context after sounds finish
+                setTimeout(() => ctx.close(), 1000);
+            } catch (e) {
+                // Fallback to the audio element
+                notificationSound.currentTime = 0;
+                notificationSound.play().catch(() => { });
+            }
         }
 
         function renderVisitorList() {
             const sortedVisitors = Object.values(visitors).sort((a, b) => {
-                // Sort by hasNewMessage first, then online status, then activity
-                if (a.hasNewMessage && !b.hasNewMessage) return -1;
-                if (!a.hasNewMessage && b.hasNewMessage) return 1;
+                // Sort by unread count first, then online status, then wait time, then activity
+                const aUnread = a.unreadCount || 0;
+                const bUnread = b.unreadCount || 0;
+                if (aUnread > 0 && bUnread === 0) return -1;
+                if (aUnread === 0 && bUnread > 0) return 1;
                 if (a.online && !b.online) return -1;
                 if (!a.online && b.online) return 1;
+                const aWait = getWaitTime(a) || 0;
+                const bWait = getWaitTime(b) || 0;
+                if (aWait > 0 && bWait > 0) return bWait - aWait;
                 return b.lastActivity - a.lastActivity;
             });
 
@@ -946,7 +1128,23 @@
                 const initial = v.city ? v.city.charAt(0).toUpperCase() : '?';
                 const location = v.city && v.countryCode ? `${v.city}, ${v.countryCode}` : 'Unknown';
                 const isSelected = v.visitorId === selectedVisitorId;
-                const hasNew = v.hasNewMessage && !isSelected;
+                const unread = v.unreadCount || 0;
+                const hasNew = unread > 0 && !isSelected;
+                const waitMs = getWaitTime(v);
+                const waitStr = formatWaitTime(waitMs);
+                const isUrgent = waitMs && waitMs > 120000; // 2+ minutes
+
+                // Get message preview
+                let preview = '';
+                if (v.messages && v.messages.length > 0) {
+                    const lastMsg = v.messages[v.messages.length - 1];
+                    const prefix = lastMsg.from === 'admin' ? 'You: ' : '';
+                    preview = prefix + lastMsg.text;
+                    if (preview.length > 40) preview = preview.substring(0, 40) + '…';
+                }
+
+                // Current page display
+                const pagePath = v.currentPage || '/';
 
                 return `
           <div class="visitor-item ${isSelected ? 'selected' : ''} ${hasNew ? 'has-unread' : ''}" onclick="selectVisitor('${v.visitorId}')">
@@ -958,9 +1156,12 @@
             <div class="visitor-info">
               <div class="visitor-name">
                 ${v.visitorId.substring(0, 8)}
-                ${hasNew ? '<span class="visitor-badge new">NEW MSG</span>' : ''}
+                ${v.returning ? '<span class="visitor-badge returning">🔄 Returning</span>' : ''}
+                ${hasNew ? `<span class="visitor-badge unread-count">${unread}</span>` : ''}
               </div>
-              <div class="visitor-location">${location}</div>
+              <div class="visitor-location">${location} · ${pagePath}</div>
+              ${preview ? `<div class="visitor-message-preview ${hasNew ? 'unread' : ''}">${escapeHtml(preview)}</div>` : ''}
+              ${waitStr && !isSelected ? `<div class="visitor-wait-time ${isUrgent ? 'urgent' : ''}">⏳ Waiting ${waitStr}</div>` : ''}
             </div>
           </div>
         `;
@@ -983,9 +1184,11 @@
 
             if (!visitor) return;
 
-            // Clear new message flag
+            // Clear new message flag and unread count
             visitor.hasNewMessage = false;
+            visitor.unreadCount = 0;
             renderVisitorList();
+            updateTabTitle();
 
             // Show visitor details
             overviewState.style.display = 'none';
@@ -1016,11 +1219,31 @@
         }
 
         function updateAnalytics(visitor) {
+            // Current page
+            document.getElementById('analytics-current-page').textContent =
+                visitor.pageTitle ? `${visitor.pageTitle} (${visitor.currentPage || '/'})` : (visitor.currentPage || '/');
+            document.getElementById('analytics-page-views').textContent = visitor.pageViews || 1;
+            document.getElementById('analytics-visit-count').textContent = visitor.visitCount || 1;
+
+            // Pages visited list
+            const pagesListEl = document.getElementById('analytics-pages-visited');
+            if (visitor.pagesVisited && visitor.pagesVisited.length > 0) {
+                pagesListEl.innerHTML = visitor.pagesVisited.slice(-10).reverse().map(p => {
+                    const time = new Date(p.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+                    return `<li><span>${p.title || p.path}</span><span>${time}</span></li>`;
+                }).join('');
+            } else {
+                pagesListEl.innerHTML = '';
+            }
+
+            // Location
             document.getElementById('analytics-location').textContent =
                 visitor.city && visitor.country ? `${visitor.city}, ${visitor.country}` : 'Unknown';
 
+            // Traffic source
             document.getElementById('analytics-utm-source').textContent = visitor.utmSource || 'Direct';
             document.getElementById('analytics-utm-campaign').textContent = visitor.utmCampaign || '-';
+            document.getElementById('analytics-referrer').textContent = visitor.referrer || 'Direct';
 
             // Calculate time on site
             const timeOnSite = Date.now() - visitor.connectedAt;
@@ -1114,7 +1337,16 @@
 
         chatSend.addEventListener('click', sendMessage);
 
-        // Update time on site every second
+        // Quick reply buttons
+        document.querySelectorAll('.quick-reply-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                chatInput.value = btn.getAttribute('data-reply');
+                chatSend.disabled = false;
+                chatInput.focus();
+            });
+        });
+
+        // Update time on site and wait times every second
         setInterval(() => {
             if (selectedVisitorId && visitors[selectedVisitorId]) {
                 const visitor = visitors[selectedVisitorId];
@@ -1123,7 +1355,9 @@
                 const seconds = Math.floor((timeOnSite % 60000) / 1000);
                 document.getElementById('analytics-time').textContent = `${minutes}m ${seconds}s`;
             }
-        }, 1000);
+            // Re-render sidebar to update wait times
+            renderVisitorList();
+        }, 5000);
 
         // Initialize
         connect();

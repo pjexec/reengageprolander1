@@ -1,12 +1,12 @@
 (function () {
   'use strict';
 
-  // Sandbox theme colors — dark blue instead of green
+  // ReEngage Pro color scheme
   const COLORS = {
-    primary: '#2b3a67',
-    primaryDark: '#1a2440',
-    accent: '#2b3a67',
-    accentDark: '#1a2440',
+    primary: '#1C3166',
+    primaryDark: '#152548',
+    accent: '#10B981',
+    accentDark: '#059669',
     white: '#ffffff',
     gray100: '#f3f4f6',
     gray200: '#e5e7eb',
@@ -21,7 +21,7 @@
       bottom: 24px;
       right: 24px;
       z-index: 9999;
-      font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     #chat-widget-button {
@@ -31,7 +31,7 @@
       background: linear-gradient(135deg, ${COLORS.accent} 0%, ${COLORS.accentDark} 100%);
       border: none;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(43, 58, 103, 0.4);
+      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -53,10 +53,10 @@
 
     @keyframes pulse-glow {
       0%, 100% { 
-        box-shadow: 0 4px 20px rgba(43, 58, 103, 0.4);
+        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
       }
       50% { 
-        box-shadow: 0 4px 30px rgba(43, 58, 103, 0.7), 0 0 20px rgba(43, 58, 103, 0.4);
+        box-shadow: 0 4px 30px rgba(16, 185, 129, 0.7), 0 0 20px rgba(16, 185, 129, 0.4);
       }
     }
 
@@ -73,7 +73,7 @@
 
     #chat-widget-button:hover {
       transform: scale(1.08);
-      box-shadow: 0 6px 28px rgba(43, 58, 103, 0.6);
+      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.6);
       animation: none;
     }
 
@@ -402,78 +402,64 @@
     };
   }
 
-  // Connect to Socket.IO (gracefully handles missing server)
+  // Connect to Socket.IO
   function connect() {
-    if (typeof io === 'undefined') {
-      console.log('Chat: Socket.IO not available — widget visible but not connected');
-      return;
-    }
+    const utm = getUTMParams();
+    const queryParams = new URLSearchParams({
+      visitorId: visitorId || '',
+      page: window.location.pathname,
+      screenWidth: window.screen.width,
+      screenHeight: window.screen.height,
+      ...utm
+    });
 
-    try {
-      const utm = getUTMParams();
-      const queryParams = new URLSearchParams({
-        visitorId: visitorId || '',
-        page: window.location.pathname,
-        pageTitle: document.title,
-        referrer: document.referrer || '',
-        screenWidth: window.screen.width,
-        screenHeight: window.screen.height,
-        ...utm
-      });
+    socket = io({
+      query: Object.fromEntries(queryParams)
+    });
 
-      socket = io({
-        query: Object.fromEntries(queryParams)
-      });
+    socket.on('connect', () => {
+      console.log('Chat connected');
+    });
 
-      socket.on('connect', () => {
-        console.log('Chat connected');
-      });
+    socket.on('visitor-id', (id) => {
+      visitorId = id;
+      localStorage.setItem('chat-visitor-id', id);
+    });
 
-      socket.on('visitor-id', (id) => {
-        visitorId = id;
-        localStorage.setItem('chat-visitor-id', id);
-      });
+    socket.on('chat-history', (messages) => {
+      if (messages && messages.length > 0) {
+        // Remove welcome message if we have history
+        const welcome = messagesContainer.querySelector('.welcome-message');
+        if (welcome) welcome.remove();
 
-      socket.on('chat-history', (messages) => {
-        if (messages && messages.length > 0) {
-          const welcome = messagesContainer.querySelector('.welcome-message');
-          if (welcome) welcome.remove();
-          messages.forEach(msg => addMessage(msg, false));
-        }
-      });
+        messages.forEach(msg => addMessage(msg, false));
+      }
+    });
 
-      socket.on('chat-message', (message) => {
-        addMessage(message, true);
-        if (!isOpen && message.from === 'admin') {
-          unreadCount++;
-          updateBadge();
-        }
-      });
+    socket.on('chat-message', (message) => {
+      addMessage(message, true);
+      if (!isOpen && message.from === 'admin') {
+        unreadCount++;
+        updateBadge();
+      }
+    });
 
-      socket.on('admin-typing', () => {
-        typingIndicator.style.display = 'block';
-        messagesContainer.scrollTop = messagesContainer.scrollHeight;
-        setTimeout(() => {
-          typingIndicator.style.display = 'none';
-        }, 3000);
-      });
+    socket.on('admin-typing', () => {
+      typingIndicator.style.display = 'block';
+      messagesContainer.scrollTop = messagesContainer.scrollHeight;
+      setTimeout(() => {
+        typingIndicator.style.display = 'none';
+      }, 3000);
+    });
 
-      socket.on('disconnect', () => {
-        console.log('Chat disconnected');
-      });
-
-      socket.on('connect_error', () => {
-        console.log('Chat: Server not available — widget visible but not connected');
-        socket.disconnect();
-        socket = null;
-      });
-    } catch (e) {
-      console.log('Chat: Connection failed —', e.message);
-    }
+    socket.on('disconnect', () => {
+      console.log('Chat disconnected');
+    });
   }
 
   // Add message to UI
   function addMessage(message, isNew) {
+    // Remove welcome message on first message
     const welcome = messagesContainer.querySelector('.welcome-message');
     if (welcome) welcome.remove();
 
@@ -577,23 +563,6 @@
       });
     }
   });
-
-  // Track page navigation (SPA and MPA)
-  let lastTrackedPath = window.location.pathname;
-
-  function emitPageChange() {
-    const currentPath = window.location.pathname;
-    if (currentPath !== lastTrackedPath && socket) {
-      lastTrackedPath = currentPath;
-      socket.emit('page-change', {
-        page: currentPath,
-        pageTitle: document.title
-      });
-    }
-  }
-
-  window.addEventListener('popstate', emitPageChange);
-  setInterval(emitPageChange, 2000);
 
   // Initialize
   sendButton.disabled = true;

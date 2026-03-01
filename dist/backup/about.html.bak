@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>About | ReEngage Pro</title>
+    <meta name="description"
+        content="ReEngage Pro was founded to solve the tension between revenue growth and deliverability risk. We operate by a strict code of ethics designed to protect your most valuable digital asset.">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;500;600;700;800;900&display=swap"
+        rel="stylesheet">
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: { sans: ['Montserrat', 'sans-serif'] },
+                    borderRadius: { sm: '1px', DEFAULT: '3px', md: '4px', lg: '5.6px', xl: '9.6px', '2xl': '14px' },
+                    colors: {
+                        navy: { 50: '#f0f4f8', 100: '#d9e2ec', 200: '#bcccdc', 300: '#9fb3c8', 400: '#829ab1', 500: '#627d98', 600: '#486581', 700: '#334e68', 800: '#243b53', 900: '#102a43' },
+                        brand: { DEFAULT: '#2b3a67', light: '#3d5291', dark: '#1a2440' },
+                        accent: { DEFAULT: '#5a7d8f', light: '#7a9daf' },
+                        surface: { DEFAULT: '#f3f3f3', card: '#f7f7f7' },
+                    },
+                    boxShadow: {
+                        'hard-sm': '0px 2px 0px 0px rgba(30,30,30,0.07)',
+                        'hard': '0px 2px 0px 0px rgba(30,30,30,0.12), 0px 1px 2px -1px rgba(30,30,30,0.10)',
+                        'hard-md': '0px 2px 0px 0px rgba(30,30,30,0.12), 0px 2px 4px -1px rgba(30,30,30,0.10)',
+                        'hard-lg': '0px 2px 0px 0px rgba(30,30,30,0.12), 0px 4px 6px -1px rgba(30,30,30,0.10)',
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Montserrat', sans-serif;
+            background: #f3f3f3;
+        }
+
+        .gradient-text {
+            background: linear-gradient(135deg, #2b3a67 0%, #5a7d8f 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        /* Signup modal animation */
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px) scale(0.95);
+            }
+
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+
+            to {
+                opacity: 1;
+            }
+        }
+
+        .modal-animate {
+            animation: slideUp 0.3s ease-out;
+        }
+
+        .backdrop-animate {
+            animation: fadeIn 0.2s ease-out;
+        }
+
+        /* Scroll reveal */
+        .reveal {
+            opacity: 0;
+            transform: translateY(30px);
+            transition: opacity 0.6s ease, transform 0.6s ease;
+        }
+
+        .reveal.visible {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
+        /* Mobile menu */
+        .mobile-menu-overlay {
+            transition: opacity 0.3s ease;
+        }
+
+        .mobile-menu-panel {
+            transition: transform 0.3s ease;
+        }
+    </style>
+</head>
+
+<body class="bg-surface text-slate-800 antialiased">
+
+    <!-- ============================================ -->
+    <!-- NAVBAR -->
+    <!-- ============================================ -->
+    <nav id="navbar"
+        class="fixed top-0 w-full z-50 bg-white/95 backdrop-blur-sm border-b border-gray-300 shadow-hard-sm">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-between items-center py-1">
+                <a href="index.html" class="flex items-center">
+                    <img src="reengage-logo.png" alt="ReEngage Pro" class="h-14 lg:h-20 w-auto">
+                </a>
+                <!-- Desktop Nav -->
+                <div class="hidden lg:flex items-center space-x-8 xl:space-x-10">
+                    <a href="index.html#features"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">Features</a>
+                    <a href="index.html#roi"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">ROI</a>
+                    <a href="index.html#faq"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">FAQ</a>
+                    <a href="about.html"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-brand transition-colors">About</a>
+                    <a href="https://app.reengage.pro/login"
+                        class="text-xs font-black uppercase tracking-[0.25em] text-slate-500 hover:text-brand transition-colors">Login</a>
+                </div>
+                <!-- Action Buttons -->
+                <div class="flex items-center space-x-3">
+                    <a href="https://cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo" target="_blank"
+                        rel="noopener noreferrer"
+                        class="hidden sm:inline-flex px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-white bg-brand rounded-md hover:bg-brand-light transition-colors">Schedule
+                        a Demo</a>
+                    <button onclick="openSignupModal()"
+                        class="hidden sm:inline-flex px-4 py-2 text-[11px] font-semibold uppercase tracking-wider text-slate-600 border border-gray-300 rounded-md hover:border-slate-400 hover:text-slate-800 transition-colors">Join
+                        Waitlist</button>
+                    <!-- Mobile hamburger -->
+                    <button onclick="toggleMobileMenu()"
+                        class="lg:hidden p-2 text-slate-600 hover:text-brand transition-colors" aria-label="Toggle menu"
+                        id="hamburgerBtn">
+                        <svg class="w-7 h-7" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"
+                            id="hamburgerIcon">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M3.75 6.75h16.5M3.75 12h16.5m-16.5 5.25h16.5" />
+                        </svg>
+                        <svg class="w-7 h-7 hidden" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2" id="closeIcon">
+                            <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu Overlay -->
+    <div id="mobileMenu" class="fixed inset-0 z-40 lg:hidden hidden">
+        <div class="absolute inset-0 bg-black/50 mobile-menu-overlay" onclick="toggleMobileMenu()"></div>
+        <div
+            class="absolute top-[60px] sm:top-[68px] left-0 right-0 bg-white border-b border-slate-200 shadow-xl mobile-menu-panel">
+            <div class="px-4 py-6 space-y-4">
+                <a href="index.html#features" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border-b border-slate-100">Features</a>
+                <a href="index.html#roi" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border-b border-slate-100">ROI</a>
+                <a href="index.html#faq" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border-b border-slate-100">FAQ</a>
+                <a href="about.html" onclick="toggleMobileMenu()"
+                    class="block py-3 text-sm font-black uppercase tracking-[0.2em] text-brand transition-colors border-b border-slate-100">About</a>
+                <div class="pt-4 space-y-3">
+                    <a href="https://app.reengage.pro/login"
+                        class="block text-center py-3 text-sm font-black uppercase tracking-[0.2em] text-slate-600 hover:text-brand transition-colors border border-slate-200 rounded-xl">Login</a>
+                    <button onclick="openSignupModal(); toggleMobileMenu();"
+                        class="w-full flex items-center justify-center space-x-2 py-4 rounded-xl text-sm font-medium bg-brand text-white hover:bg-brand-light transition-all">
+                        <span>Get Started</span>
+                        <svg class="w-4 h-4" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ============================================ -->
+    <!-- ABOUT HEADER -->
+    <!-- ============================================ -->
+    <section class="pt-32 sm:pt-40 pb-16 bg-brand text-white">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8 text-center">
+            <div class="reveal">
+                <span
+                    class="inline-flex items-center space-x-2 bg-white/10 border border-white/20 px-4 py-1.5 rounded-full mb-6">
+                    <svg class="w-4 h-4 text-white/80" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                        stroke-width="2">
+                        <path stroke-linecap="round" stroke-linejoin="round"
+                            d="M9 12.75L11.25 15 15 9.75m-3-7.036A11.959 11.959 0 013.598 6 11.99 11.99 0 003 9.749c0 5.592 3.824 10.29 9 11.623 5.176-1.332 9-6.03 9-11.622 0-1.31-.21-2.571-.598-3.751h-.152c-3.196 0-6.1-1.248-8.25-3.285z" />
+                    </svg>
+                    <span class="text-[10px] font-bold text-white/90 uppercase tracking-[0.2em]">Principles &
+                        Governance</span>
+                </span>
+                <h1 class="text-3xl sm:text-4xl lg:text-5xl font-bold mb-6 leading-tight">The Reputation First Operating
+                    Standard.</h1>
+                <p class="text-slate-300 text-lg max-w-2xl mx-auto leading-relaxed">ReEngage Pro was founded to solve
+                    the
+                    tension between revenue growth and deliverability risk. We operate by a strict code of ethics
+                    designed
+                    to protect your most valuable digital asset.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- ============================================ -->
+    <!-- MANIFESTO -->
+    <!-- ============================================ -->
+    <section class="py-20 bg-surface">
+        <div class="max-w-4xl mx-auto px-6 lg:px-8">
+            <div class="text-center mb-16 reveal">
+                <h2 class="text-3xl sm:text-4xl font-bold text-slate-900 mb-6">What We Refuse to Do</h2>
+                <p class="text-slate-500 text-lg max-w-2xl mx-auto leading-relaxed">In an industry obsessed with short
+                    term metrics, we distinguish ourselves by what we choose not to do. These are our non negotiables.
+                </p>
+            </div>
+
+            <div class="space-y-6">
+                <!-- Manifesto Item 1 -->
+                <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-hard reveal">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-red-50 border border-red-100 rounded-md flex items-center justify-center mt-0.5">
+                            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">We refuse to send email blindly.</h3>
+                            <p class="text-slate-500 leading-relaxed italic">Re engagement is not a volume problem. It
+                                is a
+                                signal problem. Any system that pushes volume without live feedback is reckless by
+                                design.
+                                If the data is not there, the campaign does not move. If the signals degrade, it stops.
+                                Period.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manifesto Item 2 -->
+                <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-hard reveal">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-red-50 border border-red-100 rounded-md flex items-center justify-center mt-0.5">
+                            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">We refuse to pretend that one size fits
+                                all
+                                best practices work.</h3>
+                            <p class="text-slate-500 leading-relaxed italic">Every domain, list, and sender history is
+                                different. Static rules, preset cadences, and copy paste playbooks ignore reality and
+                                destroy reputations quietly over time. ReEngage Pro adapts to the sender, not the other
+                                way
+                                around.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manifesto Item 3 -->
+                <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-hard reveal">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-red-50 border border-red-100 rounded-md flex items-center justify-center mt-0.5">
+                            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">We refuse to prioritize short term revenue
+                                over sender health.</h3>
+                            <p class="text-slate-500 leading-relaxed italic">Inflated wins that spike revenue today at
+                                the
+                                cost of inbox placement tomorrow are failures, not successes. If lift cannot be proven
+                                safely with holdouts and controlled pacing, it does not ship.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manifesto Item 4 -->
+                <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-hard reveal">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-red-50 border border-red-100 rounded-md flex items-center justify-center mt-0.5">
+                            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">We refuse to hide risk behind automation.
+                            </h3>
+                            <p class="text-slate-500 leading-relaxed italic">Automation without brakes is just faster
+                                failure. That is why safety systems, throttling governors, audit logs, and auto pause
+                                mechanisms are not optional features. They are structural requirements.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manifesto Item 5 -->
+                <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-hard reveal">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-red-50 border border-red-100 rounded-md flex items-center justify-center mt-0.5">
+                            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">We refuse to treat deliverability as a
+                                black
+                                box.</h3>
+                            <p class="text-slate-500 leading-relaxed italic">Domain reputation, DNS health, complaint
+                                rates, and Postmaster signals should be visible, measurable, and actionable. If you
+                                cannot
+                                see it, you cannot protect it.</p>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Manifesto Item 6 -->
+                <div class="bg-white border border-gray-300 rounded-lg p-8 shadow-hard reveal">
+                    <div class="flex items-start gap-4">
+                        <div
+                            class="flex-shrink-0 w-8 h-8 bg-red-50 border border-red-100 rounded-md flex items-center justify-center mt-0.5">
+                            <svg class="w-4 h-4 text-red-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                                stroke-width="2.5">
+                                <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                            </svg>
+                        </div>
+                        <div>
+                            <h3 class="text-lg font-bold text-slate-900 mb-3">We refuse to build growth hacks.</h3>
+                            <p class="text-slate-500 leading-relaxed italic">No gray area tactics. No exploitative
+                                tricks.
+                                No sending strategies that only work until they do not. ReEngage Pro is designed to
+                                survive
+                                scrutiny from inbox providers, compliance teams, and experienced operators because long
+                                term
+                                trust is the only advantage that compounds.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA -->
+            <div class="mt-16 text-center reveal">
+                <a href="https://cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo" target="_blank"
+                    rel="noopener noreferrer"
+                    class="inline-flex px-8 py-3 text-xs font-semibold uppercase tracking-wider text-white bg-brand rounded-md hover:bg-brand-light transition-colors shadow-hard">Schedule
+                    a Demo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- FOOTER -->
+    <footer class="bg-white text-slate-600 py-16 border-t border-slate-200">
+        <div class="max-w-7xl mx-auto px-6 lg:px-8">
+            <div class="grid md:grid-cols-3 gap-12 mb-12">
+                <div class="col-span-2">
+                    <div class="flex items-center space-x-2 mb-6"><img src="reengage-logo.png" alt="ReEngage Pro Logo"
+                            class="h-10 w-auto"></div>
+                    <p class="text-sm max-w-xs leading-relaxed font-medium text-slate-500">Automating the careful
+                        re-engagement of dormant subscribers to protect deliverability and recover lost revenue.</p>
+                </div>
+                <div>
+                    <h5 class="text-slate-900 font-bold text-sm mb-6 uppercase tracking-widest">Company</h5>
+                    <ul class="space-y-4 text-sm font-medium">
+                        <li><a href="about.html" class="hover:text-slate-900 transition">About Us</a></li>
+                        <li><a href="#" class="hover:text-slate-900 transition">Terms of Service</a></li>
+                        <li><a href="#" class="hover:text-slate-900 transition">Privacy Policy</a></li>
+                        <li><a href="mailto:support@reengage.pro?subject=Web%20Page%20Support%20Request"
+                                class="hover:text-slate-900 transition">Support</a></li>
+                    </ul>
+                </div>
+            </div>
+            <div
+                class="pt-8 border-t border-slate-100 flex flex-col md:flex-row justify-between items-center space-y-4 md:space-y-0 text-xs font-semibold">
+                <p>&copy;
+                    <script>document.write(new Date().getFullYear())</script> ReEngage Pro. All rights reserved.
+                </p><span class="text-slate-400">Built by deliverability veterans.</span>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SIGNUP MODAL -->
+    <div id="signupModal" class="fixed inset-0 z-[100] flex items-center justify-center p-4 hidden">
+        <div class="absolute inset-0 bg-slate-900/80 backdrop-blur-sm backdrop-animate" onclick="closeSignupModal()">
+        </div>
+        <div
+            class="relative w-full max-w-md bg-white rounded-lg shadow-hard-lg border border-gray-300 overflow-hidden modal-animate">
+            <button onclick="closeSignupModal()"
+                class="absolute top-4 right-4 p-2 text-slate-400 hover:text-slate-700 transition-colors rounded-full hover:bg-slate-100"
+                aria-label="Close modal"><svg class="w-5 h-5" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                    stroke-width="2">
+                    <path stroke-linecap="round" stroke-linejoin="round" d="M6 18L18 6M6 6l12 12" />
+                </svg></button>
+            <div class="p-8 sm:p-10" id="signupFormContainer">
+                <div class="text-center mb-8">
+                    <span
+                        class="inline-flex items-center space-x-2 bg-emerald-50 border border-emerald-100 px-4 py-1.5 rounded-full mb-4"><span
+                            class="flex h-2 w-2 rounded-full bg-emerald-500 animate-pulse"></span><span
+                            class="text-[10px] font-bold text-emerald-600 uppercase tracking-[0.2em]">Limited
+                            Availability</span></span>
+                    <h2 class="text-2xl sm:text-3xl font-bold text-slate-900 mb-2">Get Early Access</h2>
+                    <p class="text-slate-500 text-sm">Join the waitlist and be among the first to try ReEngage Pro.</p>
+                </div>
+                <form id="signupForm" onsubmit="handleSignup(event)" class="space-y-4">
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">First
+                            Name</label><input type="text" id="signupFirstName" placeholder="Enter your first name"
+                            class="w-full px-4 py-3.5 bg-surface border border-gray-300 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all">
+                    </div>
+                    <div><label class="block text-xs font-bold text-slate-500 uppercase tracking-wider mb-2">Email
+                            Address</label><input type="email" id="signupEmail" placeholder="you@company.com"
+                            class="w-full px-4 py-3.5 bg-surface border border-gray-300 rounded-md text-slate-800 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-brand/50 focus:border-brand/50 transition-all">
+                    </div>
+                    <div id="signupError"
+                        class="hidden items-center space-x-2 text-red-600 text-sm bg-red-50 border border-red-100 rounded-md px-4 py-3">
+                        <svg class="w-4 h-4 flex-shrink-0" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M12 9v3.75m9-.75a9 9 0 11-18 0 9 9 0 0118 0zm-9 3.75h.008v.008H12v-.008z" />
+                        </svg><span id="signupErrorText"></span>
+                    </div>
+                    <button type="submit" id="signupSubmitBtn"
+                        class="w-full flex items-center justify-center space-x-3 bg-brand text-white px-6 py-4 rounded-md text-base font-bold hover:bg-brand-light transition-all duration-300 shadow-hard mt-6 group"><span>Get
+                            Early Access</span><svg class="w-5 h-5 group-hover:translate-x-1 transition-transform"
+                            fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3" />
+                        </svg></button>
+                </form>
+                <p class="text-center text-xs text-slate-400 mt-6">No spam. Unsubscribe anytime.</p>
+            </div>
+            <div class="p-8 sm:p-10 hidden" id="signupSuccess">
+                <div class="text-center py-8">
+                    <div class="w-16 h-16 mx-auto mb-6 bg-emerald-50 rounded-full flex items-center justify-center"><svg
+                            class="w-8 h-8 text-emerald-500" fill="none" viewBox="0 0 24 24" stroke="currentColor"
+                            stroke-width="2">
+                            <path stroke-linecap="round" stroke-linejoin="round"
+                                d="M9 12.75L11.25 15 15 9.75M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
+                        </svg></div>
+                    <h3 class="text-2xl font-bold text-slate-900 mb-3">You're In!</h3>
+                    <p class="text-slate-500 mb-6">We'll reach out shortly with your next steps. Check your inbox!</p>
+                    <button onclick="closeSignupModal()"
+                        class="text-sm font-bold text-brand hover:text-brand-light transition-colors">Close this
+                        window</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Mobile Menu
+        function toggleMobileMenu() {
+            const menu = document.getElementById('mobileMenu');
+            const hamburger = document.getElementById('hamburgerIcon');
+            const close = document.getElementById('closeIcon');
+            menu.classList.toggle('hidden');
+            hamburger.classList.toggle('hidden');
+            close.classList.toggle('hidden');
+        }
+
+        // Signup Modal
+        function openSignupModal() {
+            document.getElementById('signupModal').classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+            document.getElementById('signupFormContainer').classList.remove('hidden');
+            document.getElementById('signupSuccess').classList.add('hidden');
+            document.getElementById('signupError').classList.add('hidden');
+            document.getElementById('signupError').classList.remove('flex');
+            document.getElementById('signupFirstName').value = '';
+            document.getElementById('signupEmail').value = '';
+        }
+        function closeSignupModal() {
+            document.getElementById('signupModal').classList.add('hidden');
+            document.body.style.overflow = '';
+        }
+        function handleSignup(e) {
+            e.preventDefault();
+            const firstName = document.getElementById('signupFirstName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
+            const errorEl = document.getElementById('signupError');
+            const errorText = document.getElementById('signupErrorText');
+            errorEl.classList.add('hidden'); errorEl.classList.remove('flex');
+            if (!firstName || !email) { errorText.textContent = 'Please fill in all fields.'; errorEl.classList.remove('hidden'); errorEl.classList.add('flex'); return; }
+            if (!email.includes('@') || !email.includes('.')) { errorText.textContent = 'Please enter a valid email address.'; errorEl.classList.remove('hidden'); errorEl.classList.add('flex'); return; }
+            const btn = document.getElementById('signupSubmitBtn');
+            btn.disabled = true;
+            btn.innerHTML = '<svg class="w-5 h-5 animate-spin" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg><span>Submitting...</span>';
+            fetch('/api/subscribe', { method: 'POST', headers: { 'Content-Type': 'application/json' }, body: JSON.stringify({ firstName, email }) })
+                .then(r => r.json().then(d => ({ ok: r.ok, data: d })))
+                .then(({ ok, data }) => {
+                    if (!ok) throw new Error(data.error || 'Failed to submit.');
+                    document.getElementById('signupFormContainer').classList.add('hidden');
+                    document.getElementById('signupSuccess').classList.remove('hidden');
+                })
+                .catch(err => {
+                    errorText.textContent = err.message || 'Something went wrong.';
+                    errorEl.classList.remove('hidden'); errorEl.classList.add('flex');
+                    btn.disabled = false;
+                    btn.innerHTML = '<span>Get Early Access</span><svg class="w-5 h-5 group-hover:translate-x-1 transition-transform" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M13.5 4.5L21 12m0 0l-7.5 7.5M21 12H3"/></svg>';
+                });
+        }
+
+        // Scroll Reveal
+        const observer = new IntersectionObserver((entries) => {
+            entries.forEach(entry => { if (entry.isIntersecting) { entry.target.classList.add('visible'); } });
+        }, { rootMargin: '-50px 0px', threshold: 0.1 });
+        document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+    </script>
+</body>
+
+</html>

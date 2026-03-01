@@ -178,11 +178,21 @@ io.on('connection', async (socket) => {
         const utmCampaign = socket.handshake.query.utm_campaign || null;
         const screenWidth = socket.handshake.query.screenWidth || null;
         const screenHeight = socket.handshake.query.screenHeight || null;
+        const currentPage = socket.handshake.query.page || '/';
+        const pageTitle = socket.handshake.query.pageTitle || '';
+        const referrer = socket.handshake.query.referrer || '';
+
+        // Check if this is a returning visitor
+        const existingVisitor = visitors.get(visitorId);
+        const isReturning = !!existingVisitor;
 
         const visitorData = {
             visitorId,
             ip: clientIP,
             connectedAt: Date.now(),
+            firstSeenAt: existingVisitor ? existingVisitor.firstSeenAt : Date.now(),
+            visitCount: existingVisitor ? (existingVisitor.visitCount || 1) + 1 : 1,
+            returning: isReturning,
             lastActivity: Date.now(),
             online: true,
             ...deviceInfo,
@@ -190,10 +200,15 @@ io.on('connection', async (socket) => {
             screenResolution: screenWidth && screenHeight ? `${screenWidth}x${screenHeight}` : 'Unknown',
             utmSource,
             utmCampaign,
+            referrer,
             scrollDepth: 0,
-            currentPage: socket.handshake.query.page || '/',
-            pageViews: 1,
-            actions: []
+            currentPage,
+            pageTitle,
+            pageViews: existingVisitor ? (existingVisitor.pageViews || 1) + 1 : 1,
+            pagesVisited: existingVisitor
+                ? [...(existingVisitor.pagesVisited || []), { path: currentPage, title: pageTitle, timestamp: Date.now() }]
+                : [{ path: currentPage, title: pageTitle, timestamp: Date.now() }],
+            actions: existingVisitor ? existingVisitor.actions || [] : []
         };
 
         visitors.set(visitorId, visitorData);
@@ -253,6 +268,29 @@ io.on('connection', async (socket) => {
                 visitors.set(visitorId, visitor);
 
                 io.to('admins').emit('visitor-activity', { visitorId, ...data, lastActivity: visitor.lastActivity });
+            }
+        });
+
+        // Page navigation tracking
+        socket.on('page-change', (data) => {
+            const visitor = visitors.get(visitorId);
+            if (visitor) {
+                visitor.currentPage = data.page || visitor.currentPage;
+                visitor.pageTitle = data.pageTitle || '';
+                visitor.pageViews = (visitor.pageViews || 1) + 1;
+                if (!visitor.pagesVisited) visitor.pagesVisited = [];
+                visitor.pagesVisited.push({ path: data.page, title: data.pageTitle, timestamp: Date.now() });
+                visitor.lastActivity = Date.now();
+                visitors.set(visitorId, visitor);
+
+                io.to('admins').emit('visitor-activity', {
+                    visitorId,
+                    currentPage: visitor.currentPage,
+                    pageTitle: visitor.pageTitle,
+                    pageViews: visitor.pageViews,
+                    pagesVisited: visitor.pagesVisited,
+                    lastActivity: visitor.lastActivity
+                });
             }
         });
 
