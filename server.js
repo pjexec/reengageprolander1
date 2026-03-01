@@ -25,10 +25,24 @@ const ACTIVE_CAMPAIGN_URL = process.env.ACTIVE_CAMPAIGN_URL || 'https://reengage
 const ACTIVE_CAMPAIGN_API_KEY = process.env.ACTIVE_CAMPAIGN_API_KEY || '';
 const ACTIVE_CAMPAIGN_LIST_ID = process.env.ACTIVE_CAMPAIGN_LIST_ID || '4';
 
+// Resend Email Configuration
+const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
+const SUPPORT_EMAIL = 'support@reengage.pro';
+
+// Business Hours Configuration (Eastern Time)
+const BUSINESS_HOURS = {
+    days: [1, 2, 3, 4, 5, 6], // Mon=1 through Sat=6
+    startHour: 9,  // 9 AM ET
+    endHour: 19,   // 7 PM ET
+    timezone: 'America/New_York'
+};
+const UNANSWERED_TIMEOUT_MS = 3 * 60 * 1000; // 3 minutes
+
 // In-memory storage
 const visitors = new Map();
 const chatSessions = new Map();
 const blockedIPs = new Set();
+const tickets = new Map();
 
 app.use(express.json());
 
@@ -88,6 +102,152 @@ function getClientIP(socket) {
     return socket.handshake.address;
 }
 
+// ===== TICKET SYSTEM =====
+
+// Check if current time is within business hours
+function isBusinessHours() {
+    const now = new Date();
+    const etTime = new Date(now.toLocaleString('en-US', { timeZone: BUSINESS_HOURS.timezone }));
+    const day = etTime.getDay(); // 0=Sun, 1=Mon, ..., 6=Sat
+    const hour = etTime.getHours();
+    return BUSINESS_HOURS.days.includes(day) && hour >= BUSINESS_HOURS.startHour && hour < BUSINESS_HOURS.endHour;
+}
+
+// Create a support ticket
+function createTicket(visitorId, reason) {
+    const visitor = visitors.get(visitorId);
+    if (!visitor) return null;
+
+    // Don't create duplicate open tickets for the same visitor
+    for (const ticket of tickets.values()) {
+        if (ticket.visitorId === visitorId && ticket.status === 'open') {
+            return null;
+        }
+    }
+
+    const ticketId = uuidv4().substring(0, 8).toUpperCase();
+    const messages = chatSessions.get(visitorId) || [];
+
+    const ticket = {
+        id: ticketId,
+        visitorId,
+        status: 'open',
+        reason, // 'unanswered' or 'off-hours'
+        createdAt: Date.now(),
+        visitorInfo: {
+            city: visitor.city,
+            country: visitor.country,
+            currentPage: visitor.currentPage,
+            pageTitle: visitor.pageTitle,
+            referrer: visitor.referrer,
+            utmSource: visitor.utmSource,
+            browser: visitor.browser,
+            os: visitor.os,
+            device: visitor.device,
+            returning: visitor.returning,
+            visitCount: visitor.visitCount
+        },
+        messages: [...messages]
+    };
+
+    tickets.set(ticketId, ticket);
+    console.log(`Ticket ${ticketId} created: ${reason} for visitor ${visitorId}`);
+
+    // Notify admins in real-time
+    io.to('admins').emit('ticket-created', ticket);
+
+    // Send email notification
+    sendTicketEmail(ticket);
+
+    return ticket;
+}
+
+// Send ticket notification email via Resend
+async function sendTicketEmail(ticket) {
+    if (!RESEND_API_KEY) {
+        console.log('Resend API key not configured — skipping email notification');
+        return;
+    }
+
+    const reasonLabel = ticket.reason === 'off-hours' ? '🌙 Off-Hours Message' : '🕐 Unanswered (3 min)';
+    const info = ticket.visitorInfo;
+
+    const subject = `[ReEngage] ${reasonLabel} — Ticket #${ticket.id}`;
+    const htmlBody = `
+        <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #1C3166; color: white; padding: 20px; border-radius: 8px 8px 0 0;">
+                <h2 style="margin: 0;">Support Ticket #${ticket.id}</h2>
+                <p style="margin: 4px 0 0; opacity: 0.8;">${reasonLabel}</p>
+            </div>
+            <div style="background: #f8fafc; padding: 20px; border: 1px solid #e2e8f0;">
+                <h3 style="margin: 0 0 12px; color: #334155;">Visitor Info</h3>
+                <table style="width: 100%; font-size: 14px; color: #475569;">
+                    <tr><td style="padding: 4px 0;"><strong>Location:</strong></td><td>${info.city || 'Unknown'}, ${info.country || 'Unknown'}</td></tr>
+                    <tr><td style="padding: 4px 0;"><strong>Page:</strong></td><td>${info.pageTitle || info.currentPage || '/'}</td></tr>
+                    <tr><td style="padding: 4px 0;"><strong>Referrer:</strong></td><td>${info.referrer || 'Direct'}</td></tr>
+                    <tr><td style="padding: 4px 0;"><strong>Device:</strong></td><td>${info.browser || '?'} / ${info.os || '?'} / ${info.device || '?'}</td></tr>
+                    ${info.returning ? '<tr><td style="padding: 4px 0;"><strong>Returning:</strong></td><td>Yes (Visit #' + info.visitCount + ')</td></tr>' : ''}
+                </table>
+            </div>
+            <div style="background: white; padding: 20px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px;">
+                <h3 style="margin: 0 0 12px; color: #334155;">Messages</h3>
+                ${ticket.messages.map(m => {
+        const time = new Date(m.timestamp).toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit', timeZone: 'America/New_York' });
+        const bgColor = m.from === 'visitor' ? '#f1f5f9' : '#1C3166';
+        const textColor = m.from === 'visitor' ? '#334155' : 'white';
+        const label = m.from === 'visitor' ? 'Visitor' : 'Admin';
+        return `<div style="margin-bottom: 8px;"><span style="font-size: 11px; color: #94a3b8;">${label} • ${time}</span><div style="background: ${bgColor}; color: ${textColor}; padding: 10px 14px; border-radius: 10px; margin-top: 4px; font-size: 14px;">${m.text}</div></div>`;
+    }).join('')}
+            </div>
+            <p style="text-align: center; margin-top: 16px; font-size: 12px; color: #94a3b8;">
+                <a href="https://reengage.pro/admin?key=${ADMIN_PASSWORD}" style="color: #1C3166;">Open Admin Dashboard</a>
+            </p>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${RESEND_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                from: 'ReEngage Pro <tickets@reengage.pro>',
+                to: [SUPPORT_EMAIL],
+                subject,
+                html: htmlBody
+            })
+        });
+
+        if (!response.ok) {
+            const err = await response.text();
+            console.error('Resend email error:', err);
+        } else {
+            console.log(`Ticket email sent for #${ticket.id}`);
+        }
+    } catch (err) {
+        console.error('Failed to send ticket email:', err);
+    }
+}
+
+// Scanner: check for unanswered messages every 60 seconds
+setInterval(() => {
+    const now = Date.now();
+    for (const [visitorId, visitor] of visitors.entries()) {
+        const messages = chatSessions.get(visitorId);
+        if (!messages || messages.length === 0) continue;
+
+        const lastMsg = messages[messages.length - 1];
+        if (lastMsg.from !== 'visitor') continue;
+
+        // Check if unanswered for more than timeout
+        if (now - lastMsg.timestamp >= UNANSWERED_TIMEOUT_MS) {
+            createTicket(visitorId, 'unanswered');
+        }
+    }
+}, 60 * 1000);
+
 // Socket.IO connection handling
 io.on('connection', async (socket) => {
     const isAdmin = socket.handshake.query.admin === 'true';
@@ -111,6 +271,9 @@ io.on('connection', async (socket) => {
             messages: chatSessions.get(v.visitorId) || []
         }));
         socket.emit('visitors-list', visitorList);
+
+        // Send current tickets list to admin
+        socket.emit('tickets-list', Array.from(tickets.values()));
 
         // Admin sends message to visitor
         socket.on('admin-message', ({ visitorId, message }) => {
@@ -151,6 +314,27 @@ io.on('connection', async (socket) => {
             }
             io.to('admins').emit('visitors-list', Array.from(visitors.values()));
             socket.emit('ip-blocked', { ip });
+        });
+
+        // Ticket management
+        socket.on('update-ticket-status', ({ ticketId, status }) => {
+            const ticket = tickets.get(ticketId);
+            if (ticket) {
+                ticket.status = status;
+                ticket.updatedAt = Date.now();
+                tickets.set(ticketId, ticket);
+                io.to('admins').emit('ticket-updated', ticket);
+            }
+        });
+
+        socket.on('resolve-ticket', ({ ticketId }) => {
+            const ticket = tickets.get(ticketId);
+            if (ticket) {
+                ticket.status = 'resolved';
+                ticket.resolvedAt = Date.now();
+                tickets.set(ticketId, ticket);
+                io.to('admins').emit('ticket-updated', ticket);
+            }
         });
 
         socket.on('disconnect', () => {
@@ -251,6 +435,24 @@ io.on('connection', async (socket) => {
 
             // Echo back to visitor
             socket.emit('chat-message', messageData);
+
+            // Off-hours: auto-create ticket and send auto-reply
+            if (!isBusinessHours()) {
+                const ticket = createTicket(visitorId, 'off-hours');
+                if (ticket) {
+                    // Send auto-reply to visitor
+                    const autoReply = {
+                        id: uuidv4(),
+                        from: 'admin',
+                        text: 'Thanks for reaching out! We\'re currently outside business hours (Mon\u2013Sat, 9am\u20137pm ET). A support ticket has been created and we\'ll get back to you as soon as we\'re back.',
+                        timestamp: Date.now(),
+                        auto: true
+                    };
+                    chatSessions.get(visitorId).push(autoReply);
+                    socket.emit('chat-message', autoReply);
+                    io.to('admins').emit('message-sent', { visitorId, message: autoReply });
+                }
+            }
         });
 
         // Visitor typing indicator

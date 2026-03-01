@@ -710,6 +710,183 @@
         .sidebar-overlay.open {
             display: block;
         }
+
+        /* Sidebar Tab Toggle */
+        .sidebar-tabs {
+            display: flex;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .sidebar-tab {
+            flex: 1;
+            padding: 12px;
+            text-align: center;
+            cursor: pointer;
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-muted);
+            border: none;
+            background: none;
+            transition: all 0.2s;
+            position: relative;
+        }
+
+        .sidebar-tab.active {
+            color: var(--accent);
+            border-bottom: 2px solid var(--accent);
+        }
+
+        .sidebar-tab:hover:not(.active) {
+            color: var(--text);
+        }
+
+        .sidebar-tab .tab-badge {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            min-width: 18px;
+            height: 18px;
+            border-radius: 9px;
+            background: #ef4444;
+            color: white;
+            font-size: 10px;
+            margin-left: 6px;
+            padding: 0 5px;
+        }
+
+        /* Ticket Cards */
+        .ticket-list {
+            flex: 1;
+            overflow-y: auto;
+            padding: 12px;
+            display: none;
+        }
+
+        .ticket-list.active {
+            display: block;
+        }
+
+        .ticket-item {
+            padding: 14px;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.2s;
+            margin-bottom: 8px;
+            border-left: 3px solid transparent;
+        }
+
+        .ticket-item:hover {
+            background: var(--bg-card);
+        }
+
+        .ticket-item.selected {
+            background: var(--bg-card);
+            border: 1px solid var(--accent);
+        }
+
+        .ticket-item.status-open {
+            border-left-color: #ef4444;
+        }
+
+        .ticket-item.status-in-progress {
+            border-left-color: #f59e0b;
+        }
+
+        .ticket-item.status-resolved {
+            border-left-color: var(--accent);
+            opacity: 0.6;
+        }
+
+        .ticket-header-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 4px;
+        }
+
+        .ticket-id {
+            font-size: 13px;
+            font-weight: 700;
+            font-family: monospace;
+        }
+
+        .ticket-status-badge {
+            font-size: 10px;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            text-transform: uppercase;
+        }
+
+        .ticket-status-badge.open {
+            background: rgba(239, 68, 68, 0.2);
+            color: #ef4444;
+        }
+
+        .ticket-status-badge.in-progress {
+            background: rgba(245, 158, 11, 0.2);
+            color: #f59e0b;
+        }
+
+        .ticket-status-badge.resolved {
+            background: rgba(16, 185, 129, 0.2);
+            color: var(--accent);
+        }
+
+        .ticket-reason {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .ticket-preview {
+            font-size: 11px;
+            color: var(--text-muted);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .ticket-time {
+            font-size: 10px;
+            color: var(--text-muted);
+            margin-top: 4px;
+        }
+
+        /* Ticket Detail Panel */
+        .ticket-detail-header {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 16px 20px;
+            background: var(--bg-dark);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .ticket-detail-header h2 {
+            flex: 1;
+            font-size: 16px;
+        }
+
+        .ticket-status-select {
+            padding: 6px 12px;
+            border-radius: 6px;
+            border: 1px solid var(--border);
+            background: var(--bg-card);
+            color: var(--text);
+            font-size: 12px;
+            cursor: pointer;
+        }
+
+        .ticket-chat-readonly {
+            flex: 1;
+            overflow-y: auto;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background: var(--bg-darker);
+        }
     </style>
 </head>
 
@@ -735,6 +912,11 @@
             <div class="sidebar-header">
                 <h1>ReEngage Pro</h1>
             </div>
+            <div class="sidebar-tabs">
+                <button class="sidebar-tab active" id="tab-visitors" onclick="switchTab('visitors')">Visitors</button>
+                <button class="sidebar-tab" id="tab-tickets" onclick="switchTab('tickets')">Tickets <span
+                        class="tab-badge" id="ticket-count-badge" style="display:none">0</span></button>
+            </div>
             <div class="stats-bar">
                 <div class="stat-item">
                     <span class="dot online"></span>
@@ -746,8 +928,11 @@
                 </div>
                 <button class="block-ip-btn" id="block-ip-btn" onclick="blockMyIP()">Block My IP</button>
             </div>
-            <div class="visitor-list" id="visitor-list">
+            <div class="visitor-list active" id="visitor-list">
                 <!-- Visitors will be populated here -->
+            </div>
+            <div class="ticket-list" id="ticket-list">
+                <!-- Tickets will be populated here -->
             </div>
         </aside>
 
@@ -932,6 +1117,9 @@
         let selectedVisitorId = null;
         let myIP = null;
         let totalUnread = 0;
+        let ticketsMap = {};
+        let selectedTicketId = null;
+        let activeTab = 'visitors';
         const originalTitle = document.title;
 
         // DOM elements
@@ -954,8 +1142,12 @@
         // Update browser tab title with unread count
         function updateTabTitle() {
             totalUnread = Object.values(visitors).reduce((sum, v) => sum + (v.unreadCount || 0), 0);
-            document.title = totalUnread > 0
-                ? `(${totalUnread}) New Messages — ReEngage Pro`
+            const openTickets = Object.values(ticketsMap).filter(t => t.status === 'open').length;
+            const parts = [];
+            if (totalUnread > 0) parts.push(`${totalUnread} msgs`);
+            if (openTickets > 0) parts.push(`${openTickets} tickets`);
+            document.title = parts.length > 0
+                ? `(${parts.join(', ')}) ReEngage Pro`
                 : originalTitle;
         }
 
@@ -1078,6 +1270,30 @@
                 blockIPBtn.textContent = 'IP Blocked';
                 blockIPBtn.classList.add('blocked');
                 blockIPBtn.disabled = true;
+            });
+
+            // Ticket events
+            socket.on('tickets-list', (ticketsList) => {
+                ticketsMap = {};
+                ticketsList.forEach(t => { ticketsMap[t.id] = t; });
+                renderTicketList();
+                updateTabTitle();
+            });
+
+            socket.on('ticket-created', (ticket) => {
+                ticketsMap[ticket.id] = ticket;
+                renderTicketList();
+                updateTabTitle();
+                playNotification();
+            });
+
+            socket.on('ticket-updated', (ticket) => {
+                ticketsMap[ticket.id] = ticket;
+                renderTicketList();
+                updateTabTitle();
+                if (selectedTicketId === ticket.id) {
+                    selectTicket(ticket.id);
+                }
             });
         }
 
@@ -1318,6 +1534,140 @@
             const overlay = document.getElementById('sidebar-overlay');
             sidebar.classList.toggle('open');
             overlay.classList.toggle('open');
+        }
+
+        // ===== TICKET SYSTEM UI =====
+
+        function switchTab(tab) {
+            activeTab = tab;
+            document.getElementById('tab-visitors').classList.toggle('active', tab === 'visitors');
+            document.getElementById('tab-tickets').classList.toggle('active', tab === 'tickets');
+            document.getElementById('visitor-list').classList.toggle('active', tab === 'visitors');
+            document.getElementById('ticket-list').classList.toggle('active', tab === 'tickets');
+        }
+
+        function renderTicketList() {
+            const ticketListEl = document.getElementById('ticket-list');
+            const sortedTickets = Object.values(ticketsMap).sort((a, b) => {
+                // Open first, then in-progress, then resolved
+                const statusOrder = { 'open': 0, 'in-progress': 1, 'resolved': 2 };
+                const sDiff = (statusOrder[a.status] || 0) - (statusOrder[b.status] || 0);
+                if (sDiff !== 0) return sDiff;
+                return b.createdAt - a.createdAt;
+            });
+
+            const openCount = sortedTickets.filter(t => t.status === 'open').length;
+            const badge = document.getElementById('ticket-count-badge');
+            if (openCount > 0) {
+                badge.textContent = openCount;
+                badge.style.display = 'inline-flex';
+            } else {
+                badge.style.display = 'none';
+            }
+
+            ticketListEl.innerHTML = sortedTickets.map(t => {
+                const isSelected = t.id === selectedTicketId;
+                const reasonIcon = t.reason === 'off-hours' ? '\ud83c\udf19' : '\ud83d\udd50';
+                const reasonLabel = t.reason === 'off-hours' ? 'Off-Hours' : 'Unanswered';
+                const timeAgo = formatTicketTime(t.createdAt);
+
+                // Message preview
+                const visitorMsgs = t.messages.filter(m => m.from === 'visitor');
+                const preview = visitorMsgs.length > 0 ? visitorMsgs[0].text : 'No message';
+                const truncated = preview.length > 50 ? preview.substring(0, 50) + '\u2026' : preview;
+
+                return `
+          <div class="ticket-item status-${t.status} ${isSelected ? 'selected' : ''}" onclick="selectTicket('${t.id}')">
+            <div class="ticket-header-row">
+              <span class="ticket-id">#${t.id}</span>
+              <span class="ticket-status-badge ${t.status}">${t.status.replace('-', ' ')}</span>
+            </div>
+            <div class="ticket-reason">${reasonIcon} ${reasonLabel} \u00b7 ${t.visitorInfo.city || 'Unknown'}</div>
+            <div class="ticket-preview">${escapeHtml(truncated)}</div>
+            <div class="ticket-time">${timeAgo}</div>
+          </div>
+        `;
+            }).join('');
+        }
+
+        function formatTicketTime(ts) {
+            const diff = Date.now() - ts;
+            const mins = Math.floor(diff / 60000);
+            if (mins < 1) return 'Just now';
+            if (mins < 60) return `${mins}m ago`;
+            const hours = Math.floor(mins / 60);
+            if (hours < 24) return `${hours}h ago`;
+            return new Date(ts).toLocaleDateString();
+        }
+
+        function selectTicket(ticketId) {
+            selectedTicketId = ticketId;
+            selectedVisitorId = null;
+            const ticket = ticketsMap[ticketId];
+            if (!ticket) return;
+
+            renderTicketList();
+
+            // Hide overview, show ticket detail
+            overviewState.style.display = 'none';
+            contentHeader.style.display = 'flex';
+            analyticsPanel.style.display = 'none';
+
+            const reasonIcon = ticket.reason === 'off-hours' ? '\ud83c\udf19' : '\ud83d\udd50';
+            const reasonLabel = ticket.reason === 'off-hours' ? 'Off-Hours' : 'Unanswered (3 min)';
+
+            // Set header with status controls
+            contentHeader.innerHTML = `
+                <div class="ticket-detail-header" style="width: 100%;">
+                    <h2>Ticket #${ticket.id} \u00b7 ${reasonIcon} ${reasonLabel}</h2>
+                    <select class="ticket-status-select" onchange="updateTicketStatus('${ticket.id}', this.value)">
+                        <option value="open" ${ticket.status === 'open' ? 'selected' : ''}>\ud83d\udfe2 Open</option>
+                        <option value="in-progress" ${ticket.status === 'in-progress' ? 'selected' : ''}>\ud83d\udfe1 In Progress</option>
+                        <option value="resolved" ${ticket.status === 'resolved' ? 'selected' : ''}>\u2705 Resolved</option>
+                    </select>
+                </div>
+            `;
+
+            // Show chat transcript in chat panel (read-only)
+            chatPanel.style.display = 'flex';
+            chatMessages.innerHTML = '';
+
+            // Add visitor info summary at top
+            const info = ticket.visitorInfo;
+            const infoDiv = document.createElement('div');
+            infoDiv.style.cssText = 'padding: 12px 16px; background: var(--bg-card); border-radius: 10px; font-size: 12px; color: var(--text-muted); margin-bottom: 8px;';
+            infoDiv.innerHTML = `
+                <strong style="color: var(--text);">${info.city || 'Unknown'}, ${info.country || 'Unknown'}</strong> \u00b7
+                ${info.currentPage || '/'} \u00b7
+                ${info.browser || '?'} / ${info.os || '?'}
+                ${info.returning ? ' \u00b7 \ud83d\udd04 Returning (Visit #' + info.visitCount + ')' : ''}
+                ${info.referrer ? '<br>Referrer: ' + info.referrer : ''}
+            `;
+            chatMessages.appendChild(infoDiv);
+
+            // Add messages
+            ticket.messages.forEach(m => addChatMessage(m));
+
+            // Hide input for closed tickets, show for open ones
+            const inputContainer = chatPanel.querySelector('.chat-input-container');
+            const quickReplies = document.getElementById('quick-replies');
+
+            // If visitor is still online, allow replying
+            const visitorOnline = visitors[ticket.visitorId] && visitors[ticket.visitorId].online;
+            if (visitorOnline && ticket.status !== 'resolved') {
+                inputContainer.style.display = 'flex';
+                quickReplies.style.display = 'flex';
+                selectedVisitorId = ticket.visitorId; // Allow sending messages
+            } else {
+                inputContainer.style.display = 'none';
+                quickReplies.style.display = 'none';
+            }
+        }
+
+        function updateTicketStatus(ticketId, status) {
+            if (socket) {
+                socket.emit('update-ticket-status', { ticketId, status });
+            }
         }
 
         // Event listeners
