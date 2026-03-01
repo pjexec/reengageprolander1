@@ -287,6 +287,57 @@ async function sendVisitorConfirmationEmail(visitorEmail, visitorId) {
         console.error('Failed to send visitor confirmation email:', err);
     }
 }
+// Send admin reply email to the visitor
+async function sendReplyEmailToVisitor(visitorEmail, replyText, visitorId) {
+    if (!RESEND_API_KEY) {
+        console.log('Resend API key not configured — skipping reply email to visitor');
+        return;
+    }
+
+    const htmlBody = `
+        <div style="font-family: 'Inter', -apple-system, sans-serif; max-width: 600px; margin: 0 auto;">
+            <div style="background: #1C3166; color: white; padding: 24px; border-radius: 8px 8px 0 0; text-align: center;">
+                <h2 style="margin: 0;">New Reply from ReEngage Pro</h2>
+            </div>
+            <div style="background: white; padding: 24px; border: 1px solid #e2e8f0;">
+                <p style="margin: 0 0 16px; color: #334155; font-size: 14px;">Our team has responded to your message:</p>
+                <div style="background: #f0f4ff; padding: 16px; border-radius: 8px; border-left: 3px solid #1C3166;">
+                    <p style="margin: 0; color: #334155; font-size: 15px;">${replyText}</p>
+                </div>
+                <p style="margin: 16px 0 0; color: #64748b; font-size: 13px;">You can continue the conversation by visiting our website and opening the chat widget.</p>
+            </div>
+            <div style="background: #f8fafc; padding: 16px; border: 1px solid #e2e8f0; border-top: none; border-radius: 0 0 8px 8px; text-align: center;">
+                <a href="https://reengage.pro" style="color: #1C3166; font-weight: 600; text-decoration: none;">Visit ReEngage Pro</a>
+                <p style="margin: 8px 0 0; font-size: 12px; color: #94a3b8;">ReEngage Pro &bull; reengage.pro</p>
+            </div>
+        </div>
+    `;
+
+    try {
+        const response = await fetch('https://api.resend.com/emails', {
+            method: 'POST',
+            headers: {
+                'Authorization': `Bearer ${RESEND_API_KEY}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify({
+                from: 'ReEngage Pro <support@reengage.pro>',
+                to: [visitorEmail],
+                subject: 'Reply from ReEngage Pro',
+                html: htmlBody
+            })
+        });
+
+        if (!response.ok) {
+            const err = await response.text();
+            console.error('Reply email to visitor error:', err);
+        } else {
+            console.log(`Reply email sent to visitor ${visitorEmail}`);
+        }
+    } catch (err) {
+        console.error('Failed to send reply email to visitor:', err);
+    }
+}
 
 // Scanner: check for unanswered messages every 60 seconds
 setInterval(() => {
@@ -352,6 +403,12 @@ io.on('connection', async (socket) => {
 
             // Confirm to all admins
             io.to('admins').emit('message-sent', { visitorId, message: messageData });
+
+            // Email the reply to the visitor if we have their email
+            const visitor = visitors.get(visitorId);
+            if (visitor && visitor.email) {
+                sendReplyEmailToVisitor(visitor.email, message, visitorId);
+            }
         });
 
         // Admin typing indicator
@@ -492,6 +549,29 @@ io.on('connection', async (socket) => {
 
             // Echo back to visitor
             socket.emit('chat-message', messageData);
+
+            // Auto-detect email addresses in regular messages
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            const visitor2 = visitors.get(visitorId);
+            if (emailRegex.test(message.trim()) && visitor2 && !visitor2.email) {
+                visitor2.email = message.trim();
+                visitors.set(visitorId, visitor2);
+                console.log(`Auto-detected email from visitor message: ${visitor2.email}`);
+
+                // Update any open tickets with the email
+                for (const ticket of tickets.values()) {
+                    if (ticket.visitorId === visitorId && ticket.status === 'open') {
+                        ticket.visitorInfo.email = visitor2.email;
+                        io.to('admins').emit('ticket-updated', ticket);
+                    }
+                }
+
+                // Notify admins
+                io.to('admins').emit('visitor-activity', { visitorId, email: visitor2.email });
+
+                // Send confirmation email to visitor
+                sendVisitorConfirmationEmail(visitor2.email, visitorId);
+            }
 
             // Off-hours: auto-create ticket and send auto-reply
             if (!isBusinessHours()) {
