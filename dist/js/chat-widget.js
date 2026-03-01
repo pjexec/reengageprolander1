@@ -453,7 +453,13 @@
           unreadCount++;
           updateBadge();
         }
-        // Admin replied — cancel the email prompt timer
+        // Auto-reply (off-hours) — show email prompt immediately
+        if (message.from === 'admin' && message.auto && !emailCollected) {
+          clearTimeout(emailPromptTimer);
+          emailPromptTimer = null;
+          setTimeout(() => showEmailPrompt(), 500); // slight delay so auto-reply renders first
+        }
+        // Real admin replied — cancel the email prompt timer
         if (message.from === 'admin' && !message.auto) {
           clearTimeout(emailPromptTimer);
           emailPromptTimer = null;
