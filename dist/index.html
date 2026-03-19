@@ -1440,6 +1440,38 @@
     <!-- Live Chat Widget -->
     <script src="/socket.io/socket.io.js"></script>
     <script src="/js/chat-widget.js"></script>
+<!-- ReEngage Pro Affiliate Tracking -->
+<script>
+(function() {
+  var params = new URLSearchParams(window.location.search);
+  var ref = params.get('ref');
+  if (!ref) return;
+
+  // Store for later use during registration
+  try { localStorage.setItem('reengage_ref', ref); } catch(e) {}
+
+  // Track the click
+  fetch('https://app.reengage.pro/api/affiliate/track-click', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ referralCode: ref })
+  }).catch(function() {});
+})();
+</script>
+
+<!-- Append ref code to signup/register links -->
+<script>
+(function() {
+  var ref = localStorage.getItem('reengage_ref');
+  if (!ref) return;
+  document.querySelectorAll('a[href*="app.reengage.pro/register"]').forEach(function(a) {
+    var url = new URL(a.href);
+    url.searchParams.set('ref', ref);
+    a.href = url.toString();
+  });
+})();
+</script>
+
 </body>
 
 </html>
