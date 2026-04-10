@@ -582,7 +582,7 @@ io.on('connection', async (socket) => {
                     const autoReply = {
                         id: uuidv4(),
                         from: 'admin',
-                        text: 'Thanks for reaching out! We\'re currently outside business hours (Mon\u2013Sat, 9am\u20137pm ET). A support ticket has been created \u2014 leave your email below and we\'ll follow up with you directly!',
+                        text: 'We\'re away right now. Leave your email and we\'ll follow up!',
                         timestamp: Date.now(),
                         auto: true
                     };

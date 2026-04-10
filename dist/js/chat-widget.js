@@ -448,16 +448,17 @@
       });
 
       socket.on('chat-message', (message) => {
+        // Auto-reply (off-hours) — skip rendering as a bubble, go straight to email prompt
+        if (message.from === 'admin' && message.auto && !emailCollected) {
+          clearTimeout(emailPromptTimer);
+          emailPromptTimer = null;
+          showEmailPrompt();
+          return;
+        }
         addMessage(message, true);
         if (!isOpen && message.from === 'admin') {
           unreadCount++;
           updateBadge();
-        }
-        // Auto-reply (off-hours) — show email prompt immediately
-        if (message.from === 'admin' && message.auto && !emailCollected) {
-          clearTimeout(emailPromptTimer);
-          emailPromptTimer = null;
-          setTimeout(() => showEmailPrompt(), 500); // slight delay so auto-reply renders first
         }
         // Real admin replied — cancel the email prompt timer
         if (message.from === 'admin' && !message.auto) {
@@ -557,7 +558,7 @@
     promptDiv.className = 'chat-message admin';
     promptDiv.id = 'email-prompt';
     promptDiv.innerHTML = `
-      <div style="margin-bottom: 8px;">It looks like our team is away right now. Leave your email and we'll follow up with you directly!</div>
+      <div style="margin-bottom: 8px;">We're away right now. Leave your email and we'll follow up!</div>
       <div style="display: flex; gap: 6px;">
         <input type="email" id="visitor-email-input" placeholder="your@email.com" style="
           flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid ${COLORS.gray200};
