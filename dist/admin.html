@@ -697,10 +697,79 @@
             }
 
             .analytics-panel {
-                display: none;
+                display: none !important;
+            }
+
+            .analytics-panel.mobile-show {
+                display: block !important;
+                position: fixed;
+                top: 0;
+                left: 0;
+                right: 0;
+                bottom: 0;
+                width: 100%;
+                z-index: 90;
+                padding: 60px 16px 16px;
+            }
+
+            .mobile-analytics-toggle {
+                display: inline-flex;
+                align-items: center;
+                gap: 4px;
+                padding: 6px 12px;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: 20px;
+                color: var(--text-muted);
+                font-size: 12px;
+                cursor: pointer;
+                margin-left: auto;
+            }
+
+            .mobile-analytics-close {
+                display: flex;
+                position: fixed;
+                top: 12px;
+                right: 12px;
+                z-index: 91;
+                width: 36px;
+                height: 36px;
+                align-items: center;
+                justify-content: center;
+                background: var(--bg-card);
+                border: 1px solid var(--border);
+                border-radius: 50%;
+                cursor: pointer;
+                font-size: 18px;
+                color: var(--text);
+            }
+
+            .mobile-back-btn {
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                width: 32px;
+                height: 32px;
+                background: none;
+                border: none;
+                color: var(--text);
+                cursor: pointer;
+                border-radius: 50%;
+                flex-shrink: 0;
+            }
+
+            .mobile-back-btn:hover {
+                background: var(--bg-card-hover);
+            }
+
+            .chat-panel {
+                flex: 1;
+                min-height: 0;
             }
 
             .content-body {
+                flex: 1;
+                min-height: 0;
                 flex-direction: column;
             }
 
@@ -777,6 +846,12 @@
         @media (min-width: 769px) {
             .mobile-header {
                 display: none;
+            }
+
+            .mobile-analytics-toggle,
+            .mobile-analytics-close,
+            .mobile-back-btn {
+                display: none !important;
             }
         }
 
@@ -1021,8 +1096,15 @@
         <main class="main-content">
             <!-- Content Header (shown when visitor selected) -->
             <div class="content-header" id="content-header" style="display: none;">
+                <button class="mobile-back-btn" onclick="deselectVisitor()">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+                </button>
                 <h2 id="selected-visitor-name">Visitor</h2>
                 <span class="online-badge" id="selected-visitor-status">Online</span>
+                <button class="mobile-analytics-toggle" onclick="toggleMobileAnalytics()">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+                    Info
+                </button>
             </div>
 
             <div class="content-body">
@@ -1066,6 +1148,7 @@
 
                 <!-- Analytics Panel (shown when visitor selected) -->
                 <div class="analytics-panel" id="analytics-panel" style="display: none;">
+                    <button class="mobile-analytics-close" onclick="toggleMobileAnalytics()">&times;</button>
                     <div class="analytics-section">
                         <h3>📄 Current Page</h3>
                         <div class="analytics-grid">
@@ -1500,6 +1583,8 @@
             // Close sidebar on mobile
             if (window.innerWidth <= 768) {
                 toggleSidebar();
+                // Ensure analytics panel doesn't have mobile-show class
+                analyticsPanel.classList.remove('mobile-show');
             }
         }
 
@@ -1615,6 +1700,22 @@
             const overlay = document.getElementById('sidebar-overlay');
             sidebar.classList.toggle('open');
             overlay.classList.toggle('open');
+        }
+
+        function toggleMobileAnalytics() {
+            analyticsPanel.classList.toggle('mobile-show');
+        }
+
+        function deselectVisitor() {
+            selectedVisitorId = null;
+            selectedTicketId = null;
+            overviewState.style.display = 'flex';
+            contentHeader.style.display = 'none';
+            analyticsPanel.style.display = 'none';
+            analyticsPanel.classList.remove('mobile-show');
+            chatPanel.style.display = 'none';
+            renderVisitorList();
+            updateStats();
         }
 
         // ===== TICKET SYSTEM UI =====
