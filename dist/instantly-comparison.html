@@ -1,0 +1,458 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Instantly and ReEngage Pro Comparison Calculator</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+    line-height: 1.6;
+    color: #1a202c;
+    background: #f7fafc;
+    padding: 30px 20px;
+    min-height: 100vh;
+  }
+  .container {
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .calculator-card {
+    background: #ffffff;
+    padding: 32px 36px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    margin-bottom: 24px;
+  }
+  h1 {
+    font-size: 22px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 8px;
+    letter-spacing: -0.01em;
+  }
+  .subtitle {
+    font-size: 14px;
+    color: #4a5568;
+    margin-bottom: 24px;
+  }
+  .input-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    align-items: end;
+  }
+  .input-group label {
+    display: block;
+    font-size: 13px;
+    font-weight: 600;
+    color: #2d3748;
+    margin-bottom: 6px;
+  }
+  .input-group input {
+    width: 100%;
+    padding: 12px 14px;
+    font-size: 16px;
+    border: 1.5px solid #cbd5e0;
+    border-radius: 6px;
+    background: #fff;
+    color: #1a202c;
+    font-family: inherit;
+    transition: border-color 0.15s;
+  }
+  .input-group input:focus {
+    outline: none;
+    border-color: #2d3748;
+  }
+  .input-group input::-webkit-outer-spin-button,
+  .input-group input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+  }
+  .input-group input[type=number] { -moz-appearance: textfield; }
+  button {
+    padding: 12px 24px;
+    font-size: 15px;
+    font-weight: 600;
+    background: #1a202c;
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: inherit;
+    transition: background 0.15s;
+    height: 46px;
+  }
+  button:hover { background: #2d3748; }
+  button:disabled { background: #a0aec0; cursor: not-allowed; }
+  .error {
+    color: #c53030;
+    font-size: 13px;
+    margin-top: 8px;
+    min-height: 18px;
+  }
+  .results {
+    background: #ffffff;
+    padding: 40px 50px;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06);
+    border-radius: 8px;
+    display: none;
+  }
+  .results.visible { display: block; }
+  .results-header {
+    border-bottom: 2px solid #e2e8f0;
+    padding-bottom: 20px;
+    margin-bottom: 24px;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+  }
+  .results-header-text h2 {
+    font-size: 20px;
+    font-weight: 700;
+    color: #1a202c;
+    margin-bottom: 8px;
+  }
+  .scenario {
+    font-size: 13px;
+    color: #4a5568;
+  }
+  .scenario span { font-weight: 600; color: #2d3748; }
+  .download-btn {
+    padding: 10px 18px;
+    font-size: 13px;
+    background: #2d3748;
+    height: auto;
+    white-space: nowrap;
+  }
+  h3 {
+    font-size: 16px;
+    font-weight: 700;
+    color: #2d3748;
+    margin: 24px 0 12px 0;
+  }
+  .summary-box {
+    background: #f7fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 6px;
+    padding: 20px 24px;
+  }
+  .summary-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    padding: 8px 0;
+    border-bottom: 1px solid #edf2f7;
+    gap: 12px;
+  }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { font-size: 13px; color: #4a5568; font-weight: 500; }
+  .summary-value { font-size: 15px; color: #1a202c; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 12px 0;
+    font-size: 13px;
+  }
+  th {
+    text-align: left;
+    padding: 12px 14px;
+    background: #2d3748;
+    color: #ffffff;
+    font-weight: 600;
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.03em;
+  }
+  th:first-child { width: 30%; background: #1a202c; }
+  td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e2e8f0;
+    color: #2d3748;
+    vertical-align: top;
+  }
+  td:first-child {
+    font-weight: 600;
+    background: #f7fafc;
+    color: #1a202c;
+  }
+  td.highlight-good { color: #22543d; font-weight: 600; }
+  .reasoning {
+    margin-top: 24px;
+    padding-top: 24px;
+    border-top: 1px solid #e2e8f0;
+  }
+  .reasoning p {
+    font-size: 14px;
+    margin-bottom: 14px;
+    color: #2d3748;
+  }
+  .reasoning p strong { color: #1a202c; }
+  @media (max-width: 640px) {
+    .calculator-card, .results { padding: 24px; }
+    .input-row { grid-template-columns: 1fr; }
+    button { width: 100%; }
+    .results-header { flex-direction: column; }
+    th, td { padding: 10px 12px; font-size: 12px; }
+  }
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="calculator-card">
+    <h1>Instantly and ReEngage Pro Comparison Calculator</h1>
+    <p class="subtitle">Compare Instantly cold setup vs ReEngage Pro for re-engaging unengaged subscribers.</p>
+    <div class="input-row">
+      <div class="input-group">
+        <label for="total">Total subscribers on the list</label>
+        <input type="number" id="total" placeholder="e.g. 50000" min="1">
+      </div>
+      <div class="input-group">
+        <label for="unengaged">Unengaged segment size</label>
+        <input type="number" id="unengaged" placeholder="e.g. 15000" min="1">
+      </div>
+      <button onclick="calculate()">Calculate</button>
+    </div>
+    <div class="error" id="error"></div>
+  </div>
+
+  <div class="results" id="results">
+    <div class="results-header">
+      <div class="results-header-text">
+        <h2>Cost Comparison: Re-Engaging Your Unengaged Subscribers</h2>
+        <div class="scenario" id="scenario"></div>
+      </div>
+      <button class="download-btn" onclick="downloadHTML()">Download as HTML</button>
+    </div>
+
+    <h3>Bottom Line</h3>
+    <div class="summary-box" id="summary"></div>
+
+    <h3>Side-by-Side Comparison</h3>
+    <table id="comparison-table"></table>
+
+    <div class="reasoning">
+      <h3>Why This Matters</h3>
+      <p><strong>Authentication continuity is the central issue.</strong> Your unengaged subscribers opted in to receive email from your existing sending domain. The DNS records, sender reputation, and authentication signals (SPF, DKIM, DMARC) tied to that domain are the technical trust signals mailbox providers use to decide whether your messages reach the inbox. Sending the same subscribers from a brand-new domain set up for cold outreach breaks that continuity. Even if the recipient is the same person, the sending fingerprint is unrecognizable.</p>
+
+      <p><strong>Cold email infrastructure is designed for prospects who never opted in.</strong> The 2-4 week warmup period and new domain/mailbox setup exist because cold outreach requires building sender reputation from zero. Applying that machinery to a list that already has reputation history is technically possible but strategically backwards.</p>
+
+      <p><strong>Throttled sending from your existing ESP solves the same problem at a fraction of the day-one cost.</strong> The risk that re-engagement campaigns pose — spike in complaints, bounces, or unsubscribes damaging your main sender reputation — is real. The solution is controlled volume and segmentation, not parallel infrastructure. A conservative throttle protects your reputation while preserving the authentication trust signals your list already has.</p>
+
+      <p><strong>The Instantly approach makes sense for one specific scenario:</strong> when your existing ESP reputation is already so damaged that you're better off starting over. If that's the case, the bigger conversation isn't about this one re-engagement campaign.</p>
+    </div>
+  </div>
+
+</div>
+
+<script>
+function calculate() {
+  const totalInput = document.getElementById('total').value;
+  const unengagedInput = document.getElementById('unengaged').value;
+  const errorEl = document.getElementById('error');
+  errorEl.textContent = '';
+
+  const total = parseInt(totalInput);
+  const unengaged = parseInt(unengagedInput);
+
+  if (!total || !unengaged) {
+    errorEl.textContent = 'Both numbers are required.';
+    return;
+  }
+  if (unengaged > total) {
+    errorEl.textContent = 'Unengaged segment cannot be larger than total list.';
+    return;
+  }
+
+  // Instantly infrastructure calc
+  const sendWindow = 30;
+  const sendsPerMailboxDay = 30;
+  const mailboxesPerDomain = 3;
+
+  const mailboxesNeeded = Math.ceil((unengaged / sendWindow) / sendsPerMailboxDay);
+  const mailboxes = Math.ceil(mailboxesNeeded * 1.12);
+  const domains = Math.ceil(mailboxes / mailboxesPerDomain);
+
+  // Instantly day one
+  const domainReg = domains * 12;
+  const dnsSetup = domains * 50;
+  const mailboxFirstMonth = mailboxes * 7;
+  const instantlyFirstMonth = 77.60;
+  const instantlyDayOne = Math.round(domainReg + dnsSetup + mailboxFirstMonth + instantlyFirstMonth);
+
+  // Instantly monthly
+  const instantlyMonthly = Math.round((mailboxes * 7) + 77.60);
+
+  // ReEngage Pro pricing
+  let reengageIntro, reengageOngoing;
+  if (total <= 20000) {
+    reengageIntro = 197;
+    reengageOngoing = 97;
+  } else {
+    reengageIntro = 497;
+    reengageOngoing = 197;
+  }
+
+  // Render
+  document.getElementById('scenario').innerHTML =
+    `Scenario: <span>${total.toLocaleString()}</span> total subscribers, <span>${unengaged.toLocaleString()}</span> unengaged segment to re-engage`;
+
+  document.getElementById('summary').innerHTML = `
+    <div class="summary-row">
+      <span class="summary-label">Instantly day-one cost</span>
+      <span class="summary-value">$${instantlyDayOne.toLocaleString()}</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">Instantly monthly during campaign</span>
+      <span class="summary-value">$${instantlyMonthly.toLocaleString()}/mo</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">ReEngage Pro day-one cost</span>
+      <span class="summary-value">$${reengageIntro}</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">ReEngage Pro monthly</span>
+      <span class="summary-value">$${reengageIntro} for one more month, then $${reengageOngoing}/mo</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">Instantly time to first send</span>
+      <span class="summary-value">2–4 weeks</span>
+    </div>
+    <div class="summary-row">
+      <span class="summary-label">ReEngage Pro time to first send</span>
+      <span class="summary-value">Same day</span>
+    </div>
+  `;
+
+  document.getElementById('comparison-table').innerHTML = `
+    <thead>
+      <tr>
+        <th></th>
+        <th>Instantly Cold Setup</th>
+        <th>ReEngage Pro on Existing ESP</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr>
+        <td>Day-one cost</td>
+        <td>$${instantlyDayOne.toLocaleString()}</td>
+        <td class="highlight-good">$${reengageIntro}</td>
+      </tr>
+      <tr>
+        <td>Monthly during campaign</td>
+        <td>$${instantlyMonthly.toLocaleString()}/mo</td>
+        <td>$${reengageIntro} for one more month, then $${reengageOngoing}/mo</td>
+      </tr>
+      <tr>
+        <td>Time to first send</td>
+        <td>2–4 weeks</td>
+        <td class="highlight-good">Same day</td>
+      </tr>
+      <tr>
+        <td>New domains required</td>
+        <td>${domains}</td>
+        <td class="highlight-good">0</td>
+      </tr>
+      <tr>
+        <td>New mailboxes required</td>
+        <td>${mailboxes}</td>
+        <td class="highlight-good">0</td>
+      </tr>
+      <tr>
+        <td>Authentication continuity</td>
+        <td>Broken (new sending infrastructure)</td>
+        <td class="highlight-good">Preserved (original opt-in domain)</td>
+      </tr>
+      <tr>
+        <td>Risk to main sender reputation</td>
+        <td>Isolated to new domains</td>
+        <td>Managed via throttling</td>
+      </tr>
+      <tr>
+        <td>Time to mail full segment</td>
+        <td>~30 days after warmup</td>
+        <td>~30 days with conservative throttle</td>
+      </tr>
+    </tbody>
+  `;
+
+  document.getElementById('results').classList.add('visible');
+  document.getElementById('results').scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
+function downloadHTML() {
+  const total = parseInt(document.getElementById('total').value).toLocaleString();
+  const unengaged = parseInt(document.getElementById('unengaged').value).toLocaleString();
+  const today = new Date().toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric' });
+
+  const resultsContent = document.getElementById('results').cloneNode(true);
+  // Strip the download button from the cloned content
+  const btn = resultsContent.querySelector('.download-btn');
+  if (btn) btn.remove();
+
+  const html = `<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Cost Comparison: Re-Engaging Your Unengaged Subscribers</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif; line-height: 1.6; color: #1a202c; background: #f7fafc; padding: 40px 20px; }
+  .container { max-width: 800px; margin: 0 auto; background: #ffffff; padding: 50px 50px; box-shadow: 0 4px 20px rgba(0, 0, 0, 0.06); border-radius: 8px; }
+  header { border-bottom: 2px solid #e2e8f0; padding-bottom: 20px; margin-bottom: 28px; }
+  h1 { font-size: 24px; font-weight: 700; color: #1a202c; margin-bottom: 10px; letter-spacing: -0.01em; }
+  .scenario { font-size: 14px; color: #4a5568; }
+  .scenario span { font-weight: 600; color: #2d3748; }
+  .date { font-size: 13px; color: #718096; margin-top: 4px; }
+  h2 { font-size: 17px; font-weight: 700; color: #2d3748; margin: 28px 0 14px 0; }
+  p { font-size: 14px; color: #2d3748; margin-bottom: 14px; }
+  .summary-box { background: #f7fafc; border: 1px solid #e2e8f0; border-radius: 6px; padding: 20px 24px; margin: 12px 0; }
+  .summary-row { display: flex; justify-content: space-between; align-items: baseline; padding: 8px 0; border-bottom: 1px solid #edf2f7; gap: 12px; }
+  .summary-row:last-child { border-bottom: none; }
+  .summary-label { font-size: 13px; color: #4a5568; font-weight: 500; }
+  .summary-value { font-size: 15px; color: #1a202c; font-weight: 700; font-variant-numeric: tabular-nums; text-align: right; }
+  table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 13px; }
+  th { text-align: left; padding: 12px 14px; background: #2d3748; color: #ffffff; font-weight: 600; font-size: 12px; text-transform: uppercase; letter-spacing: 0.03em; }
+  th:first-child { width: 30%; background: #1a202c; }
+  td { padding: 12px 14px; border-bottom: 1px solid #e2e8f0; color: #2d3748; vertical-align: top; }
+  td:first-child { font-weight: 600; background: #f7fafc; color: #1a202c; }
+  td.highlight-good { color: #22543d; font-weight: 600; }
+  .reasoning { margin-top: 28px; padding-top: 24px; border-top: 1px solid #e2e8f0; }
+  .reasoning p strong { color: #1a202c; }
+  @media print { body { background: white; padding: 0; } .container { box-shadow: none; padding: 30px; } }
+</style>
+</head>
+<body>
+<div class="container">
+<header>
+<h1>Cost Comparison: Re-Engaging Your Unengaged Subscribers</h1>
+<div class="scenario">Scenario: <span>${total}</span> total subscribers, <span>${unengaged}</span> unengaged segment to re-engage</div>
+<div class="date">${today}</div>
+</header>
+${resultsContent.innerHTML.replace(/<div class="results-header">[\s\S]*?<\/div>\s*<\/div>/, '').replace('<div class="results-header-text">', '').replace(/<\/div>\s*<\/div>\s*<h3>Bottom Line<\/h3>/, '<h2>Bottom Line</h2>').replace('<h3>Side-by-Side Comparison</h3>', '<h2>Side-by-Side Comparison</h2>').replace('<h3>Why This Matters</h3>', '<h2>Why This Matters</h2>')}
+</div>
+</body>
+</html>`;
+
+  const blob = new Blob([html], { type: 'text/html' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `cost-comparison-${new Date().toISOString().split('T')[0]}.html`;
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Allow Enter key to trigger calculate
+document.addEventListener('keypress', function(e) {
+  if (e.key === 'Enter') calculate();
+});
+</script>
+
+</body>
+</html>
