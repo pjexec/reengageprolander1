@@ -1205,6 +1205,156 @@
     </div>
 </section>
 
+<!-- ========== REAL-PRODUCT SCREENSHOTS ========== -->
+<section style="padding:96px 0;background:var(--color-surface-0);border-top:1px solid var(--color-border);">
+    <div class="container-c reveal">
+        <div style="max-width:840px;margin:0 auto 56px;">
+            <h2 class="font-display text-3xl-c" style="font-weight:700;margin:0 0 16px;color:var(--color-brand);line-height:1.15;">What it actually looks like, mid-campaign.</h2>
+            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0;font-style:italic;">Below is one of our customer accounts in flight, masked for privacy. Every number is real.<span style="display:block;font-style:normal;font-weight:600;color:var(--color-text-primary);margin-top:6px;">(Note: this is the first email of his three message campaign.)</span></p>
+        </div>
+
+        <!-- Big screenshot: Campaigns dashboard -->
+        <div style="position:relative;max-width:1100px;margin:0 auto;">
+            <div style="border-radius:10px;overflow:hidden;border:1px solid var(--color-border);box-shadow:var(--shadow-lg),0 20px 50px -16px oklch(20% 0.04 255 / 0.18);">
+                <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--color-surface-2);border-bottom:1px solid var(--color-border);">
+                    <div style="display:flex;gap:6px;">
+                        <div style="width:10px;height:10px;border-radius:50%;background:oklch(65% 0.20 25);"></div>
+                        <div style="width:10px;height:10px;border-radius:50%;background:oklch(78% 0.16 85);"></div>
+                        <div style="width:10px;height:10px;border-radius:50%;background:oklch(68% 0.16 155);"></div>
+                    </div>
+                    <span class="font-mono text-xs-c" style="color:var(--color-text-muted);margin-left:auto;">app.reengage.pro/campaigns</span>
+                </div>
+                <img src="campaigns.png" alt="ReEngage Pro Campaigns dashboard, showing two active re-engagement campaigns with 21.6% and 18.9% recovery rates" style="width:100%;height:auto;display:block;background:var(--color-surface-2);aspect-ratio:1532/680;" loading="lazy">
+            </div>
+
+            <!-- Hotspot 1: under "(6.5%)" in ARK First (inactive) row -->
+            <button class="hotspot" style="top:95%;left:68%;" aria-label="Why this campaign is paused">
+                <span class="hotspot-tooltip">
+                    User paused the campaign and made a duplicate with adjustments to increase the re-engagement percentage.
+                </span>
+            </button>
+
+            <!-- Hotspot 2: under "(21.6%)" in ARK First (Copy) active row -->
+            <button class="hotspot" style="top:54%;left:68%;" aria-label="About this re-engagement rate">
+                <span class="hotspot-tooltip">
+                    User's adjustments increased Re-engagement percentage.
+                </span>
+            </button>
+
+            <!-- Hotspot 3: on the green line between ARK First (Copy) and GLF All Cold, referencing both -->
+            <button class="hotspot" style="top:55%;left:40%;" aria-label="About both active campaigns">
+                <span class="hotspot-tooltip">
+                    Both campaigns are paused until 9:00 AM EDT. Sending only happens inside the user's chosen sending window automatically.
+                </span>
+            </button>
+        </div>
+    </div>
+</section>
+
+<style>
+    .hotspot {
+        position: absolute;
+        width: clamp(10px, 1.3vw, 16px);
+        height: clamp(10px, 1.3vw, 16px);
+        padding: 0;
+        background: var(--color-accent);
+        border: clamp(2px, 0.25vw, 3px) solid #fff;
+        border-radius: 50%;
+        cursor: pointer;
+        box-shadow: 0 2px 10px rgba(17, 142, 192, 0.55), 0 0 0 1px rgba(17, 142, 192, 0.2);
+        transform: translate(-50%, -50%);
+        z-index: 5;
+    }
+    .hotspot::before {
+        content: '';
+        position: absolute;
+        inset: -3px;
+        border-radius: 50%;
+        background: var(--color-accent);
+        animation: hotspot-pulse 2s ease-out infinite;
+        z-index: -1;
+        opacity: 0.7;
+    }
+    @keyframes hotspot-pulse {
+        0%   { transform: scale(1);   opacity: 0.55; }
+        100% { transform: scale(3.2); opacity: 0;    }
+    }
+    .hotspot:hover,
+    .hotspot:focus-visible {
+        outline: none;
+        box-shadow: 0 2px 14px rgba(17, 142, 192, 0.8), 0 0 0 1px rgba(17, 142, 192, 0.35);
+    }
+    .hotspot-tooltip {
+        position: absolute;
+        bottom: calc(100% + 14px);
+        left: 50%;
+        transform: translateX(-50%) translateY(4px);
+        background: #fff;
+        color: var(--color-text-primary);
+        padding: 12px 16px;
+        border-radius: 8px;
+        box-shadow: 0 10px 28px rgba(15, 23, 42, 0.18), 0 0 0 1px var(--color-border);
+        width: clamp(220px, 22vw, 280px);
+        font-size: clamp(12px, 1vw, 13px);
+        line-height: 1.55;
+        text-align: left;
+        font-weight: 400;
+        opacity: 0;
+        pointer-events: none;
+        transition: opacity 0.18s ease, transform 0.18s ease;
+        z-index: 10;
+        white-space: normal;
+    }
+    @media (max-width: 480px) {
+        .hotspot { display: none; }
+    }
+    .hotspot-tooltip::after {
+        content: '';
+        position: absolute;
+        top: 100%;
+        left: 50%;
+        transform: translateX(-50%);
+        border: 6px solid transparent;
+        border-top-color: #fff;
+        filter: drop-shadow(0 1px 0 var(--color-border));
+    }
+    .hotspot:hover .hotspot-tooltip,
+    .hotspot:focus-visible .hotspot-tooltip,
+    .hotspot.is-active .hotspot-tooltip {
+        opacity: 1;
+        pointer-events: auto;
+        transform: translateX(-50%) translateY(0);
+    }
+</style>
+
+<script>
+    (function() {
+        document.querySelectorAll('.hotspot').forEach(function(h) {
+            h.addEventListener('click', function(e) {
+                e.stopPropagation();
+                document.querySelectorAll('.hotspot.is-active').forEach(function(other) {
+                    if (other !== h) other.classList.remove('is-active');
+                });
+                h.classList.toggle('is-active');
+            });
+        });
+        document.addEventListener('click', function(e) {
+            if (!e.target.closest('.hotspot')) {
+                document.querySelectorAll('.hotspot.is-active').forEach(function(h) {
+                    h.classList.remove('is-active');
+                });
+            }
+        });
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape') {
+                document.querySelectorAll('.hotspot.is-active').forEach(function(h) {
+                    h.classList.remove('is-active');
+                });
+            }
+        });
+    })();
+</script>
+
 <!-- ========== SAFETY ========== -->
 <section style="padding:96px 0;background:var(--color-surface-1);">
     <div class="container-c">
