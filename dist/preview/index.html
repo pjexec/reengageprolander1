@@ -1049,7 +1049,7 @@
                     <h3 class="font-display text-xl-c" style="font-weight:600;margin:0;">Emails send one at a time. Safety watches every send.</h3>
                 </div>
                 <p class="text-base-c" style="color:var(--color-text-secondary);margin:0 0 12px;flex:1;">Personalized sequences sent one at a time with real-time safety monitoring. Bounces trigger automatic escalation. You watch the dashboard. We do the work.</p>
-                <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">Default pacing is conservative.</strong> When you have a broadcast scheduled, you can bump up the speed in real time and dial it back afterward. A broadcast&rsquo;s volume gives the system more room to work safely.</p>
+                <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">Default pacing is conservative.</strong> When you broadcast to your engaged list, the system automatically accelerates re-engagement sends to ride underneath that volume. Keep the default on and the timing handles itself.</p>
             </div>
         </div>
     </div>
@@ -1069,7 +1069,7 @@
             <div class="label" style="color:var(--color-accent);margin-bottom:12px;">The protection mechanism</div>
             <h2 class="font-display text-3xl-c" style="font-weight:700;margin:0 0 20px;color:var(--color-brand);line-height:1.15;">If you can&rsquo;t detect the damage, dilute it.</h2>
             <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 16px;">Apple Mail Privacy shows opens that didn&rsquo;t happen. Gmail hides complaints that did. When a subscriber marks a re-engagement email as spam in Gmail, the complaint never gets reported back to your ESP. You can&rsquo;t see those complaints. Nothing can.</p>
-            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0;">But Gmail doesn&rsquo;t flag your domain on the count of complaints. It flags you on the percentage. So instead of trying to detect what nothing can see, ReEngage Pro changes the denominator.</p>
+            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0;">But Gmail doesn&rsquo;t flag your domain on the number of complaints. It flags you on the percentage. So instead of trying to detect what nothing can see, ReEngage Pro changes the denominator.</p>
         </div>
 
         <!-- Math demo: two side-by-side donuts -->
@@ -1120,7 +1120,7 @@
                     <i class="ph ph-lightning" style="font-size:24px;color:var(--color-accent);"></i>
                     <h3 class="font-display text-xl-c" style="font-weight:600;margin:0;">Booster Mode</h3>
                 </div>
-                <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">When ReEngage Pro sees your broadcast going out to your engaged list, it accelerates the re-engagement queue to ride underneath that volume. Cold-list sends move at one-to-two-second intervals during the cover window. Your re-engagement campaign goes faster precisely when it&rsquo;s safest to do so.</p>
+                <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">When ReEngage Pro sees your broadcast going out to your engaged list, it accelerates the re-engagement queue to ride underneath that volume. Cold list sends move at one to two second intervals during the cover window. Your re-engagement campaign goes faster precisely when it&rsquo;s safest to do so.</p>
             </div>
             <div class="card" style="padding:32px 28px;">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
@@ -1133,7 +1133,7 @@
 
         <!-- Honesty callout -->
         <div style="max-width:780px;margin:32px auto 0;padding:20px 24px;background:var(--color-surface-2);border-left:3px solid var(--color-text-muted);border-radius:4px;">
-            <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">An honest note about how this works.</strong> Dilution coverage scales with how often you broadcast. If you mail your engaged list weekly, the system has plenty of cover windows to work inside. If you broadcast rarely, coverage is limited and the engine falls back to throttle-only safety. If you&rsquo;re not sure how often you actually broadcast, the first week of your trial will tell you.</p>
+            <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">An honest note about how this works.</strong> Dilution coverage scales with how often you broadcast. If you mail your engaged list at least once or twice a week, the system has plenty of cover windows to work inside. If you broadcast rarely, coverage is limited and the engine falls back to throttle-only safety. If you&rsquo;re not sure how this will affect you, the first week of your trial will tell you.</p>
         </div>
     </div>
 </section>
@@ -1216,9 +1216,9 @@
 <!-- ========== REAL-PRODUCT SCREENSHOTS ========== -->
 <section style="padding:96px 0;background:var(--color-surface-0);border-top:1px solid var(--color-border);">
     <div class="container-c reveal">
-        <div style="max-width:840px;margin:0 auto 56px;">
+        <div style="max-width:840px;margin:0 auto 56px;text-align:center;">
             <h2 class="font-display text-3xl-c" style="font-weight:700;margin:0 0 16px;color:var(--color-brand);line-height:1.15;">What it actually looks like, mid-campaign.</h2>
-            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0;font-style:italic;">Below is one of our customer accounts in flight, masked for privacy. Every number is real.<span style="display:block;font-style:normal;font-weight:600;color:var(--color-text-primary);margin-top:6px;">(Note: this is the first email of his three message campaign.)</span></p>
+            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0;font-style:italic;">Below is one of our customer accounts in flight, masked for privacy. Every number is real.<span style="display:block;font-style:normal;font-weight:600;color:var(--color-text-primary);margin-top:6px;">(This is the first of 3 messages in both campaigns.)</span></p>
         </div>
 
         <!-- Big screenshot: Campaigns dashboard -->
@@ -1253,6 +1253,13 @@
             <button class="hotspot" style="top:55%;left:40%;" aria-label="About both active campaigns">
                 <span class="hotspot-tooltip">
                     Both campaigns are paused until 9:00 AM EDT. Sending only happens inside the user's chosen sending window automatically.
+                </span>
+            </button>
+
+            <!-- Hotspot 4: just above the live chat icon in bottom-right corner -->
+            <button class="hotspot" style="top:89%;left:95%;" aria-label="About the support chat">
+                <span class="hotspot-tooltip">
+                    Always here to help with instant AI answers and human support tickets.
                 </span>
             </button>
         </div>
@@ -1531,7 +1538,7 @@
                 </div>
                 <ul style="list-style:none;padding:0;margin:0 0 24px;display:flex;flex-direction:column;gap:10px;">
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Up to 50,000 subscribers</span></li>
-                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">1 ESP connection</span></li>
+                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">2 ESP connections</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Customized sequences</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Real-time safety monitoring</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Full activity audit trail</span></li>
@@ -1550,8 +1557,8 @@
                     <span class="text-sm-c text-muted">/month</span>
                 </div>
                 <ul style="list-style:none;padding:0;margin:0 0 24px;display:flex;flex-direction:column;gap:10px;">
-                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Up to 250,000 subscribers</span></li>
-                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">3 ESP connections</span></li>
+                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Unlimited subscribers</span></li>
+                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">4 ESP connections</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Everything in Pro</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Dedicated onboarding specialist</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Custom safety thresholds</span></li>
@@ -1746,26 +1753,81 @@
 
 <!-- ========== SIGNUP MODAL ========== -->
 <div class="modal-overlay" id="signup-modal" role="dialog" aria-modal="true" aria-label="Start free trial">
-    <div class="modal-content">
-        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:24px;">
-            <h2 class="font-display text-2xl-c" style="font-weight:700;margin:0;color:var(--color-brand);">Start your free trial</h2>
-            <button id="close-modal-btn" style="background:none;border:none;cursor:pointer;padding:4px;color:var(--color-text-muted);touch-action:manipulation;" aria-label="Close modal">
-                <i class="ph ph-x" style="font-size:22px;"></i>
-            </button>
+    <div class="modal-content" style="position:relative;padding:18px 26px 22px;">
+        <button id="close-modal-btn" style="position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;padding:6px;color:var(--color-text-muted);border-radius:50%;touch-action:manipulation;line-height:0;" aria-label="Close modal">
+            <i class="ph ph-x" style="font-size:18px;"></i>
+        </button>
+
+        <!-- Form container -->
+        <div id="signup-form-container">
+            <div style="text-align:center;margin-bottom:14px;">
+                <span style="display:inline-flex;align-items:center;gap:6px;background:var(--color-success-subtle);padding:3px 11px;border-radius:100px;margin-bottom:8px;">
+                    <span style="width:6px;height:6px;border-radius:50%;background:var(--color-success);"></span>
+                    <span class="label" style="color:var(--color-success);font-weight:700;">7-Day Free Trial</span>
+                </span>
+                <h2 class="font-display" style="font-size:var(--text-xl);font-weight:700;margin:0;color:var(--color-brand);line-height:1.15;">Create Your Account</h2>
+            </div>
+
+            <form id="signup-form" style="display:flex;flex-direction:column;gap:8px;">
+                <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+                    <div>
+                        <label class="label text-muted" style="display:block;margin-bottom:6px;">First Name</label>
+                        <input type="text" id="signupFirstName" class="input" placeholder="First name" required autocomplete="given-name" aria-label="First name">
+                    </div>
+                    <div>
+                        <label class="label text-muted" style="display:block;margin-bottom:6px;">Last Name</label>
+                        <input type="text" id="signupLastName" class="input" placeholder="Last name" autocomplete="family-name" aria-label="Last name">
+                    </div>
+                </div>
+
+                <div>
+                    <label class="label text-muted" style="display:block;margin-bottom:6px;">Email Address</label>
+                    <input type="email" id="signupEmail" class="input" placeholder="you@company.com" required autocomplete="email" aria-label="Email address">
+                </div>
+
+                <div>
+                    <label class="label text-muted" style="display:block;margin-bottom:6px;">Password</label>
+                    <div style="position:relative;">
+                        <input type="password" id="signupPassword" class="input" style="width:100%;padding-right:44px;" placeholder="Create a password" required autocomplete="new-password" aria-label="Password">
+                        <button type="button" id="toggle-password-btn" style="position:absolute;right:8px;top:50%;transform:translateY(-50%);background:none;border:none;cursor:pointer;padding:6px;color:var(--color-text-muted);line-height:0;" tabindex="-1" aria-label="Toggle password visibility">
+                            <i id="password-eye-icon" class="ph ph-eye" style="font-size:18px;"></i>
+                        </button>
+                    </div>
+                    <p class="text-xs-c" style="color:var(--color-text-muted);margin:6px 0 0;">Min 8 characters with uppercase, lowercase, and a number</p>
+                </div>
+
+                <div>
+                    <label class="label text-muted" style="display:block;margin-bottom:6px;">Confirm Password</label>
+                    <input type="password" id="signupPasswordConfirm" class="input" placeholder="Re-enter your password" required autocomplete="new-password" aria-label="Confirm password">
+                </div>
+
+                <div id="signup-error" style="display:none;align-items:center;gap:8px;color:var(--color-danger);background:var(--color-danger-subtle);border-radius:4px;padding:10px 14px;">
+                    <i class="ph ph-warning-circle" style="font-size:18px;flex-shrink:0;"></i>
+                    <span id="signup-error-text" class="text-sm-c"></span>
+                </div>
+
+                <button type="submit" id="signup-submit-btn" class="btn-primary" style="width:100%;justify-content:center;margin-top:4px;">
+                    <span id="signup-submit-label">Start My Free Trial</span>
+                    <i class="ph ph-arrow-right" style="font-size:16px;"></i>
+                </button>
+            </form>
+
+            <p class="text-xs-c" style="color:var(--color-text-muted);margin:10px 0 0;text-align:center;">No credit card required. Cancel anytime.</p>
         </div>
-        <p class="text-base-c" style="color:var(--color-text-secondary);margin:0 0 24px;">Enter your details to get started. No credit card required.</p>
-        <form id="signup-form" action="https://app.reengage.pro/signup" method="GET" style="display:flex;flex-direction:column;gap:12px;">
-            <div>
-                <label class="label text-muted" style="display:block;margin-bottom:6px;">First Name</label>
-                <input type="text" name="first_name" class="input" placeholder="Jane" required autocomplete="given-name" aria-label="First name">
+
+        <!-- Success state -->
+        <div id="signup-success" style="display:none;text-align:center;padding:12px 0;">
+            <div style="width:64px;height:64px;margin:0 auto 20px;background:var(--color-success-subtle);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <i class="ph ph-check-circle" style="font-size:36px;color:var(--color-success);"></i>
             </div>
-            <div>
-                <label class="label text-muted" style="display:block;margin-bottom:6px;">Email Address</label>
-                <input type="email" name="email" class="input" placeholder="you@company.com" required autocomplete="email" aria-label="Email address">
-            </div>
-            <button type="submit" class="btn-primary" style="width:100%;justify-content:center;margin-top:4px;">Start Free Trial <i class="ph ph-arrow-right" style="font-size:16px;"></i></button>
-        </form>
-        <p class="text-xs-c" style="color:var(--color-text-muted);margin:12px 0 0;text-align:center;">7-day free trial. Cancel anytime.</p>
+            <h3 class="font-display" style="font-size:var(--text-xl);font-weight:700;margin:0 0 8px;color:var(--color-brand);">Account Created!</h3>
+            <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0 0 4px;">Your 7-day free trial is ready.</p>
+            <p class="text-xs-c" style="color:var(--color-text-muted);margin:0 0 24px;">Redirecting you to the dashboard&hellip;</p>
+            <a href="https://app.reengage.pro/login" class="btn-primary" style="display:inline-flex;justify-content:center;text-decoration:none;gap:8px;">
+                <span>Go to Dashboard</span>
+                <i class="ph ph-arrow-right" style="font-size:16px;"></i>
+            </a>
+        </div>
     </div>
 </div>
 
@@ -1777,12 +1839,45 @@
     // ── Signup Modal ──
     const modal = document.getElementById('signup-modal');
     const closeModalBtn = document.getElementById('close-modal-btn');
+    const formContainer = document.getElementById('signup-form-container');
+    const successContainer = document.getElementById('signup-success');
+    const errorEl = document.getElementById('signup-error');
+    const errorText = document.getElementById('signup-error-text');
+    const submitBtn = document.getElementById('signup-submit-btn');
+    const submitLabel = document.getElementById('signup-submit-label');
+    const signupForm = document.getElementById('signup-form');
+    const passwordInput = document.getElementById('signupPassword');
+    const togglePasswordBtn = document.getElementById('toggle-password-btn');
+    const passwordEyeIcon = document.getElementById('password-eye-icon');
+
+    function resetSignupForm() {
+        formContainer.style.display = '';
+        successContainer.style.display = 'none';
+        errorEl.style.display = 'none';
+        document.getElementById('signupFirstName').value = '';
+        document.getElementById('signupLastName').value = '';
+        document.getElementById('signupEmail').value = '';
+        document.getElementById('signupPassword').value = '';
+        document.getElementById('signupPasswordConfirm').value = '';
+        passwordInput.type = 'password';
+        passwordEyeIcon.className = 'ph ph-eye';
+        submitBtn.disabled = false;
+        submitLabel.textContent = 'Start My Free Trial';
+    }
+
+    function showSignupError(msg) {
+        errorText.textContent = msg;
+        errorEl.style.display = 'flex';
+    }
 
     function openSignupModal() {
+        resetSignupForm();
         modal.classList.add('active');
         document.body.style.overflow = 'hidden';
-        const emailInput = modal.querySelector('input[type="email"]');
-        if (emailInput) setTimeout(function() { emailInput.focus(); }, 100);
+        setTimeout(function() {
+            var firstNameInput = document.getElementById('signupFirstName');
+            if (firstNameInput) firstNameInput.focus();
+        }, 100);
     }
 
     function closeSignupModal() {
@@ -1799,6 +1894,81 @@
     });
     document.addEventListener('keydown', function(e) {
         if (e.key === 'Escape' && modal.classList.contains('active')) closeSignupModal();
+    });
+
+    // Password show/hide toggle
+    togglePasswordBtn.addEventListener('click', function() {
+        if (passwordInput.type === 'password') {
+            passwordInput.type = 'text';
+            passwordEyeIcon.className = 'ph ph-eye-slash';
+        } else {
+            passwordInput.type = 'password';
+            passwordEyeIcon.className = 'ph ph-eye';
+        }
+    });
+
+    // Form submit: validate, POST to /api/register, swap to success state
+    signupForm.addEventListener('submit', function(e) {
+        e.preventDefault();
+
+        var firstName = document.getElementById('signupFirstName').value.trim();
+        var lastName = document.getElementById('signupLastName').value.trim();
+        var email = document.getElementById('signupEmail').value.trim();
+        var password = document.getElementById('signupPassword').value;
+        var passwordConfirm = document.getElementById('signupPasswordConfirm').value;
+
+        errorEl.style.display = 'none';
+
+        if (!firstName || !email || !password) {
+            showSignupError('Please fill in all required fields.');
+            return;
+        }
+        if (!email.includes('@') || !email.includes('.')) {
+            showSignupError('Please enter a valid email address.');
+            return;
+        }
+        if (password.length < 8) {
+            showSignupError('Password must be at least 8 characters.');
+            return;
+        }
+        if (!/(?=.*[a-z])(?=.*[A-Z])(?=.*\d)/.test(password)) {
+            showSignupError('Password needs an uppercase letter, lowercase letter, and a number.');
+            return;
+        }
+        if (password !== passwordConfirm) {
+            showSignupError('Passwords do not match.');
+            return;
+        }
+
+        submitBtn.disabled = true;
+        submitLabel.textContent = 'Creating account…';
+
+        var referralCode;
+        try { referralCode = localStorage.getItem('reengage_ref'); } catch (err) {}
+
+        fetch('/api/register', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                firstName: firstName,
+                lastName: lastName || undefined,
+                email: email,
+                password: password,
+                referralCode: referralCode || undefined
+            })
+        })
+            .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
+            .then(function(result) {
+                if (!result.ok) throw new Error((result.data && result.data.error) || 'Registration failed.');
+                formContainer.style.display = 'none';
+                successContainer.style.display = 'block';
+                setTimeout(function() { window.location.href = 'https://app.reengage.pro/login'; }, 3000);
+            })
+            .catch(function(err) {
+                showSignupError(err.message || 'Something went wrong.');
+                submitBtn.disabled = false;
+                submitLabel.textContent = 'Start My Free Trial';
+            });
     });
 
     // All CTA buttons open modal
