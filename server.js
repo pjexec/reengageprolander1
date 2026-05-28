@@ -730,12 +730,12 @@ io.on('connection', async (socket) => {
                 sendVisitorConfirmationEmail(visitor2.email, visitorId);
             }
 
-            // Route to AI or create ticket based on admin availability
+            // Route to AI — AI always responds first, human on escalation only
             const adminOnline = isAdminOnline();
             console.log(`Chat routing: adminOnline=${adminOnline}, anthropic=${!!anthropic}, handoffDone=${!!aiHandoffDone.get(visitorId)}, visitorId=${visitorId}`);
 
-            if (!adminOnline && anthropic && !aiHandoffDone.get(visitorId)) {
-                // No admin online + AI available → route to AI assistant
+            if (anthropic && !aiHandoffDone.get(visitorId)) {
+                // AI available → always route to AI assistant first
                 const exchangeCount = (aiExchangeCounts.get(visitorId) || 0) + 1;
                 aiExchangeCounts.set(visitorId, exchangeCount);
 
@@ -831,8 +831,8 @@ io.on('connection', async (socket) => {
                     io.to('admins').emit('message-sent', { visitorId, message: fallbackMsg });
                     createTicket(visitorId, 'ai-failure');
                 }
-            } else if (!adminOnline && !anthropic) {
-                // No admin online + no AI → original off-hours behavior
+            } else if (!anthropic) {
+                // No AI available → original off-hours behavior
                 if (!isBusinessHours()) {
                     const ticket = createTicket(visitorId, 'off-hours');
                     if (ticket) {
@@ -849,7 +849,7 @@ io.on('connection', async (socket) => {
                     }
                 }
             }
-            // If admin IS online, do nothing extra — admin handles it live
+            // After handoff, admin can respond manually via the dashboard
         });
 
         // Visitor typing indicator
