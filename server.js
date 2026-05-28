@@ -5,7 +5,7 @@ import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
-import { GoogleGenAI } from '@google/genai';
+import Anthropic from '@anthropic-ai/sdk';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -31,14 +31,14 @@ const ACTIVE_CAMPAIGN_LIST_ID = process.env.ACTIVE_CAMPAIGN_LIST_ID || '4';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const SUPPORT_EMAIL = 'support@reengage.pro';
 
-// Gemini AI Configuration
-const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
-let genai = null;
-if (GEMINI_API_KEY) {
-    genai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
-    console.log('Gemini AI initialized for chat assistant');
+// Anthropic Claude Configuration
+const ANTHROPIC_API_KEY = process.env.ANTHROPIC_API_KEY || '';
+let anthropic = null;
+if (ANTHROPIC_API_KEY) {
+    anthropic = new Anthropic({ apiKey: ANTHROPIC_API_KEY });
+    console.log('Anthropic Claude initialized for chat assistant');
 } else {
-    console.log('GEMINI_API_KEY not set — AI chat assistant disabled');
+    console.log('ANTHROPIC_API_KEY not set — AI chat assistant disabled');
 }
 
 // Business Hours Configuration (Eastern Time)
@@ -148,7 +148,7 @@ function isAdminOnline() {
 
 // Get AI response for a visitor message
 async function getAIResponse(visitorId, messageText, chatHistory) {
-    if (!genai) return null;
+    if (!anthropic) return null;
 
     try {
         // Build conversation history for context
@@ -156,30 +156,27 @@ async function getAIResponse(visitorId, messageText, chatHistory) {
         const recentHistory = chatHistory.slice(-10); // Last 10 messages for context
         for (const msg of recentHistory) {
             if (msg.from === 'visitor') {
-                conversationMessages.push({ role: 'user', parts: [{ text: msg.text }] });
+                conversationMessages.push({ role: 'user', content: msg.text });
             } else if (msg.from === 'admin' || msg.from === 'ai') {
-                conversationMessages.push({ role: 'model', parts: [{ text: msg.text }] });
+                conversationMessages.push({ role: 'assistant', content: msg.text });
             }
         }
         // Add current message
-        conversationMessages.push({ role: 'user', parts: [{ text: messageText }] });
+        conversationMessages.push({ role: 'user', content: messageText });
 
-        const response = await genai.models.generateContent({
-            model: 'gemini-2.0-flash',
-            config: {
-                systemInstruction: AI_SYSTEM_PROMPT,
-                temperature: 0.7,
-                maxOutputTokens: 300,
-            },
-            contents: conversationMessages,
+        const response = await anthropic.messages.create({
+            model: 'claude-sonnet-4-20250514',
+            max_tokens: 300,
+            system: AI_SYSTEM_PROMPT,
+            messages: conversationMessages,
         });
 
-        const text = response.text?.trim();
+        const text = response.content?.[0]?.text?.trim();
         if (!text) return null;
 
         return text;
     } catch (err) {
-        console.error('Gemini AI error:', err.message);
+        console.error('Claude AI error:', err.message);
         return null;
     }
 }
@@ -728,7 +725,7 @@ io.on('connection', async (socket) => {
             // Route to AI or create ticket based on admin availability
             const adminOnline = isAdminOnline();
 
-            if (!adminOnline && genai && !aiHandoffDone.get(visitorId)) {
+            if (!adminOnline && anthropic && !aiHandoffDone.get(visitorId)) {
                 // No admin online + AI available → route to AI assistant
                 const exchangeCount = (aiExchangeCounts.get(visitorId) || 0) + 1;
                 aiExchangeCounts.set(visitorId, exchangeCount);
@@ -825,7 +822,7 @@ io.on('connection', async (socket) => {
                     io.to('admins').emit('message-sent', { visitorId, message: fallbackMsg });
                     createTicket(visitorId, 'ai-failure');
                 }
-            } else if (!adminOnline && !genai) {
+            } else if (!adminOnline && !anthropic) {
                 // No admin online + no AI → original off-hours behavior
                 if (!isBusinessHours()) {
                     const ticket = createTicket(visitorId, 'off-hours');
