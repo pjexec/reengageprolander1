@@ -1,18 +1,23 @@
 (function () {
   'use strict';
 
-  // ReEngage Pro color scheme
+  // Sandbox theme colors — dark blue instead of green
   const COLORS = {
-    primary: '#1C3166',
-    primaryDark: '#152548',
-    accent: '#10B981',
-    accentDark: '#059669',
+    primary: '#2b3a67',
+    primaryDark: '#1a2440',
+    accent: '#2b3a67',
+    accentDark: '#1a2440',
     white: '#ffffff',
     gray100: '#f3f4f6',
     gray200: '#e5e7eb',
     gray500: '#6b7280',
     gray700: '#374151'
   };
+
+  // Email collection state
+  let emailCollected = false;
+  let emailPromptTimer = null;
+  const EMAIL_PROMPT_DELAY = 2 * 60 * 1000; // 2 minutes
 
   // Inject styles
   const styles = `
@@ -21,7 +26,7 @@
       bottom: 24px;
       right: 24px;
       z-index: 9999;
-      font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+      font-family: 'Montserrat', 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
     }
 
     #chat-widget-button {
@@ -31,7 +36,7 @@
       background: linear-gradient(135deg, ${COLORS.accent} 0%, ${COLORS.accentDark} 100%);
       border: none;
       cursor: pointer;
-      box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+      box-shadow: 0 4px 20px rgba(43, 58, 103, 0.4);
       display: flex;
       align-items: center;
       justify-content: center;
@@ -53,10 +58,10 @@
 
     @keyframes pulse-glow {
       0%, 100% { 
-        box-shadow: 0 4px 20px rgba(16, 185, 129, 0.4);
+        box-shadow: 0 4px 20px rgba(43, 58, 103, 0.4);
       }
       50% { 
-        box-shadow: 0 4px 30px rgba(16, 185, 129, 0.7), 0 0 20px rgba(16, 185, 129, 0.4);
+        box-shadow: 0 4px 30px rgba(43, 58, 103, 0.7), 0 0 20px rgba(43, 58, 103, 0.4);
       }
     }
 
@@ -73,7 +78,7 @@
 
     #chat-widget-button:hover {
       transform: scale(1.08);
-      box-shadow: 0 6px 28px rgba(16, 185, 129, 0.6);
+      box-shadow: 0 6px 28px rgba(43, 58, 103, 0.6);
       animation: none;
     }
 
@@ -351,7 +356,7 @@
           </svg>
         </button>
         <h3>Need Help?</h3>
-        <p>We typically reply within a few minutes</p>
+        <p id="chat-header-subtitle">We typically reply within a few minutes</p>
       </div>
       <div id="chat-widget-messages">
         <div class="welcome-message">
@@ -402,64 +407,98 @@
     };
   }
 
-  // Connect to Socket.IO
+  // Connect to Socket.IO (gracefully handles missing server)
   function connect() {
-    const utm = getUTMParams();
-    const queryParams = new URLSearchParams({
-      visitorId: visitorId || '',
-      page: window.location.pathname,
-      screenWidth: window.screen.width,
-      screenHeight: window.screen.height,
-      ...utm
-    });
+    if (typeof io === 'undefined') {
+      console.log('Chat: Socket.IO not available — widget visible but not connected');
+      return;
+    }
 
-    socket = io({
-      query: Object.fromEntries(queryParams)
-    });
+    try {
+      const utm = getUTMParams();
+      const queryParams = new URLSearchParams({
+        visitorId: visitorId || '',
+        page: window.location.pathname,
+        pageTitle: document.title,
+        referrer: document.referrer || '',
+        screenWidth: window.screen.width,
+        screenHeight: window.screen.height,
+        ...utm
+      });
 
-    socket.on('connect', () => {
-      console.log('Chat connected');
-    });
+      socket = io({
+        query: Object.fromEntries(queryParams)
+      });
 
-    socket.on('visitor-id', (id) => {
-      visitorId = id;
-      localStorage.setItem('chat-visitor-id', id);
-    });
+      socket.on('connect', () => {
+        console.log('Chat connected');
+      });
 
-    socket.on('chat-history', (messages) => {
-      if (messages && messages.length > 0) {
-        // Remove welcome message if we have history
-        const welcome = messagesContainer.querySelector('.welcome-message');
-        if (welcome) welcome.remove();
+      socket.on('visitor-id', (id) => {
+        visitorId = id;
+        localStorage.setItem('chat-visitor-id', id);
+      });
 
-        messages.forEach(msg => addMessage(msg, false));
-      }
-    });
+      socket.on('chat-history', (messages) => {
+        if (messages && messages.length > 0) {
+          const welcome = messagesContainer.querySelector('.welcome-message');
+          if (welcome) welcome.remove();
+          messages.forEach(msg => addMessage(msg, false));
+        }
+      });
 
-    socket.on('chat-message', (message) => {
-      addMessage(message, true);
-      if (!isOpen && message.from === 'admin') {
-        unreadCount++;
-        updateBadge();
-      }
-    });
+      socket.on('chat-message', (message) => {
+        // Auto-reply (off-hours, no AI) — skip rendering, go straight to email prompt
+        if (message.from === 'admin' && message.auto && !emailCollected) {
+          clearTimeout(emailPromptTimer);
+          emailPromptTimer = null;
+          showEmailPrompt();
+          return;
+        }
+        // AI handoff — show message then trigger email prompt
+        if (message.from === 'admin' && message.handoff) {
+          addMessage(message, true, !!message.ai);
+          if (!emailCollected) {
+            setTimeout(() => showEmailPrompt(), 1500);
+          }
+          return;
+        }
+        addMessage(message, true, !!message.ai);
+        if (!isOpen && message.from === 'admin') {
+          unreadCount++;
+          updateBadge();
+        }
+        // Real admin replied — cancel the email prompt timer
+        if (message.from === 'admin' && !message.auto && !message.ai) {
+          clearTimeout(emailPromptTimer);
+          emailPromptTimer = null;
+        }
+      });
 
-    socket.on('admin-typing', () => {
-      typingIndicator.style.display = 'block';
-      messagesContainer.scrollTop = messagesContainer.scrollHeight;
-      setTimeout(() => {
-        typingIndicator.style.display = 'none';
-      }, 3000);
-    });
+      socket.on('admin-typing', () => {
+        typingIndicator.style.display = 'block';
+        messagesContainer.scrollTop = messagesContainer.scrollHeight;
+        setTimeout(() => {
+          typingIndicator.style.display = 'none';
+        }, 3000);
+      });
 
-    socket.on('disconnect', () => {
-      console.log('Chat disconnected');
-    });
+      socket.on('disconnect', () => {
+        console.log('Chat disconnected');
+      });
+
+      socket.on('connect_error', () => {
+        console.log('Chat: Server not available — widget visible but not connected');
+        socket.disconnect();
+        socket = null;
+      });
+    } catch (e) {
+      console.log('Chat: Connection failed —', e.message);
+    }
   }
 
   // Add message to UI
-  function addMessage(message, isNew) {
-    // Remove welcome message on first message
+  function addMessage(message, isNew, isAI) {
     const welcome = messagesContainer.querySelector('.welcome-message');
     if (welcome) welcome.remove();
 
@@ -467,7 +506,9 @@
     div.className = `chat-message ${message.from}`;
 
     const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const aiLabel = isAI ? '<span style="display:block;font-size:11px;opacity:0.6;margin-bottom:2px;font-weight:600;">AI Assistant</span>' : '';
     div.innerHTML = `
+      ${aiLabel}
       ${escapeHtml(message.text)}
       <span class="time">${time}</span>
     `;
@@ -506,6 +547,70 @@
     socket.emit('visitor-message', text);
     input.value = '';
     sendButton.disabled = true;
+
+    // Start email prompt timer if email not yet collected
+    if (!emailCollected) {
+      clearTimeout(emailPromptTimer);
+      emailPromptTimer = setTimeout(() => {
+        showEmailPrompt();
+      }, EMAIL_PROMPT_DELAY);
+    }
+  }
+
+  // Show email collection prompt in chat
+  function showEmailPrompt() {
+    if (emailCollected) return;
+
+    const welcome = messagesContainer.querySelector('.welcome-message');
+    if (welcome) welcome.remove();
+
+    const promptDiv = document.createElement('div');
+    promptDiv.className = 'chat-message admin';
+    promptDiv.id = 'email-prompt';
+    promptDiv.innerHTML = `
+      <div style="margin-bottom: 8px;">We're away right now. Leave your email and we'll follow up!</div>
+      <div style="display: flex; gap: 6px;">
+        <input type="email" id="visitor-email-input" placeholder="your@email.com" style="
+          flex: 1; padding: 8px 12px; border-radius: 8px; border: 1px solid ${COLORS.gray200};
+          font-size: 13px; font-family: inherit; outline: none;
+        ">
+        <button id="visitor-email-submit" style="
+          padding: 8px 14px; border-radius: 8px; border: none;
+          background: ${COLORS.accent}; color: white; font-size: 13px;
+          cursor: pointer; font-family: inherit; font-weight: 600;
+        ">Send</button>
+      </div>
+    `;
+
+    messagesContainer.appendChild(promptDiv);
+    messagesContainer.scrollTop = messagesContainer.scrollHeight;
+
+    // Attach email submit handler
+    const emailInput = document.getElementById('visitor-email-input');
+    const emailSubmit = document.getElementById('visitor-email-submit');
+
+    emailSubmit.addEventListener('click', () => submitEmail(emailInput.value));
+    emailInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') submitEmail(emailInput.value);
+    });
+  }
+
+  // Submit visitor email
+  function submitEmail(email) {
+    email = email.trim();
+    if (!email || !email.includes('@') || !socket) return;
+
+    emailCollected = true;
+    socket.emit('visitor-email', email);
+
+    // Replace prompt with confirmation
+    const prompt = document.getElementById('email-prompt');
+    if (prompt) {
+      prompt.innerHTML = `
+        <div>Thanks! We'll reach out to <strong>${escapeHtml(email)}</strong> shortly. \u2705</div>
+        <span class="time">${new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}</span>
+      `;
+    }
   }
 
   // Event listeners
@@ -563,6 +668,23 @@
       });
     }
   });
+
+  // Track page navigation (SPA and MPA)
+  let lastTrackedPath = window.location.pathname;
+
+  function emitPageChange() {
+    const currentPath = window.location.pathname;
+    if (currentPath !== lastTrackedPath && socket) {
+      lastTrackedPath = currentPath;
+      socket.emit('page-change', {
+        page: currentPath,
+        pageTitle: document.title
+      });
+    }
+  }
+
+  window.addEventListener('popstate', emitPageChange);
+  setInterval(emitPageChange, 2000);
 
   // Initialize
   sendButton.disabled = true;

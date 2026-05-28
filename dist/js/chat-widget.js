@@ -356,7 +356,7 @@
           </svg>
         </button>
         <h3>Need Help?</h3>
-        <p>We typically reply within a few minutes</p>
+        <p id="chat-header-subtitle">We typically reply within a few minutes</p>
       </div>
       <div id="chat-widget-messages">
         <div class="welcome-message">
@@ -448,20 +448,28 @@
       });
 
       socket.on('chat-message', (message) => {
-        // Auto-reply (off-hours) — skip rendering as a bubble, go straight to email prompt
+        // Auto-reply (off-hours, no AI) — skip rendering, go straight to email prompt
         if (message.from === 'admin' && message.auto && !emailCollected) {
           clearTimeout(emailPromptTimer);
           emailPromptTimer = null;
           showEmailPrompt();
           return;
         }
-        addMessage(message, true);
+        // AI handoff — show message then trigger email prompt
+        if (message.from === 'admin' && message.handoff) {
+          addMessage(message, true, !!message.ai);
+          if (!emailCollected) {
+            setTimeout(() => showEmailPrompt(), 1500);
+          }
+          return;
+        }
+        addMessage(message, true, !!message.ai);
         if (!isOpen && message.from === 'admin') {
           unreadCount++;
           updateBadge();
         }
         // Real admin replied — cancel the email prompt timer
-        if (message.from === 'admin' && !message.auto) {
+        if (message.from === 'admin' && !message.auto && !message.ai) {
           clearTimeout(emailPromptTimer);
           emailPromptTimer = null;
         }
@@ -490,7 +498,7 @@
   }
 
   // Add message to UI
-  function addMessage(message, isNew) {
+  function addMessage(message, isNew, isAI) {
     const welcome = messagesContainer.querySelector('.welcome-message');
     if (welcome) welcome.remove();
 
@@ -498,7 +506,9 @@
     div.className = `chat-message ${message.from}`;
 
     const time = new Date(message.timestamp).toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    const aiLabel = isAI ? '<span style="display:block;font-size:11px;opacity:0.6;margin-bottom:2px;font-weight:600;">AI Assistant</span>' : '';
     div.innerHTML = `
+      ${aiLabel}
       ${escapeHtml(message.text)}
       <span class="time">${time}</span>
     `;

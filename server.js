@@ -1,10 +1,11 @@
-// v2.1
+// v2.2 — AI Chat Assistant
 import express from 'express';
 import path from 'path';
 import { fileURLToPath } from 'url';
 import { createServer } from 'http';
 import { Server } from 'socket.io';
 import { v4 as uuidv4 } from 'uuid';
+import { GoogleGenAI } from '@google/genai';
 
 const __filename = fileURLToPath(import.meta.url);
 const __dirname = path.dirname(__filename);
@@ -30,6 +31,16 @@ const ACTIVE_CAMPAIGN_LIST_ID = process.env.ACTIVE_CAMPAIGN_LIST_ID || '4';
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
 const SUPPORT_EMAIL = 'support@reengage.pro';
 
+// Gemini AI Configuration
+const GEMINI_API_KEY = process.env.GEMINI_API_KEY || '';
+let genai = null;
+if (GEMINI_API_KEY) {
+    genai = new GoogleGenAI({ apiKey: GEMINI_API_KEY });
+    console.log('Gemini AI initialized for chat assistant');
+} else {
+    console.log('GEMINI_API_KEY not set — AI chat assistant disabled');
+}
+
 // Business Hours Configuration (Eastern Time)
 const BUSINESS_HOURS = {
     days: [1, 2, 3, 4, 5, 6], // Mon=1 through Sat=6
@@ -44,6 +55,146 @@ const visitors = new Map();
 const chatSessions = new Map();
 const blockedIPs = new Set();
 const tickets = new Map();
+const aiExchangeCounts = new Map(); // visitorId -> number of AI exchanges
+const aiHandoffDone = new Map(); // visitorId -> true if already handed off to human
+
+// ===== AI KNOWLEDGE BASE =====
+const REENGAGE_KNOWLEDGE = `
+ReEngage Pro is a safety-first email re-engagement platform. It reconnects dormant email subscribers back to active engagement — without risking sender reputation.
+
+## The Problem
+Subscribers who stop opening emails don't just sit there. Mailbox providers (Gmail, Yahoo, Microsoft, Apple) watch engagement rates. A list with too many non-openers gets quietly demoted — so even your best buyers start seeing fewer campaigns. Meanwhile, ESPs charge per contact per month regardless of engagement. Phantom opens from Apple Mail Privacy Protection and security scanners make it impossible to tell real opens from fake ones on your dashboard.
+
+## How ReEngage Pro Works
+1. CLASSIFY: Connect your ESP. ReEngage Pro reads engagement signals (opens, clicks, purchases, site visits) and classifies every subscriber into engagement tiers — from highly active to deeply dormant. It filters out phantom opens so you see real engagement.
+2. RE-ENGAGE: The platform generates personalized re-engagement sequences for each dormant tier. Sends are paced slowly and deliberately through your existing ESP. Each batch rides underneath your regular broadcast sends, using a technique called broadcast dilution — your high-engagement broadcast absorbs the small dormant batch so complaint percentages stay negligible.
+3. PROTECT: Real-time safety monitoring watches bounce rates, complaint rates, and domain health across all major mailbox providers. If any metric approaches a risk threshold, sending pauses automatically before damage happens. You get an immutable audit log of every action.
+
+## Safety & Reputation Protection
+- 98+ sender reputation score maintained
+- Auto-pause on threshold breach — stops before damage happens
+- Real-time monitoring across Gmail, Yahoo, Microsoft, and Apple
+- Immutable audit log of every action
+- Manual override always available — start, stop, or adjust thresholds anytime
+- Safety logic is conservative by design — it pauses before you'd think to check
+
+## Pricing
+All plans include the full platform from day one. Classification, pacing, safety monitoring, broadcast dilution, and the activity log all come standard. Flat monthly pricing. No long-term contracts. Cancel anytime. 7-day free trial, no credit card required.
+
+- **Pro — $147/month**: Up to 50,000 subscribers, 2 ESP connections, customized sequences, real-time safety monitoring, full activity audit trail
+- **Concierge — $347/month** (Most Popular): Unlimited subscribers, 4 ESP connections, everything in Pro, dedicated onboarding specialist, custom safety thresholds, priority support
+- **Agency — Custom pricing**: Unlimited subscribers, unlimited ESP connections, everything in Concierge, multi-client dashboard, white-label reports, dedicated account manager. Contact us to book a call.
+
+## Supported ESPs
+Currently: Klaviyo, ActiveCampaign, and Kit. Coming soon: Mailchimp and HubSpot.
+
+## FAQ
+Q: Will re-engagement campaigns hurt my sender reputation?
+A: That's the entire reason this platform exists. The safety system monitors bounce rates, complaint rates, and domain health in real time. If any metric approaches a risk threshold, sending pauses automatically. You can also set your own thresholds and pause or stop campaigns manually at any time.
+
+Q: Doesn't Gmail still see those spam complaints?
+A: Yes. The complaints still exist and Gmail's internal reputation model is still aware of them. But the metric that triggers downgrades is the complaint percentage, not the count. Gmail's Postmaster Tools threshold is 0.3%. When your re-engagement sends ride underneath a high-volume broadcast, the same complaints land inside a large denominator and read well under the line. We don't make complaints disappear. We make the percentage stop mattering.
+
+Q: Does my broadcast frequency matter?
+A: The system adapts to your cadence whether that's weekly, biweekly, or monthly. You don't configure anything. It works around your existing send pattern automatically.
+
+Q: How quickly will I see results?
+A: Re-engagement isn't instant. The system sends slowly and carefully on purpose. Most campaigns run over 2-4 weeks depending on list size. You'll see real-time progress in the dashboard as subscribers respond.
+
+Q: How does ReEngage Pro integrate with my email platform?
+A: You connect your ESP account through our encrypted integration. Your data stays in your ESP. We read engagement data and trigger sends through your existing platform.
+
+Q: Can I customize the re-engagement sequences?
+A: Yes. The platform generates personalized email content based on subscriber history and behavior patterns, but you review and approve everything before it sends. You can also write your own copy and use the platform purely for its throttle engine and safety monitoring. Every setting is adjustable. The defaults are conservative on purpose — tuned so that if you connect and don't touch a single setting, your account is protected.
+
+Q: Is ReEngage Pro an AI platform?
+A: No. AI is one of several tools used to build it, not the centerpiece. ReEngage Pro is a safety-first mechanical platform built to be dependable. AI is used where it fits. The reputation protection happens in the mechanics.
+
+Q: What happens to subscribers who don't re-engage?
+A: They stay in your ESP. ReEngage Pro classifies them but never deletes subscriber data. You decide what to do with subscribers who don't respond to re-engagement. We give you the information to make that call.
+
+## About the Founder
+Chuck Mullaney — 25 years in digital marketing, 15 solving email deliverability. Former Email Admin for 26,000 businesses. Author of "Phantom Engaged" (phantomengaged.com). 5 patents pending on the safety logic.
+
+## Key Differentiators vs Alternatives
+- Manual sunset policies just delete revenue (20-30% of dormant subscribers will re-engage if approached correctly)
+- Generic win-back sequences blast full list and damage reputation
+- Doing nothing means paying ESP monthly fees while deliverability erodes
+- ReEngage Pro is the only approach that recovers subscribers safely with real-time reputation protection
+`;
+
+// AI System Prompt
+const AI_SYSTEM_PROMPT = `You are the ReEngage Pro sales assistant on the company website. You help visitors understand the product and answer their questions.
+
+Rules:
+1. Be helpful, confident, and direct. Match a professional but approachable tone.
+2. Keep responses concise — 2-3 sentences max unless the question requires more detail.
+3. Only answer questions using the knowledge provided below. Do not make up features, pricing, or capabilities that aren't listed.
+4. If someone asks something you don't have information about, say: "That's a great question — I'd want to make sure you get the right answer. Would you like to leave your email so our team can follow up?"
+5. If someone asks to talk to a human or asks for a demo/call, say: "Absolutely! You can book a call directly at cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo, or leave your email and we'll reach out."
+6. Do not use markdown formatting, bullet points, or numbered lists. Write in plain conversational sentences.
+7. If asked, you can acknowledge you're an AI assistant, but don't volunteer it unprompted.
+8. Never discuss competitors by name. Focus on what ReEngage Pro does.
+9. Encourage visitors to start the free trial when appropriate — it's 7 days, no credit card required.
+
+Product Knowledge:
+${REENGAGE_KNOWLEDGE}`;
+
+// Check if any admin is currently connected
+function isAdminOnline() {
+    const adminRoom = io.sockets.adapter.rooms.get('admins');
+    return adminRoom && adminRoom.size > 0;
+}
+
+// Get AI response for a visitor message
+async function getAIResponse(visitorId, messageText, chatHistory) {
+    if (!genai) return null;
+
+    try {
+        // Build conversation history for context
+        const conversationMessages = [];
+        const recentHistory = chatHistory.slice(-10); // Last 10 messages for context
+        for (const msg of recentHistory) {
+            if (msg.from === 'visitor') {
+                conversationMessages.push({ role: 'user', parts: [{ text: msg.text }] });
+            } else if (msg.from === 'admin' || msg.from === 'ai') {
+                conversationMessages.push({ role: 'model', parts: [{ text: msg.text }] });
+            }
+        }
+        // Add current message
+        conversationMessages.push({ role: 'user', parts: [{ text: messageText }] });
+
+        const response = await genai.models.generateContent({
+            model: 'gemini-2.0-flash',
+            config: {
+                systemInstruction: AI_SYSTEM_PROMPT,
+                temperature: 0.7,
+                maxOutputTokens: 300,
+            },
+            contents: conversationMessages,
+        });
+
+        const text = response.text?.trim();
+        if (!text) return null;
+
+        return text;
+    } catch (err) {
+        console.error('Gemini AI error:', err.message);
+        return null;
+    }
+}
+
+// Check if visitor message indicates they want a human
+function wantsHuman(text) {
+    const lower = text.toLowerCase();
+    const patterns = [
+        'talk to a human', 'talk to someone', 'real person', 'human please',
+        'speak to someone', 'speak with someone', 'agent please', 'live agent',
+        'can i talk to', 'connect me with', 'transfer me', 'support team',
+        'talk to a person', 'talk to support', 'real human'
+    ];
+    return patterns.some(p => lower.includes(p));
+}
 
 app.use(express.json());
 
@@ -528,7 +679,7 @@ io.on('connection', async (socket) => {
         socket.emit('chat-history', chatSessions.get(visitorId));
 
         // Visitor sends message
-        socket.on('visitor-message', (message) => {
+        socket.on('visitor-message', async (message) => {
             const messageData = {
                 id: uuidv4(),
                 from: 'visitor',
@@ -574,23 +725,125 @@ io.on('connection', async (socket) => {
                 sendVisitorConfirmationEmail(visitor2.email, visitorId);
             }
 
-            // Off-hours: auto-create ticket and send auto-reply
-            if (!isBusinessHours()) {
-                const ticket = createTicket(visitorId, 'off-hours');
-                if (ticket) {
-                    // Send auto-reply to visitor
-                    const autoReply = {
+            // Route to AI or create ticket based on admin availability
+            const adminOnline = isAdminOnline();
+
+            if (!adminOnline && genai && !aiHandoffDone.get(visitorId)) {
+                // No admin online + AI available → route to AI assistant
+                const exchangeCount = (aiExchangeCounts.get(visitorId) || 0) + 1;
+                aiExchangeCounts.set(visitorId, exchangeCount);
+
+                // Check if visitor wants a human
+                if (wantsHuman(message)) {
+                    aiHandoffDone.set(visitorId, true);
+                    const handoffMsg = {
                         id: uuidv4(),
                         from: 'admin',
-                        text: 'We\'re away right now. Leave your email and we\'ll follow up!',
+                        text: 'Absolutely! You can book a call directly at cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo, or leave your email below and we\'ll reach out to you personally.',
+                        timestamp: Date.now(),
+                        ai: true,
+                        handoff: true
+                    };
+                    chatSessions.get(visitorId).push(handoffMsg);
+                    socket.emit('chat-message', handoffMsg);
+                    io.to('admins').emit('message-sent', { visitorId, message: handoffMsg });
+                    createTicket(visitorId, 'ai-handoff');
+                    return;
+                }
+
+                // After 3 AI exchanges, suggest human follow-up
+                if (exchangeCount > 3) {
+                    aiHandoffDone.set(visitorId, true);
+                    // Still get AI response for this message
+                    const chatHistory = chatSessions.get(visitorId) || [];
+                    const aiText = await getAIResponse(visitorId, message, chatHistory);
+
+                    if (aiText) {
+                        // Show typing indicator
+                        socket.emit('admin-typing');
+                        await new Promise(r => setTimeout(r, 800 + Math.random() * 700));
+
+                        const aiMsg = {
+                            id: uuidv4(),
+                            from: 'admin',
+                            text: aiText,
+                            timestamp: Date.now(),
+                            ai: true
+                        };
+                        chatSessions.get(visitorId).push(aiMsg);
+                        socket.emit('chat-message', aiMsg);
+                        io.to('admins').emit('message-sent', { visitorId, message: aiMsg });
+                    }
+
+                    // Follow up with handoff suggestion
+                    await new Promise(r => setTimeout(r, 1200));
+                    const handoffMsg = {
+                        id: uuidv4(),
+                        from: 'admin',
+                        text: 'I want to make sure you get all the detail you need. Would you like to leave your email so our team can follow up with you directly? Or you can book a call at cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo.',
+                        timestamp: Date.now(),
+                        ai: true,
+                        handoff: true
+                    };
+                    chatSessions.get(visitorId).push(handoffMsg);
+                    socket.emit('chat-message', handoffMsg);
+                    io.to('admins').emit('message-sent', { visitorId, message: handoffMsg });
+                    createTicket(visitorId, 'ai-handoff');
+                    return;
+                }
+
+                // Normal AI response
+                const chatHistory = chatSessions.get(visitorId) || [];
+
+                // Show typing indicator with natural delay
+                socket.emit('admin-typing');
+                const aiText = await getAIResponse(visitorId, message, chatHistory);
+                await new Promise(r => setTimeout(r, 800 + Math.random() * 700));
+
+                if (aiText) {
+                    const aiMsg = {
+                        id: uuidv4(),
+                        from: 'admin',
+                        text: aiText,
+                        timestamp: Date.now(),
+                        ai: true
+                    };
+                    chatSessions.get(visitorId).push(aiMsg);
+                    socket.emit('chat-message', aiMsg);
+                    io.to('admins').emit('message-sent', { visitorId, message: aiMsg });
+                } else {
+                    // AI failed — fall back to away message
+                    const fallbackMsg = {
+                        id: uuidv4(),
+                        from: 'admin',
+                        text: 'Thanks for your message! Our team will get back to you shortly. Leave your email below and we\'ll follow up.',
                         timestamp: Date.now(),
                         auto: true
                     };
-                    chatSessions.get(visitorId).push(autoReply);
-                    socket.emit('chat-message', autoReply);
-                    io.to('admins').emit('message-sent', { visitorId, message: autoReply });
+                    chatSessions.get(visitorId).push(fallbackMsg);
+                    socket.emit('chat-message', fallbackMsg);
+                    io.to('admins').emit('message-sent', { visitorId, message: fallbackMsg });
+                    createTicket(visitorId, 'ai-failure');
+                }
+            } else if (!adminOnline && !genai) {
+                // No admin online + no AI → original off-hours behavior
+                if (!isBusinessHours()) {
+                    const ticket = createTicket(visitorId, 'off-hours');
+                    if (ticket) {
+                        const autoReply = {
+                            id: uuidv4(),
+                            from: 'admin',
+                            text: 'We\'re away right now. Leave your email and we\'ll follow up!',
+                            timestamp: Date.now(),
+                            auto: true
+                        };
+                        chatSessions.get(visitorId).push(autoReply);
+                        socket.emit('chat-message', autoReply);
+                        io.to('admins').emit('message-sent', { visitorId, message: autoReply });
+                    }
                 }
             }
+            // If admin IS online, do nothing extra — admin handles it live
         });
 
         // Visitor typing indicator
