@@ -148,9 +148,13 @@ function isAdminOnline() {
 
 // Get AI response for a visitor message
 async function getAIResponse(visitorId, messageText, chatHistory) {
-    if (!anthropic) return null;
+    if (!anthropic) {
+        console.log('AI: anthropic client is null, skipping');
+        return null;
+    }
 
     try {
+        console.log(`AI: generating response for visitor ${visitorId}: "${messageText.substring(0, 50)}..."`);
         // Build conversation history for context
         const conversationMessages = [];
         const recentHistory = chatHistory.slice(-10); // Last 10 messages for context
@@ -165,15 +169,19 @@ async function getAIResponse(visitorId, messageText, chatHistory) {
         conversationMessages.push({ role: 'user', content: messageText });
 
         const response = await anthropic.messages.create({
-            model: 'claude-sonnet-4-20250514',
+            model: 'claude-sonnet-4-6',
             max_tokens: 300,
             system: AI_SYSTEM_PROMPT,
             messages: conversationMessages,
         });
 
         const text = response.content?.[0]?.text?.trim();
-        if (!text) return null;
+        if (!text) {
+            console.log('AI: empty response from Claude');
+            return null;
+        }
 
+        console.log(`AI: got response (${text.length} chars)`);
         return text;
     } catch (err) {
         console.error('Claude AI error:', err.message);
@@ -724,6 +732,7 @@ io.on('connection', async (socket) => {
 
             // Route to AI or create ticket based on admin availability
             const adminOnline = isAdminOnline();
+            console.log(`Chat routing: adminOnline=${adminOnline}, anthropic=${!!anthropic}, handoffDone=${!!aiHandoffDone.get(visitorId)}, visitorId=${visitorId}`);
 
             if (!adminOnline && anthropic && !aiHandoffDone.get(visitorId)) {
                 // No admin online + AI available → route to AI assistant
