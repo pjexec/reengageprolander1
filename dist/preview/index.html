@@ -12,7 +12,7 @@
     <!-- Open Graph -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="https://reengage.pro">
-    <meta property="og:title" content="ReEngage Pro | Safely Re-engage Cold Email Subscribers">
+    <meta property="og:title" content="ReEngage Pro | Safely Re-engage Dormant Email Subscribers">
     <meta property="og:description" content="Protect your sender reputation while recovering dormant email subscribers. Automated re-engagement with real time safety monitoring and throttled sending.">
     <meta property="og:image" content="https://reengage.pro/og-image.png">
     <meta property="og:image:width" content="1200">
@@ -20,7 +20,7 @@
     <meta property="og:site_name" content="ReEngage Pro">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
-    <meta name="twitter:title" content="ReEngage Pro | Safely Re-engage Cold Email Subscribers">
+    <meta name="twitter:title" content="ReEngage Pro | Safely Re-engage Dormant Email Subscribers">
     <meta name="twitter:description" content="Protect your sender reputation while recovering dormant email subscribers. Automated re-engagement with real time safety monitoring and throttled sending.">
     <meta name="twitter:image" content="https://reengage.pro/og-image.png">
     <meta name="last-modified" content="2026-05-24">
@@ -92,10 +92,10 @@
                     },
                     {
                         "@type": "Question",
-                        "name": "What if I don't send broadcasts regularly?",
+                        "name": "Does my broadcast frequency matter?",
                         "acceptedAnswer": {
                             "@type": "Answer",
-                            "text": "Then dilution coverage is limited. The Broadcast Dilution Layer works by riding underneath your existing broadcast volume. If you broadcast weekly, you have plenty of cover windows. If you broadcast monthly or less, the engine falls back to throttle-only safety and your re-engagement campaign moves more slowly to compensate."
+                            "text": "The system adapts to your cadence whether that's weekly, biweekly, or monthly. You don't configure anything. It works around your existing send pattern automatically. If you want re-engagement to move faster, broadcasting more often will help. Just be careful: more sends to your engaged list can burn their trust faster than it speeds up recovery."
                         }
                     },
                     {
@@ -862,7 +862,7 @@
                     <i class="ph ph-trash" style="font-size:24px;color:var(--color-danger);"></i>
                     <h3 class="font-display text-xl-c" style="font-weight:600;margin:0;">Delete them</h3>
                 </div>
-                <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0 0 12px;">List cleaners and sunset flows do this. They remove the cold segment, your engagement rate climbs on paper, and your ESP bill drops. Two problems.</p>
+                <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0 0 12px;">List cleaners and sunset flows do this. They remove the dormant segment, your engagement rate climbs on paper, and your ESP bill drops. Two problems.</p>
                 <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0 0 12px;">First, some of those subscribers would have come back with the right approach at the right pace; you&rsquo;re writing off acquisition cost you already paid.</p>
                 <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;">Second, deletion doesn&rsquo;t fix the underlying mechanism. Your deliverability is shaped by <em>how</em> you mail your list, not just <em>who</em> is on it. A clean list mailed badly degrades the same way a dirty list does.</p>
             </div>
@@ -1049,7 +1049,7 @@
                     <h3 class="font-display text-xl-c" style="font-weight:600;margin:0;">Emails send one at a time. Safety watches every send.</h3>
                 </div>
                 <p class="text-base-c" style="color:var(--color-text-secondary);margin:0 0 12px;flex:1;">Personalized sequences sent one at a time with real-time safety monitoring. Bounces trigger automatic escalation. You watch the dashboard. We do the work.</p>
-                <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">Default pacing is conservative.</strong> When you broadcast to your engaged list, the system automatically accelerates re-engagement sends to ride underneath that volume. Keep the default on and the timing handles itself.</p>
+                <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">Pacing is conservative by design.</strong> When you broadcast to your engaged list, re-engagement sends ride underneath that volume. The timing handles itself.</p>
             </div>
         </div>
     </div>
@@ -1113,27 +1113,30 @@
         <!-- Bridge line -->
         <p class="text-base-c" style="color:var(--color-text-secondary);max-width:780px;margin:0 auto 48px;text-align:center;font-style:italic;">Same complaints. Same subscribers. Completely different reputation outcome. The denominator does the work.</p>
 
-        <!-- Mechanism: Booster Mode + Wait State -->
+        <!-- Two-queue intro -->
+        <p class="text-base-c" style="color:var(--color-text-secondary);max-width:780px;margin:0 auto 28px;text-align:center;">The system runs two queues. The <strong style="color:var(--color-text-primary);">Continuous Queue</strong> sends steadily on your schedule. The <strong style="color:var(--color-text-primary);">Dilution Queue</strong> waits for your broadcasts and rides hidden inside that volume. You don&rsquo;t pick which subscriber goes where. The system does.</p>
+
+        <!-- Mechanism: Booster Mode + Wait State (Dilution Queue states) -->
         <div style="display:grid;grid-template-columns:1fr 1fr;gap:24px;" class="dilution-mech">
             <div class="card" style="padding:32px 28px;">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
                     <i class="ph ph-lightning" style="font-size:24px;color:var(--color-accent);"></i>
                     <h3 class="font-display text-xl-c" style="font-weight:600;margin:0;">Booster Mode</h3>
                 </div>
-                <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">When ReEngage Pro sees your broadcast going out to your engaged list, it accelerates the re-engagement queue to ride underneath that volume. Cold list sends move at one to two second intervals during the cover window. Your re-engagement campaign goes faster precisely when it&rsquo;s safest to do so.</p>
+                <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">When ReEngage Pro sees your broadcast going out to your engaged list, the Dilution Queue activates and sends hidden inside that volume. Sends happen at one to two second intervals during the cover window. The re-engagement moves precisely when it&rsquo;s safest to do so.</p>
             </div>
             <div class="card" style="padding:32px 28px;">
                 <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px;">
                     <i class="ph ph-pause-circle" style="font-size:24px;color:var(--color-warning);"></i>
                     <h3 class="font-display text-xl-c" style="font-weight:600;margin:0;">Wait State</h3>
                 </div>
-                <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">When no broadcast cover is available, the engine refuses to ship a small isolated batch that would spike your Postmaster percentage. It waits for the next broadcast window instead of degrading your reputation in the silent interval. You can override if a campaign needs to ship on its own schedule.</p>
+                <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">When no broadcast cover is available, the Dilution Queue refuses to ship a small isolated batch that would spike your Postmaster percentage. It waits for the next broadcast window instead of degrading your reputation in the silent interval.</p>
             </div>
         </div>
 
         <!-- Honesty callout -->
         <div style="max-width:780px;margin:32px auto 0;padding:20px 24px;background:var(--color-surface-2);border-left:3px solid var(--color-text-muted);border-radius:4px;">
-            <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">An honest note about how this works.</strong> Dilution coverage scales with how often you broadcast. If you mail your engaged list at least once or twice a week, the system has plenty of cover windows to work inside. If you broadcast rarely, coverage is limited and the engine falls back to throttle-only safety. If you&rsquo;re not sure how this will affect you, the first week of your trial will tell you.</p>
+            <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">Dilution is automatic. There&rsquo;s no toggle.</strong> We&rsquo;ve seen what happens when operators turn off their own safety, and we won&rsquo;t ship a product that lets you do that to yourself. Everything else is yours to adjust (with plenty of guidance baked in).</p>
         </div>
     </div>
 </section>
@@ -1175,7 +1178,7 @@
                     <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 20px;">
                         <span class="font-mono text-xs-c tabular-nums text-muted" style="white-space:nowrap;padding-top:2px;">14:32:45</span>
                         <i class="ph ph-lightning" style="font-size:16px;color:var(--color-accent);flex-shrink:0;padding-top:2px;"></i>
-                        <span class="text-sm-c">Booster Mode active: broadcast cover detected, queue accelerated to <span class="font-mono tabular-nums">1 send / 2s</span></span>
+                        <span class="text-sm-c">Booster Mode active: broadcast cover detected</span>
                     </div>
                     <div style="display:flex;align-items:flex-start;gap:12px;padding:10px 20px;background:var(--color-surface-2);">
                         <span class="font-mono text-xs-c tabular-nums text-muted" style="white-space:nowrap;padding-top:2px;">14:32:31</span>
@@ -1262,6 +1265,12 @@
                     Always here to help with instant AI answers and human support tickets.
                 </span>
             </button>
+
+            <!-- Connector linking the two stacked hotspots (under 21.6% and under 6.5%) to show they're related -->
+            <div class="hotspot-connector" aria-hidden="true" style="position:absolute;top:60%;height:24%;left:calc(68% - 1px);width:2px;background:var(--color-accent);opacity:0.45;pointer-events:none;z-index:3;">
+                <div style="position:absolute;top:-5px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-bottom:7px solid var(--color-accent);"></div>
+                <div style="position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid var(--color-accent);"></div>
+            </div>
         </div>
     </div>
 </section>
@@ -1322,6 +1331,7 @@
     }
     @media (max-width: 480px) {
         .hotspot { display: none; }
+        .hotspot-connector { display: none; }
     }
     .hotspot-tooltip::after {
         content: '';
@@ -1376,7 +1386,7 @@
         <div style="max-width:780px;margin-bottom:48px;" class="reveal">
             <div class="label" style="color:var(--color-accent);margin-bottom:12px;">Reputation protection</div>
             <h2 class="font-display text-3xl-c" style="font-weight:700;margin:0 0 20px;color:var(--color-brand);">Your domain is the one thing we won&rsquo;t risk.</h2>
-            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">Dilution is the first layer of defense. Real-time monitoring is the second.</strong> Re-engagement works or it doesn&rsquo;t, but it should never cost you your sender reputation and you should never send from a different platform, sending domain, or Identity. ReEngage Pro watches bounce rates, complaint rates, and domain health scores across every major mailbox provider in real time. If any threshold approaches the danger zone, sending pauses automatically. You don&rsquo;t have to be watching. The system is.</p>
+            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0;"><strong style="color:var(--color-text-primary);">Dilution is the first layer of defense. Real-time monitoring is the second.</strong> Re-engagement works or it doesn&rsquo;t, but it should never cost you your sender reputation and you should never send from a different platform, sending domain, or Identity. ReEngage Pro watches bounce rates, complaint rates, and domain health scores across every major mailbox provider in real time. If any threshold approaches the danger zone, sending pauses automatically. The system watches. You don&rsquo;t have to.</p>
         </div>
 <div style="display:grid;grid-template-columns:7fr 5fr;gap:48px;align-items:start;" class="deliver-grid reveal">
             <!-- Left: Deliverability health -->
@@ -1624,11 +1634,12 @@
                 </div>
                 <div class="faq-item">
                     <button class="faq-question" aria-expanded="false">
-                        <span>What if I don&rsquo;t send broadcasts regularly?</span>
+                        <span>Does my broadcast frequency matter?</span>
                         <i class="ph ph-caret-down faq-chevron" style="font-size:18px;"></i>
                     </button>
                     <div class="faq-answer">
-                        <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">Then dilution coverage is limited. The Broadcast Dilution Layer works by riding underneath your existing broadcast volume. If you broadcast weekly, you have plenty of cover windows. If you broadcast monthly or less, the engine falls back to throttle-only safety and your re-engagement campaign moves more slowly to compensate.</p>
+                        <p class="text-base-c" style="color:var(--color-text-secondary);margin:0 0 12px;">The system adapts to your cadence whether that&rsquo;s weekly, biweekly, or monthly. You don&rsquo;t configure anything. It works around your existing send pattern automatically.</p>
+                        <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">If you want re-engagement to move faster, broadcasting more often will help. Just be careful: more sends to your engaged list can burn their trust faster than it speeds up recovery.</p>
                     </div>
                 </div>
                 <div class="faq-item">
