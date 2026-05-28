@@ -223,6 +223,7 @@
             scroll-behavior: smooth;
             background: var(--color-surface-0);
             color: var(--color-text-primary);
+            overflow-x: hidden;
         }
 
         body {
@@ -232,6 +233,7 @@
             margin: 0;
             -webkit-font-smoothing: antialiased;
             -moz-osx-font-smoothing: grayscale;
+            overflow-x: hidden;
         }
 
         /* Dark section overrides */
@@ -1225,7 +1227,7 @@
         </div>
 
         <!-- Big screenshot: Campaigns dashboard -->
-        <div style="position:relative;max-width:1100px;margin:0 auto;">
+        <div class="screenshot-clickable" id="screenshot-trigger" role="button" tabindex="0" aria-label="View campaigns dashboard at full size" style="position:relative;max-width:1100px;margin:0 auto;cursor:zoom-in;">
             <div style="border-radius:10px;overflow:hidden;border:1px solid var(--color-border);box-shadow:var(--shadow-lg),0 20px 50px -16px oklch(20% 0.04 255 / 0.18);">
                 <div style="display:flex;align-items:center;gap:8px;padding:10px 16px;background:var(--color-surface-2);border-bottom:1px solid var(--color-border);">
                     <div style="display:flex;gap:6px;">
@@ -1272,8 +1274,21 @@
                 <div style="position:absolute;bottom:-5px;left:50%;transform:translateX(-50%);width:0;height:0;border-left:6px solid transparent;border-right:6px solid transparent;border-top:7px solid var(--color-accent);"></div>
             </div>
         </div>
+
+        <!-- Tap-to-enlarge hint (mobile only) -->
+        <p class="screenshot-tap-hint" style="text-align:center;margin:14px auto 0;color:var(--color-text-muted);font-size:13px;display:none;"><i class="ph ph-magnifying-glass-plus" style="vertical-align:middle;margin-right:4px;"></i>Tap to enlarge</p>
     </div>
 </section>
+
+<!-- Image zoom modal (for screenshot click-to-enlarge) -->
+<div class="image-modal-overlay" id="image-modal" role="dialog" aria-modal="true" aria-label="Campaigns dashboard at full size">
+    <button id="close-image-modal" class="image-modal-close" aria-label="Close image">
+        <i class="ph ph-x" style="font-size:22px;"></i>
+    </button>
+    <div class="image-modal-content">
+        <img src="campaigns.png" alt="ReEngage Pro Campaigns dashboard at full size">
+    </div>
+</div>
 
 <style>
     .hotspot {
@@ -1333,6 +1348,62 @@
         .hotspot { display: none; }
         .hotspot-connector { display: none; }
     }
+
+    /* Tap-to-enlarge hint shows only on mobile */
+    @media (max-width: 768px) {
+        .screenshot-tap-hint { display: block !important; }
+    }
+
+    /* Image zoom modal */
+    .image-modal-overlay {
+        position: fixed;
+        inset: 0;
+        background: rgba(8, 14, 28, 0.95);
+        z-index: 200;
+        display: none;
+        align-items: center;
+        justify-content: center;
+        padding: 20px;
+    }
+    .image-modal-overlay.active { display: flex; }
+    .image-modal-close {
+        position: absolute;
+        top: 16px;
+        right: 16px;
+        background: rgba(255, 255, 255, 0.12);
+        border: none;
+        color: #fff;
+        width: 44px;
+        height: 44px;
+        border-radius: 50%;
+        cursor: pointer;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        padding: 0;
+        transition: background 0.15s ease;
+        z-index: 1;
+    }
+    .image-modal-close:hover { background: rgba(255, 255, 255, 0.2); }
+    .image-modal-content {
+        width: 100%;
+        max-width: 1800px;
+        max-height: calc(100vh - 60px);
+        overflow: auto;
+        display: flex;
+        align-items: flex-start;
+        justify-content: center;
+    }
+    .image-modal-content img {
+        max-width: 100%;
+        height: auto;
+        display: block;
+        border-radius: 4px;
+    }
+    .screenshot-clickable:focus-visible {
+        outline: 3px solid var(--color-accent);
+        outline-offset: 4px;
+    }
     .hotspot-tooltip::after {
         content: '';
         position: absolute;
@@ -1375,6 +1446,46 @@
                 document.querySelectorAll('.hotspot.is-active').forEach(function(h) {
                     h.classList.remove('is-active');
                 });
+            }
+        });
+
+        // Screenshot click-to-enlarge → opens image modal
+        var screenshotTrigger = document.getElementById('screenshot-trigger');
+        var imageModal = document.getElementById('image-modal');
+        var closeImageBtn = document.getElementById('close-image-modal');
+
+        function openImageModal() {
+            if (!imageModal) return;
+            imageModal.classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+        function closeImageModalFn() {
+            if (!imageModal) return;
+            imageModal.classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        if (screenshotTrigger) {
+            screenshotTrigger.addEventListener('click', function(e) {
+                if (e.target.closest('.hotspot')) return;
+                openImageModal();
+            });
+            screenshotTrigger.addEventListener('keydown', function(e) {
+                if (e.key === 'Enter' || e.key === ' ') {
+                    e.preventDefault();
+                    openImageModal();
+                }
+            });
+        }
+        if (closeImageBtn) closeImageBtn.addEventListener('click', closeImageModalFn);
+        if (imageModal) {
+            imageModal.addEventListener('click', function(e) {
+                if (e.target === imageModal) closeImageModalFn();
+            });
+        }
+        document.addEventListener('keydown', function(e) {
+            if (e.key === 'Escape' && imageModal && imageModal.classList.contains('active')) {
+                closeImageModalFn();
             }
         });
     })();
