@@ -77,11 +77,10 @@ Half of most email lists is dormant, and those subscribers aren't just dead weig
 The reputation protection and send-pacing are built on proprietary, patent-pending original inventions. Describe what they achieve, never how they work internally, and never quantify the inventions or patents.
 
 ## Pricing
-Every plan includes the full platform — no features are gated. Flat monthly pricing, no long-term contracts, cancel anytime.
+There are two self-serve plans, both including the full platform (no features gated), with flat monthly pricing, no long-term contracts, cancel anytime, and a 7-day free trial that needs no credit card:
 - Pro — $147/month: up to 50,000 subscribers, 2 ESP connections, live safety monitoring, full activity audit trail.
-- Concierge — $347/month (most popular): unlimited subscribers, 4 ESP connections, dedicated onboarding, custom safety thresholds, priority support.
-- Agency — custom pricing: unlimited subscribers, unlimited ESP connections, multi-client dashboard, white-label reports, dedicated account manager.
-All plans start with a 7-day free trial. No credit card required.
+- Concierge — $347/month (most popular): unlimited subscribers, 4 ESP connections, everything in Pro plus dedicated onboarding, custom safety thresholds, and priority support.
+For agencies and large senders there is also a custom Agency option (unlimited subscribers and ESP connections, a multi-client dashboard, white-label reports, and a dedicated account manager). Agency has no fixed self-serve price — interested teams book a call to set it up. Always describe pricing as two plans (Pro and Concierge) plus a custom Agency option; never call it "three plans."
 
 ## Supported ESPs
 Klaviyo, ActiveCampaign, and Kit. Mailchimp and HubSpot are coming soon.
