@@ -1027,6 +1027,64 @@ async function addContactToList(contactId) {
     }
 }
 
+// Trial signup: create the platform account, then add to ActiveCampaign (one request does both)
+const PLATFORM_REGISTER_URL = process.env.PLATFORM_REGISTER_URL || 'https://app.reengage.pro/api/auth/register';
+
+async function addContactToActiveCampaign(firstName, email) {
+    if (!ACTIVE_CAMPAIGN_API_KEY) {
+        console.error('ACTIVE_CAMPAIGN_API_KEY not set — skipping AC injection');
+        return;
+    }
+    // contact/sync = create-or-update (idempotent), then add to the trial list
+    const syncResp = await fetch(`${ACTIVE_CAMPAIGN_URL}/api/3/contact/sync`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'Api-Token': ACTIVE_CAMPAIGN_API_KEY },
+        body: JSON.stringify({ contact: { email, firstName } }),
+    });
+    if (!syncResp.ok) {
+        throw new Error('AC contact sync failed: ' + (await syncResp.text()));
+    }
+    const data = await syncResp.json();
+    const contactId = data.contact && data.contact.id;
+    if (contactId) await addContactToList(contactId);
+}
+
+app.post('/api/register', async (req, res) => {
+    const { firstName, lastName, email, password, referralCode, acceptedTerms, termsVersion } = req.body || {};
+    if (!firstName || !email || !password) {
+        return res.status(400).json({ error: 'First name, email, and password are required.' });
+    }
+
+    // 1) Create the trial account on the platform (server-to-server; public signup endpoint)
+    let status, data;
+    try {
+        const resp = await fetch(PLATFORM_REGISTER_URL, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+            body: JSON.stringify({ firstName, lastName, email, password, referralCode, acceptedTerms, termsVersion }),
+        });
+        status = resp.status;
+        const text = await resp.text();
+        try { data = text ? JSON.parse(text) : {}; } catch { data = { error: 'Unexpected response from registration service.' }; }
+    } catch (err) {
+        console.error('Platform register call failed:', err);
+        return res.status(502).json({ error: 'Could not reach the registration service. Please try again.' });
+    }
+    // Bubble the platform's status + error JSON so the form's existing error handling works
+    if (status < 200 || status >= 300) {
+        return res.status(status).json(data);
+    }
+
+    // 2) Account created — inject into ActiveCampaign. Never fail the signup if AC errors.
+    try {
+        await addContactToActiveCampaign(firstName, email);
+    } catch (acErr) {
+        console.error('AC injection failed (account still created):', acErr);
+    }
+
+    return res.json({ success: true });
+});
+
 // Admin page route
 app.get('/admin', (req, res) => {
     if (req.query.key !== ADMIN_PASSWORD) {
