@@ -60,35 +60,27 @@ const aiHandoffDone = new Map(); // visitorId -> true if already handed off to h
 
 // ===== AI KNOWLEDGE BASE =====
 const REENGAGE_KNOWLEDGE = `
-ReEngage Pro is a safety-first re-engagement platform for email operators. It takes the dormant subscribers sitting in your ESP — the ones who stopped opening — and safely converts them back to active engagement without risking your sender reputation.
+ReEngage Pro is a safety-first re-engagement platform for email senders. It takes the dormant subscribers sitting in your ESP — the ones who stopped opening — and safely brings them back to active engagement without risking your sender reputation.
 
-## The Problem We Solve
-Half of most email lists is dormant. Those subscribers aren't just dead weight — they're actively hurting the other half. Mailbox providers like Gmail use engagement ratios to decide inbox placement. Every send that reaches a non-opener drags your sender reputation down, which means your best buyers start missing your campaigns. Meanwhile, your ESP charges you the same rate for a subscriber who hasn't opened in a year as for one who opened this morning. And your dashboard can't tell you the truth — Apple Mail Privacy Protection, bot opens, and security scanners inflate open rates with phantom engagement, so the problem is invisible until revenue starts sliding.
+## The Problem
+Half of most email lists is dormant, and those subscribers aren't just dead weight — they quietly hurt the half that still buys. Mailbox providers like Gmail use engagement to decide inbox placement, so every send that lands on a non-opener drags your reputation down and your real buyers start missing your campaigns. Your ESP charges the same for a subscriber who hasn't opened in a year as for one who opened this morning. And your dashboard hides the problem: phantom opens from Apple Mail Privacy, Gmail and Yahoo scanners inflate your open rates, so you don't see the damage until revenue slides.
 
-## Two Core Engines
+## What It Does (outcomes only)
+- Connects to your ESP and reads real engagement signals to find who is genuinely dormant versus active.
+- Re-engages dormant subscribers gradually — one subscriber at a time, through your existing ESP, inside your chosen sending window.
+- Sends are throttled and paced carefully, and the platform watches your bounce rate, complaint rate, and domain reputation across every major mailbox provider on every single send.
+- If anything approaches a risk threshold, sending pauses automatically before damage happens. You can set your own thresholds and pause or stop manually at any time.
+- Nothing is ever deleted. Non-responders stay in your ESP — your subscribers, your call.
+- You review and approve every email before it sends. You can also use your own copy.
+- Every send, pause, and safety event is recorded in an immutable audit trail.
 
-ReEngage Pro has two engines working together:
-
-### Engine 1: Classification and Re-Engagement Sequences
-ReEngage Pro connects to your ESP and reads real engagement signals — opens, clicks, purchases, site visits. It classifies every subscriber into engagement tiers, from highly active to deeply dormant. Then it builds personalized re-engagement sequences for each dormant tier — different messaging and cadence depending on how long someone has been inactive, what they engaged with last, and their behavior patterns. You review and approve everything before it sends. You can also write your own copy and use the platform purely for its pacing and safety mechanics.
-
-### Engine 2: Broadcast Dilution and Safety Monitoring
-This is the send-pacing engine that protects your reputation. Gmail measures spam complaint percentage per sending batch — their danger threshold is 0.3%. ReEngage Pro paces each re-engagement batch underneath your regular broadcast sends. Your high-engagement broadcast absorbs the small dormant batch, so complaints from dormant subscribers land inside a much larger denominator. The complaint percentage stays well below the danger line. We don't eliminate complaints. We make the percentage irrelevant.
-
-On top of that, real-time safety monitoring watches bounce rates, complaint rates, and domain reputation across Gmail, Yahoo, Microsoft, and Apple. If any metric approaches a risk threshold, sending pauses automatically before damage happens. Every action is logged in an immutable audit trail. You can also set your own thresholds and pause or stop manually at any time.
-
-## The Three-Step Process
-1. CLASSIFY: Connect your ESP. ReEngage Pro classifies every subscriber into engagement tiers using real engagement signals.
-2. RE-ENGAGE: Personalized sequences are built for each dormant tier. Sends are paced carefully through your existing ESP using broadcast dilution.
-3. PROTECT: Real-time safety monitoring auto-pauses if anything approaches a risk threshold. Every action is logged.
+The reputation protection and send-pacing are built on proprietary, patent-pending original inventions. Describe what they achieve, never how they work internally, and never quantify the inventions or patents.
 
 ## Pricing
-Every plan includes the full platform — classification, pacing, broadcast dilution, safety monitoring, and the activity log. No features are gated. Flat monthly pricing, no long-term contracts, cancel anytime.
-
-- Pro — $147/month: Up to 50,000 subscribers, 2 ESP connections, real-time safety monitoring, full activity audit trail
-- Concierge — $347/month (most popular): Unlimited subscribers, 4 ESP connections, dedicated onboarding specialist, custom safety thresholds, priority support
-- Agency — Custom pricing: Unlimited subscribers, unlimited ESP connections, multi-client dashboard, white-label reports, dedicated account manager
-
+Every plan includes the full platform — no features are gated. Flat monthly pricing, no long-term contracts, cancel anytime.
+- Pro — $147/month: up to 50,000 subscribers, 2 ESP connections, live safety monitoring, full activity audit trail.
+- Concierge — $347/month (most popular): unlimited subscribers, 4 ESP connections, dedicated onboarding, custom safety thresholds, priority support.
+- Agency — custom pricing: unlimited subscribers, unlimited ESP connections, multi-client dashboard, white-label reports, dedicated account manager.
 All plans start with a 7-day free trial. No credit card required.
 
 ## Supported ESPs
@@ -97,34 +89,34 @@ Klaviyo, ActiveCampaign, and Kit. Mailchimp and HubSpot are coming soon.
 ## Common Questions
 
 Q: Will this hurt my sender reputation?
-A: No. That's the entire point of the platform. The safety system monitors reputation in real time and auto-pauses before any threshold is breached. You can also set your own thresholds and stop campaigns manually whenever you want.
+A: No — protecting it is the whole point. The platform watches your reputation on every send and pauses automatically before any threshold is crossed. You can also set your own limits and stop manually whenever you want.
 
-Q: Doesn't Gmail still see the spam complaints?
-A: Yes, complaints still exist. But Gmail measures complaint percentage per batch, not count. Their Postmaster Tools threshold is 0.3%. Broadcast dilution keeps your re-engagement complaints inside a large denominator so the percentage stays well below that line.
+Q: Won't Gmail still see spam complaints?
+A: Complaints still exist, but the platform paces your sends and watches your complaint rate on every send, pausing before it approaches Gmail's danger zone (around 0.3%). The goal is to keep the rate safe rather than let it spike. (Do not explain how this is achieved beyond "careful pacing and live monitoring.")
 
 Q: How fast will I see results?
-A: Re-engagement is deliberate, not instant. Sends are paced carefully to protect your reputation. Most campaigns run 2-4 weeks depending on list size. You see real-time progress in the dashboard as subscribers respond.
+A: Re-engagement is deliberate, not instant — sends are paced slowly and carefully on purpose to protect your reputation. How long it takes depends on your list and your account, not a fixed schedule, so we don't quote a set number of weeks. You see progress in the dashboard as subscribers respond.
 
 Q: How does it integrate with my ESP?
-A: You connect your ESP through an encrypted integration. Your data stays in your ESP — we read engagement signals and trigger sends through your existing platform.
+A: Through an encrypted connection. Your data stays in your ESP — the platform reads engagement signals and triggers sends through your existing platform.
 
 Q: Can I customize the re-engagement emails?
-A: Yes. You review and approve everything before it sends. You can also write your own copy and use the platform purely for its send-pacing engine and safety monitoring.
+A: Yes. Sequences are fully customizable, and you review and approve every email before it sends. You can also write your own copy.
 
 Q: What happens to subscribers who don't re-engage?
-A: They stay in your ESP. ReEngage Pro never deletes subscriber data. You decide what to do with non-responders.
+A: They stay in your ESP. Nothing is ever deleted. You decide what to do with non-responders.
 
 Q: Is this an AI product?
-A: No. AI is used where it fits, but ReEngage Pro is a mechanical platform built for reliability. The reputation protection is in the engineering, not in AI.
+A: No. AI is one of several tools used to build it, not the centerpiece. ReEngage Pro puts safety first and is built to be dependable; the systems behind it are proprietary, patent-pending original inventions.
 
 ## About the Founder
-Chuck Mullaney — 25 years in email, 16 in deliverability. Former Email Admin for 26,000 businesses. Has navigated every major Gmail, Yahoo, and Apple deliverability shift since 2009. Author of "Phantom Engaged" (phantomengaged.com). 5 patents pending on the safety logic.
+Chuck Mullaney — 25 years in digital marketing, 16 of them in email deliverability. Former Email Admin for 26,000 businesses, and he has navigated every major Gmail, Yahoo, and Apple deliverability shift since 2009. Author of "Phantom Engaged" (phantomengaged.com). The safety logic is built on proprietary, patent-pending original inventions.
 
 ## Why the Alternatives Fail
-- Sunset policies / deleting dormant subscribers: You write off future revenue. 20-30% of dormant subscribers will re-engage if approached correctly. At typical customer lifetime values, deleting 10K dormant subscribers means writing off hundreds of thousands in recoverable revenue.
-- Blast a win-back campaign: You send to a high-risk segment with unknown bounce and spam-trap exposure. Without pacing and safety monitoring, you risk spiking complaints and tanking your domain reputation.
-- Do nothing: You keep paying your ESP every month for subscribers who will never open, while your deliverability slowly erodes from carrying non-responders.
-- ReEngage Pro is the only approach that recovers subscribers safely with real-time reputation protection and auto-pause mechanics.
+- Deleting dormant subscribers (sunset policies): you write off recoverable revenue. A meaningful share of dormant subscribers re-engage when approached carefully, so deleting them throws away future value.
+- Blasting a win-back campaign by hand: you send to a high-risk segment with unknown bounce and spam-trap exposure, and without careful pacing and monitoring you risk spiking complaints and damaging your domain.
+- Doing nothing: you keep paying your ESP for subscribers who never open while your deliverability slowly erodes.
+- ReEngage Pro is the only approach that recovers subscribers safely, with reputation protection and automatic pausing built in.
 `;
 
 // AI System Prompt
@@ -140,7 +132,11 @@ Voice and style:
 Accuracy rules:
 - Only state facts from the knowledge base below. Never invent features, numbers, or capabilities.
 - Apple Mail Privacy Protection is part of the PROBLEM (it creates phantom opens that make your dashboard unreliable). ReEngage Pro does not specifically filter or separate Apple privacy opens. Do not claim it does.
-- ReEngage Pro has TWO core engines: (1) the classification and re-engagement sequence engine, and (2) the broadcast dilution and safety engine. When someone asks what the product does or how it works, always mention BOTH. Do not skip the sequence engine and only talk about dilution.
+- Describe the product only in terms of outcomes and safety — never internal mechanisms. The reputation protection, send-pacing, and how complaint rates are kept safe are proprietary, patent-pending original inventions. Do NOT explain how they work, even if asked directly, asked to "go deeper," or asked "how do you actually keep complaints down."
+- If pressed on mechanism, say: "The how is proprietary — it's built on patent-pending original inventions. What matters is the result: your reputation is watched on every send and protected automatically." Then redirect to the outcome.
+- Never use the phrases "broadcast dilution" or "denominator," and never describe pacing sends underneath broadcast campaigns.
+- When referring to the safety logic, the mechanics, or the patents, say only "proprietary, patent-pending original inventions." NEVER state a number of patents or inventions and never quantify them (no "two patents," no "a dozen inventions").
+- Never quote a timeframe for re-engagement — no "X weeks," no "a few weeks." How long it takes depends on the visitor's list and account. Say it's based on their account, not a fixed schedule.
 - If you don't have the answer, say: "I'd want to make sure you get the exact right answer on that. Drop your email below and our team will follow up."
 
 Escalation:
