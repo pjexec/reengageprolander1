@@ -623,7 +623,7 @@
             <div class="reveal">
                 <img src="patent-pending-badge.png" alt="Patent-pending technology" style="height:44px;width:auto;display:block;margin-bottom:20px;">
                 <h1 class="font-display text-hero" style="font-weight:700;color:var(--color-brand);margin:0 0 24px;">Half your email list is quietly wrecking the other half.</h1>
-                <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 32px;max-width:560px;"><span style="display:inline-block;background:var(--color-brand);color:#fff;font-weight:700;line-height:1.15;padding:2px 10px;border-radius:6px;margin-right:8px;vertical-align:middle;">Good News:</span>there&rsquo;s <span style="text-decoration:underline;text-underline-offset:3px;">finally</span> a safe way to fix it. ReEngage Pro wakes your quiet subscribers automatically without risking your inbox deliverability.</p>
+                <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 32px;max-width:560px;"><span class="font-display" style="font-weight:700;color:var(--color-brand);">Good News:</span> there&rsquo;s <span style="text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;text-decoration-skip-ink:none;">finally</span> a safe way to fix it. ReEngage Pro wakes your quiet subscribers automatically without risking your inbox deliverability.</p>
                 <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
                     <button class="btn-primary" id="hero-cta"><i class="ph ph-arrow-right" style="font-size:16px;"></i> Start Free Trial, the safe way</button>
                     <a href="#safety" class="btn-ghost">How is this safe?</a>
@@ -632,72 +632,33 @@
                 <p class="text-sm-c" style="color:var(--color-text-muted);margin-top:12px;">No credit card &middot; Cancel anytime</p>
             </div>
             <div class="reveal" style="display:flex;justify-content:flex-end;">
-                <!-- Dashboard preview with window chrome -->
-                <div style="width:100%;max-width:460px;background:var(--color-surface-1);border:1px solid var(--color-border);border-radius:10px;overflow:hidden;box-shadow:var(--shadow-xl),0 20px 60px -12px oklch(20% 0.04 255 / 0.18);">
-                    <!-- Window title bar -->
-                    <div style="display:flex;align-items:center;gap:8px;padding:12px 16px;background:var(--color-surface-2);border-bottom:1px solid var(--color-border);">
-                        <div style="display:flex;gap:6px;">
-                            <div style="width:10px;height:10px;border-radius:50%;background:oklch(65% 0.20 25);"></div>
-                            <div style="width:10px;height:10px;border-radius:50%;background:oklch(78% 0.16 85);"></div>
-                            <div style="width:10px;height:10px;border-radius:50%;background:oklch(68% 0.16 155);"></div>
+                <!-- AGENT HERO: animated Claude conversation via ReEngage Pro MCP (2026-07-09).
+                     Rollback: restore from final-lander.pre-agent-hero-2026-07-09.html -->
+                <div class="cw-col">
+                    <div class="cw cw-skin" aria-label="Animated example: a Claude conversation connected to a ReEngage Pro account through the ReEngage Pro MCP">
+                        <div class="cw-bar">
+                            <div class="cw-lights"><i></i><i></i><i></i></div>
+                            <div class="cw-title">
+                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97757" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+                                    <line x1="12" y1="12" x2="12" y2="3.2"/><line x1="12" y1="12" x2="17.5" y2="5.5"/>
+                                    <line x1="12" y1="12" x2="20.8" y2="10.6"/><line x1="12" y1="12" x2="19" y2="17.8"/>
+                                    <line x1="12" y1="12" x2="13.6" y2="21"/><line x1="12" y1="12" x2="7.4" y2="19.6"/>
+                                    <line x1="12" y1="12" x2="3.4" y2="15.2"/><line x1="12" y1="12" x2="4.2" y2="8.4"/>
+                                    <line x1="12" y1="12" x2="8.6" y2="4.2"/>
+                                </svg>
+                                Claude
+                            </div>
+                            <div class="cw-conn"><img src="reengage-shield.png" alt="">ReEngage Pro MCP<span class="cw-dot"></span></div>
                         </div>
-                        <span class="font-mono text-xs-c" style="color:var(--color-text-muted);margin-left:auto;">app.reengage.pro/dashboard</span>
-                    </div>
-                    <!-- Dashboard content -->
-                    <div style="padding:20px;">
-                        <!-- Status bar -->
-                        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
-                            <div style="display:flex;align-items:center;gap:8px;">
-                                <div style="width:8px;height:8px;border-radius:50%;background:var(--color-success);box-shadow:0 0 6px oklch(58% 0.14 155 / 0.5);"></div>
-                                <span class="font-mono text-xs-c" style="color:var(--color-success);font-weight:600;">SYSTEM ACTIVE</span>
-                            </div>
-                            <span class="font-mono text-xs-c tabular-nums" style="color:var(--color-text-muted);">Last sync: 4s ago</span>
-                        </div>
-                        <!-- Metric cards -->
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px;">
-                            <div style="background:var(--color-surface-2);border-radius:6px;padding:14px 12px;border:1px solid var(--color-border);">
-                                <div class="label text-muted" style="margin-bottom:6px;font-size:0.65rem;">Reputation Score</div>
-                                <div class="font-mono tabular-nums" style="font-size:var(--text-2xl);font-weight:700;color:var(--color-success);line-height:1;">94</div>
-                                <div style="margin-top:6px;height:3px;border-radius:2px;background:var(--color-border);overflow:hidden;"><div style="width:94%;height:100%;background:var(--color-success);border-radius:2px;"></div></div>
-                            </div>
-                            <div style="background:var(--color-surface-2);border-radius:6px;padding:14px 12px;border:1px solid var(--color-border);">
-                                <div class="label text-muted" style="margin-bottom:6px;font-size:0.65rem;">Re-engaged</div>
-                                <div class="font-mono tabular-nums" style="font-size:var(--text-2xl);font-weight:700;color:var(--color-success);line-height:1;">1,104</div>
-                                <div style="margin-top:6px;display:flex;align-items:center;gap:4px;"><i class="ph ph-trend-up" style="font-size:11px;color:var(--color-success);"></i><span class="font-mono text-xs-c" style="color:var(--color-success);">+23%</span></div>
-                            </div>
-                        </div>
-                        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px;">
-                            <div style="background:var(--color-surface-2);border-radius:6px;padding:14px 12px;border:1px solid var(--color-border);">
-                                <div class="label text-muted" style="margin-bottom:6px;font-size:0.65rem;">Spam Rate</div>
-                                <div class="font-mono tabular-nums" style="font-size:var(--text-xl);font-weight:700;color:var(--color-success);line-height:1;">0.09%</div>
-                            </div>
-                            <div style="background:var(--color-surface-2);border-radius:6px;padding:14px 12px;border:1px solid var(--color-border);">
-                                <div class="label text-muted" style="margin-bottom:6px;font-size:0.65rem;">Unsubscribes</div>
-                                <div class="font-mono tabular-nums" style="font-size:var(--text-2xl);font-weight:700;color:var(--color-success);line-height:1;">3</div>
-                            </div>
-                        </div>
-                        <!-- Activity feed -->
-                        <div style="border-top:1px solid var(--color-border);padding-top:12px;">
-                            <div class="label text-muted" style="margin-bottom:10px;font-size:0.6rem;">LIVE ACTIVITY</div>
-                            <div style="display:flex;flex-direction:column;gap:6px;">
-                                <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--color-surface-2);border-radius:4px;">
-                                    <i class="ph ph-shield-check" style="color:var(--color-success);font-size:13px;"></i>
-                                    <span class="font-mono text-xs-c tabular-nums" style="color:var(--color-text-muted);">14:32:01</span>
-                                    <span class="text-xs-c text-secondary" style="font-size:0.72rem;">Bounce rate nominal</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--color-surface-2);border-radius:4px;">
-                                    <i class="ph ph-envelope" style="color:var(--color-accent);font-size:13px;"></i>
-                                    <span class="font-mono text-xs-c tabular-nums" style="color:var(--color-text-muted);">14:31:58</span>
-                                    <span class="text-xs-c text-secondary" style="font-size:0.72rem;">Re-engagement sent: sarah@...</span>
-                                </div>
-                                <div style="display:flex;align-items:center;gap:8px;padding:7px 10px;background:var(--color-surface-2);border-radius:4px;">
-                                    <i class="ph ph-arrow-u-up-left" style="color:var(--color-success);font-size:13px;"></i>
-                                    <span class="font-mono text-xs-c tabular-nums" style="color:var(--color-text-muted);">14:31:42</span>
-                                    <span class="text-xs-c text-secondary" style="font-size:0.72rem;">Recovered: mike@...</span>
-                                </div>
-                            </div>
+                        <div class="cw-chat" id="cw-chat"></div>
+                        <div class="cw-fade"></div>
+                        <div class="cw-input">
+                            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg>
+                            Reply to Claude&hellip;
+                            <span class="cw-tools"><svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" aria-hidden="true"><path d="M14.7 6.3a5 5 0 0 0-6.9 6.9L3 18v3h3l4.8-4.8a5 5 0 0 0 6.9-6.9l-3.2 3.2-2-2z"/></svg>26 tools</span>
                         </div>
                     </div>
+                    <p class="cw-caption">Works with Claude, ChatGPT, or Gemini. <a href="#claude-answer">See its full answer &darr;</a></p>
                 </div>
             </div>
         </div>
@@ -709,6 +670,241 @@
         section:first-of-type .container-c > div { grid-template-columns: 1fr !important; }
     }
 </style>
+
+<!-- ===== AGENT CONNECTION: Claude window skin + hero animation (2026-07-09) ===== -->
+<style>
+    .cw-col{width:100%;max-width:500px;display:flex;flex-direction:column}
+    .cw{background:#262624;border-radius:14px;box-shadow:var(--shadow-xl),0 20px 60px -12px oklch(20% 0.04 255 / 0.3);overflow:hidden;display:flex;flex-direction:column;height:620px;position:relative;width:100%}
+    .cw-bar{display:flex;align-items:center;gap:12px;padding:11px 14px;background:#1f1e1c;border-bottom:1px solid #413f3b;flex-shrink:0}
+    .cw-lights{display:flex;gap:7px}
+    .cw-lights i{width:12px;height:12px;border-radius:50%}
+    .cw-lights i:nth-child(1){background:#ff5f57}
+    .cw-lights i:nth-child(2){background:#febc2e}
+    .cw-lights i:nth-child(3){background:#28c840}
+    .cw-title{display:flex;align-items:center;gap:7px;color:#f0eee6;font-family:Georgia,'Times New Roman',serif;font-size:15px;margin:0 auto;transform:translateX(-34px)}
+    .cw-conn{display:flex;align-items:center;gap:7px;background:#31302e;border:1px solid #413f3b;border-radius:999px;padding:5px 12px 5px 8px;font-family:var(--font-body);font-size:12px;font-weight:500;color:#f0eee6;white-space:nowrap}
+    .cw-conn img{height:15px}
+    .cw-dot{width:7px;height:7px;border-radius:50%;background:#4cbb7f;box-shadow:0 0 6px #4cbb7f}
+    .cw-chat{flex:1;overflow-y:auto;padding:18px 0 46px;scrollbar-width:none}
+    .cw-chat::-webkit-scrollbar{display:none}
+    .cw-chat.cw-fadeout{opacity:0}
+    .cw-chat{opacity:1;transition:opacity .8s}
+    .cw-fade{position:absolute;left:0;right:0;bottom:58px;height:56px;background:linear-gradient(to bottom,rgba(38,38,36,0),#262624);pointer-events:none}
+    .cw-input{flex-shrink:0;display:flex;align-items:center;gap:10px;margin:0 14px 14px;background:#31302e;border:1px solid #413f3b;border-radius:12px;padding:11px 14px;color:#aeaba0;font-size:13px;font-family:var(--font-body)}
+    .cw-tools{margin-left:auto;font-family:var(--font-mono);font-size:10px;border:1px solid #413f3b;border-radius:999px;padding:3px 8px;display:flex;align-items:center;gap:5px}
+    .cw-caption{margin:14px 4px 0;font-size:var(--text-sm);color:var(--color-text-muted);font-family:var(--font-body)}
+    .cw-caption a{color:var(--color-accent);text-decoration:none;font-weight:500}
+    .cw-caption a:hover{text-decoration:underline}
+
+    .cw-skin .msg{margin:7px 18px;max-width:82%;opacity:0;transform:translateY(8px);transition:opacity .55s ease,transform .55s ease}
+    .cw-skin .msg.show{opacity:1;transform:none}
+    .cw-skin .msg.user{margin-left:auto;background:#3b3a36;color:#f0eee6;padding:10px 15px;border-radius:16px 16px 4px 16px;font-family:var(--font-body);font-size:14px;line-height:1.45;width:fit-content}
+    .cw-skin .msg.claude{color:#f0eee6;font-family:Georgia,'Times New Roman',serif;font-size:14.5px;line-height:1.6}
+    .cw-skin .msg.claude .tok{opacity:0}
+    .cw-skin .msg.claude .tok.on{opacity:1;transition:opacity .18s}
+    .cw-skin .msg.claude strong{color:#f0eee6}
+    .cw-skin .msg.claude p{margin:12px 0 4px}
+    .cw-skin .msg.claude h5{font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:.02em;margin:14px 0 6px;color:#d97757}
+    .cw-skin .msg.claude ul{margin:4px 0;padding-left:18px;list-style:disc}
+    .cw-skin .msg.claude li{margin:3px 0}
+    .cw-skin .thought{display:flex;align-items:center;gap:6px;margin:10px 18px 2px;color:#aeaba0;font-family:var(--font-body);font-size:12px;opacity:0;transition:opacity .5s}
+    .cw-skin .thought.show{opacity:.85}
+    .cw-skin .thought .chev{font-size:9px}
+    .cw-skin .tgroup{margin:14px 18px 6px;max-width:82%;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+    .cw-skin .tgroup.show{opacity:1;transform:none}
+    .cw-skin .tg-head{color:#c9c6bc;font-family:var(--font-body);font-size:13.5px;margin-bottom:12px}
+    .cw-skin .tentry{position:relative;padding-left:32px;margin-top:16px}
+    .cw-skin .tentry .ic{position:absolute;left:0;top:0;width:18px;height:18px;color:#aeaba0;display:inline-flex}
+    .cw-skin .tentry img.ic{object-fit:contain}
+    .cw-skin .tentry .tname{color:#d8d5cb;font-family:var(--font-body);font-size:14px}
+    .cw-skin .tentry .tline{position:absolute;left:9px;top:26px;bottom:-12px;width:1px;background:#413f3b}
+    .cw-skin .tentry .result{display:block;width:fit-content;margin:10px 0 2px;background:#1c1b19;border:1px solid #2e2d2a;border-radius:6px;padding:4px 11px;font-family:var(--font-mono);font-size:11px;color:#aeaba0;transition:opacity .4s}
+    .cw-skin .typing{display:inline-flex;margin:14px 18px;opacity:0;transition:opacity .4s}
+    .cw-skin .typing.show{opacity:1}
+    .cw-skin .typing svg{animation:cw-spin 3.2s linear infinite;transform-origin:center}
+    .cw-skin .typing svg g{transform-box:view-box;transform-origin:center;animation:cw-morph 1.3s ease-in-out infinite}
+    @keyframes cw-spin{to{transform:rotate(360deg)}}
+    @keyframes cw-morph{0%,100%{transform:scale(1)}50%{transform:scale(.22)}}
+    .cw-skin .pcard{margin:10px 18px;max-width:82%;background:#31302e;border:1px solid #413f3b;border-radius:12px;padding:14px 16px;opacity:0;transform:translateY(8px);transition:opacity .55s,transform .55s;font-family:var(--font-body)}
+    .cw-skin .pcard.show{opacity:1;transform:none}
+    .cw-skin .pcard .lab{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:#d97757;margin-bottom:7px}
+    .cw-skin .pcard .tt{font-size:14px;font-weight:600;color:#f0eee6;margin-bottom:3px}
+    .cw-skin .pcard .ss{font-size:12px;color:#aeaba0;margin-bottom:12px}
+    .cw-skin .pcard .btns{display:flex;gap:10px}
+    .cw-skin .pcard button{font-family:var(--font-body);font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 18px;border:1px solid #413f3b;background:transparent;color:#aeaba0;transition:transform .12s,filter .12s}
+    .cw-skin .pcard button.go{background:#d97757;border-color:#d97757;color:#1f1e1c}
+    .cw-skin .pcard button.go.pressed{transform:scale(.94);filter:brightness(1.15)}
+    .cw-skin .pcard .done{display:none;align-items:center;gap:8px;color:#4cbb7f;font-size:13px;font-weight:600}
+    .cw-skin .pcard.confirmed .btns{display:none}
+    .cw-skin .pcard.confirmed .done{display:flex}
+
+    .cwt{background:#262624;border-radius:14px;box-shadow:var(--shadow-xl),0 20px 60px -12px oklch(20% 0.04 255 / 0.3);overflow:hidden;max-width:760px;margin:0 auto;text-align:left}
+    .cwt .cwt-body{padding:10px 8px 24px}
+    .cwt .msg{max-width:92%}
+
+    @media (max-width:960px){.cw{height:540px}}
+    @media (max-width:768px){.cw-col{max-width:100%;margin-top:8px}}
+</style>
+<script>
+(function(){
+  var chat = document.getElementById('cw-chat');
+  if(!chat) return;
+  var REDUCED = window.matchMedia && matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var timer = null, card = null, typingEl = null;
+
+  function scrollDown(){ chat.scrollTo({top: chat.scrollHeight, behavior:'smooth'}); }
+  function el(cls, html){ var d=document.createElement('div'); d.className=cls; if(html!==undefined) d.innerHTML=html; chat.appendChild(d); return d; }
+  function show(d, instant){ if(instant){d.classList.add('show');} else {requestAnimationFrame(function(){requestAnimationFrame(function(){d.classList.add('show');});});} scrollDown(); return d; }
+
+  function user(text, instant){ show(el('msg user', text), instant); }
+  function thought(instant){ show(el('thought','<span class="chev">&#9656;</span> Thought process'), instant).classList.add('show'); }
+  function typingOn(instant){ typingEl=show(el('typing','<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#d97757" stroke-width="2.4" stroke-linecap="round"><g><line x1="12" y1="12" x2="12" y2="3.2"/><line x1="12" y1="12" x2="17.5" y2="5.5"/><line x1="12" y1="12" x2="20.8" y2="10.6"/><line x1="12" y1="12" x2="19" y2="17.8"/><line x1="12" y1="12" x2="13.6" y2="21"/><line x1="12" y1="12" x2="7.4" y2="19.6"/><line x1="12" y1="12" x2="3.4" y2="15.2"/><line x1="12" y1="12" x2="4.2" y2="8.4"/><line x1="12" y1="12" x2="8.6" y2="4.2"/></g></svg>'), instant); }
+  function typingOff(){ if(typingEl){typingEl.remove(); typingEl=null;} }
+
+  function toolIcon(kind){
+    if(kind==='shield') return '<img class="ic" src="reengage-shield.png" alt="">';
+    return '<span class="ic"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></span>';
+  }
+  function toolgroup(head, entries, instant){
+    var html = head ? '<div class="tg-head">'+head+'</div>' : '';
+    entries.forEach(function(e){
+      html += '<div class="tentry">'+toolIcon(e.icon)+'<span class="tname">'+e.name+'</span><div class="tline"></div><div class="result">Result</div></div>';
+    });
+    var g = el('tgroup', html);
+    if(!instant){
+      Array.prototype.forEach.call(g.querySelectorAll('.tentry'), function(en,i){
+        en.style.display='none';
+        var res=en.querySelector('.result'); res.style.opacity='0';
+        setTimeout(function(){ en.style.display=''; scrollDown(); }, 450+i*1000);
+        setTimeout(function(){ res.style.opacity='1'; scrollDown(); }, 450+i*1000+700);
+      });
+    }
+    show(g, instant);
+  }
+
+  function claude(html, instant, rate){
+    rate = rate || 80;
+    var m = el('msg claude');
+    if(instant){ m.innerHTML=html; m.classList.add('show'); scrollDown(); return; }
+    var tmp=document.createElement('div'); tmp.innerHTML=html;
+    (function wrap(node){
+      Array.prototype.slice.call(node.childNodes).forEach(function(n){
+        if(n.nodeType===3){
+          var frag=document.createDocumentFragment();
+          n.textContent.split(/(\s+)/).forEach(function(w){
+            if(/^\s+$/.test(w)||w===''){ frag.appendChild(document.createTextNode(w)); }
+            else { var s=document.createElement('span'); s.className='tok'; s.textContent=w; frag.appendChild(s); }
+          });
+          node.replaceChild(frag,n);
+        } else wrap(n);
+      });
+    })(tmp);
+    m.innerHTML=tmp.innerHTML;
+    m.classList.add('show');
+    var blocks=m.querySelectorAll('li,h5,ul');
+    Array.prototype.forEach.call(blocks, function(b){ b.style.display='none'; });
+    var toks=m.querySelectorAll('.tok');
+    Array.prototype.forEach.call(toks, function(t,i){
+      setTimeout(function(){
+        var n=t.parentElement;
+        while(n && n!==m){ if(n.style.display==='none') n.style.display=''; n=n.parentElement; }
+        t.classList.add('on');
+        if(i%7===0) scrollDown();
+      }, rate*i);
+    });
+    setTimeout(scrollDown, rate*toks.length+80);
+  }
+
+  function pcard(tt, ss, instant){
+    card = el('pcard',
+      '<div class="lab">PREVIEW &middot; CONFIRM TO APPLY</div>'+
+      '<div class="tt">'+tt+'</div>'+
+      '<div class="ss">'+ss+'</div>'+
+      '<div class="btns"><button class="go" type="button">Confirm</button><button type="button">Cancel</button></div>'+
+      '<div class="done">&#10003;&nbsp; Confirmed</div>');
+    show(card, instant);
+  }
+  function confirmCard(instant){
+    if(!card) return;
+    var c = card;
+    var apply=function(){ c.classList.add('confirmed'); scrollDown(); };
+    if(instant){ apply(); return; }
+    var btn = c.querySelector('.go');
+    btn.classList.add('pressed');
+    setTimeout(function(){ btn.classList.remove('pressed'); apply(); }, 350);
+  }
+
+  var CAPS =
+    'Here&rsquo;s what I can do through the ReEngage Pro connector on your account:'+
+    '<h5>Monitor &amp; report</h5><ul>'+
+    '<li>Pull your account info, subscription tier, and usage</li>'+
+    '<li>Show the account-wide dashboard: subscribers, sends, opens, clicks</li>'+
+    '<li>List campaigns with full detail, including when each sends next</li>'+
+    '<li>Track send-queue progress and recent sends</li>'+
+    '<li>See who re-engaged, bounced, complained, or unsubscribed</li>'+
+    '<li>Check deliverability overview and safety status</li></ul>'+
+    '<h5>Control campaigns</h5><ul>'+
+    '<li>Start, pause, resume, and cancel campaigns</li>'+
+    '<li>Sync a connection on demand</li></ul>'+
+    '<h5>With a Manage key</h5><ul>'+
+    '<li>Edit, rename, and duplicate campaigns</li>'+
+    '<li>Set pacing and sending schedules</li>'+
+    '<li>Tune safety thresholds</li></ul>';
+
+  var steps = [
+    [function(i){user('What can you do here?', i);}, 1200],
+    [function(i){typingOn(i);}, 1500],
+    [function(i){typingOff(); thought(i);}, 900],
+    [function(i){toolgroup('Used ReEngage Pro MCP, loaded tools', [{icon:'search', name:'Found tools'}, {icon:'shield', name:'Get account'}], i);}, 3400],
+    [function(i){claude(CAPS, i, 60);}, 12000],
+    [function(i){user('How&rsquo;s my email list doing?', i);}, 1300],
+    [function(i){typingOn(i);}, 1300],
+    [function(i){typingOff(); toolgroup(null, [{icon:'shield', name:'Get dashboard'}], i);}, 2300],
+    [function(i){claude('You have <strong>31,400 subscribers</strong>, but <strong>14,200</strong> haven&rsquo;t opened anything in six months. Your reputation score slipped to <strong>87</strong> this month. The dormant half is likely the drag.', i, 85);}, 6500],
+    [function(i){user('How&rsquo;s the re-engagement campaign going?', i);}, 1300],
+    [function(i){typingOn(i);}, 1200],
+    [function(i){typingOff(); toolgroup(null, [{icon:'shield', name:'Get campaign'}], i);}, 2300],
+    [function(i){claude('So far it has re-engaged <strong>391</strong> of the <strong>1,128</strong> it has sent, a <strong>34.7%</strong> re-engage rate. <strong>8</strong> bounces, <strong>31</strong> unsubscribes, and <strong>zero</strong> spam complaints, with <strong>12,904</strong> queued to go.', i, 85);}, 7000],
+    [function(i){user('Slow things down while my sale runs this weekend.', i);}, 1300],
+    [function(i){typingOn(i);}, 1200],
+    [function(i){typingOff(); claude('Quick note: adjusting this isn&rsquo;t strictly needed. ReEngage Pro adjusts pacing dynamically either way. Since you asked:', i, 85);}, 3400],
+    [function(i){pcard('Set pacing: Conservative', 'Applies to your active re-engagement campaign. Takes effect immediately.', i);}, 2100],
+    [function(i){confirmCard(i);}, 1100],
+    [function(i){toolgroup(null, [{icon:'shield', name:'Set pacing preset'}], i);}, 1500],
+    [function(i){claude('Done. Pacing is set to Conservative, so your sale sends won&rsquo;t compete.', i, 85);}, 2600],
+    [function(i){claude('Want me to set pacing back to Standard on Monday, once your sale wraps?', i, 85);}, 2600],
+    [function(i){user('Yes, do that.', i);}, 1400],
+    [function(i){typingOn(i);}, 1000],
+    [function(i){typingOff(); pcard('Resume Standard pacing: Monday 8:00 AM', 'Updates your sending schedule. One change, then back to normal.', i);}, 2000],
+    [function(i){confirmCard(i);}, 1100],
+    [function(i){toolgroup(null, [{icon:'shield', name:'Update sending schedule'}], i);}, 1500],
+    [function(i){claude('Set. Standard pacing resumes Monday at 8:00 AM.', i, 85);}, 3400]
+  ];
+
+  function runFrom(n){
+    if(n >= steps.length){
+      timer = setTimeout(function(){
+        chat.classList.add('cw-fadeout');
+        timer = setTimeout(function(){ chat.innerHTML=''; chat.classList.remove('cw-fadeout'); runFrom(0); }, 900);
+      }, 5000);
+      return;
+    }
+    steps[n][0](false);
+    timer = setTimeout(function(){ runFrom(n+1); }, steps[n][1]);
+  }
+
+  window.__cwSeek = function(n){
+    clearTimeout(timer); typingOff(); chat.classList.remove('cw-fadeout'); chat.innerHTML='';
+    for(var i=0;i<=Math.min(n,steps.length-1);i++) steps[i][0](true);
+    typingOff();
+    chat.scrollTop = chat.scrollHeight;
+  };
+  window.__cwResume = function(n){ clearTimeout(timer); runFrom(n); };
+
+  if(REDUCED){ window.__cwSeek(steps.length-1); }
+  else { setTimeout(function(){ runFrom(0); }, 800); }
+})();
+</script>
 
 <!-- ========== STAKES (REPUTATION = REVENUE PIPE) ========== -->
 <section style="padding:72px 0;background:var(--color-surface-1);border-top:1px solid var(--color-border);">
@@ -1578,6 +1774,75 @@
 </style>
 
 
+<!-- ========== CLAUDE'S UNEDITED ANSWER (AGENT CONNECTION, 2026-07-09) ========== -->
+<section id="claude-answer" style="padding:88px 0;background:var(--color-surface-1);border-top:1px solid var(--color-border);">
+    <div class="container-c reveal">
+        <div style="max-width:760px;margin:0 auto;text-align:center;">
+            <div class="label" style="color:var(--color-accent);margin-bottom:12px;">Bring your AI assistant</div>
+            <h2 class="font-display text-3xl-c" style="font-weight:700;margin:0 0 12px;color:var(--color-brand);line-height:1.15;">We connected Claude to a ReEngage Pro account and asked what it could do.</h2>
+            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 36px;">This is its unedited answer.</p>
+        </div>
+        <div class="cwt cw-skin">
+            <div class="cw-bar">
+                <div class="cw-lights"><i></i><i></i><i></i></div>
+                <div class="cw-title">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="#d97757" stroke-width="2.4" stroke-linecap="round" aria-hidden="true">
+                        <line x1="12" y1="12" x2="12" y2="3.2"/><line x1="12" y1="12" x2="17.5" y2="5.5"/>
+                        <line x1="12" y1="12" x2="20.8" y2="10.6"/><line x1="12" y1="12" x2="19" y2="17.8"/>
+                        <line x1="12" y1="12" x2="13.6" y2="21"/><line x1="12" y1="12" x2="7.4" y2="19.6"/>
+                        <line x1="12" y1="12" x2="3.4" y2="15.2"/><line x1="12" y1="12" x2="4.2" y2="8.4"/>
+                        <line x1="12" y1="12" x2="8.6" y2="4.2"/>
+                    </svg>
+                    Claude
+                </div>
+                <div class="cw-conn"><img src="reengage-shield.png" alt="">ReEngage Pro MCP<span class="cw-dot"></span></div>
+            </div>
+            <div class="cwt-body">
+                <div class="msg user show">What can you do here?</div>
+                <div class="thought show"><span class="chev">&#9656;</span> Thought process</div>
+                <div class="tgroup show">
+                    <div class="tg-head">Used ReEngage Pro MCP, loaded tools</div>
+                    <div class="tentry"><span class="ic"><svg viewBox="0 0 24 24" width="17" height="17" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><line x1="16.5" y1="16.5" x2="21" y2="21"/></svg></span><span class="tname">Found tools</span><div class="tline"></div><div class="result">Result</div></div>
+                    <div class="tentry"><img class="ic" src="reengage-shield.png" alt=""><span class="tname">Get account</span><div class="tline"></div><div class="result">Result</div></div>
+                </div>
+                <div class="msg claude show">
+                    Here&rsquo;s what I can do through the ReEngage Pro connector on your account:
+                    <h5>Monitor &amp; report</h5>
+                    <ul>
+                        <li>Pull your account info, subscription tier, and usage</li>
+                        <li>Show the account-wide dashboard (subscribers, sends, opens, clicks)</li>
+                        <li>List all campaigns and get full detail on any one, including when it sends next and how many go out</li>
+                        <li>Track a campaign&rsquo;s send-queue progress (queued, processing, sent, failed, skipped) and recent sends</li>
+                        <li>List per-subscriber outcomes &mdash; who re-engaged, bounced, complained, or unsubscribed</li>
+                        <li>Check deliverability overview and safety status</li>
+                        <li>View your ESP/data connections and their sync status</li>
+                    </ul>
+                    <h5>Control campaigns</h5>
+                    <ul>
+                        <li>Start, pause, resume, and cancel campaigns</li>
+                        <li>Sync a connection on demand</li>
+                    </ul>
+                    <h5>With a Manage key (elevated actions)</h5>
+                    <ul>
+                        <li>Edit, rename, and duplicate campaigns</li>
+                        <li>Set the pacing preset and update the sending schedule</li>
+                        <li>Tune safety thresholds</li>
+                        <li>Create, list, and delete webhooks, and view webhook events</li>
+                    </ul>
+                    <p>Three things I can&rsquo;t do here &mdash; each has to be done in the ReEngage Pro dashboard (app.reengage.pro), purely to protect your account and sending reputation:</p>
+                    <ul>
+                        <li>Connect a Postmaster account for deliverability</li>
+                        <li>Create another ESP connection</li>
+                        <li>Create a campaign</li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+        <p class="text-sm-c" style="color:var(--color-text-muted);margin:20px auto 0;max-width:760px;text-align:center;">Included with every plan. Works with Claude, ChatGPT, Gemini, or any assistant that supports MCP.</p>
+    </div>
+</section>
+
+
 <!-- ========== CREDIBILITY ========== -->
 <section style="padding:96px 0;background:var(--color-surface-0);border-top:1px solid var(--color-border);">
     <div class="container-c reveal">
@@ -1646,7 +1911,7 @@
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Customized sequences</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Live safety monitoring</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Full activity audit trail</span></li>
-                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">API/MCP access for agentic operation</span></li>
+                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Connect Claude, ChatGPT, or Gemini to run your account</span></li>
                 </ul>
                 <button class="btn-secondary pricing-cta" style="width:100%;justify-content:center;">Start Free Trial</button>
             </div>
@@ -1668,7 +1933,7 @@
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Dedicated onboarding specialist</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Custom safety thresholds</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Priority support</span></li>
-                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">API/MCP access for agentic operation</span></li>
+                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Connect Claude, ChatGPT, or Gemini to run your account</span></li>
                 </ul>
                 <button class="btn-primary pricing-cta" style="width:100%;justify-content:center;">Start Free Trial</button>
             </div>
@@ -1686,6 +1951,7 @@
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Dashboard for every client</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">White label reports</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Dedicated account manager</span></li>
+                    <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Connect Claude, ChatGPT, or Gemini to run your account</span></li>
                 </ul>
                 <a href="https://cal.com/chuck-mullaney-s0dslw/reengage-pro-schedule-demo" target="_blank" rel="noopener" class="btn-secondary" style="width:100%;justify-content:center;text-decoration:none;">Book a Call</a>
             </div>
@@ -1761,6 +2027,15 @@
                     </button>
                     <div class="faq-answer">
                         <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">No. AI is one of several tools used to build it, not the centerpiece. ReEngage Pro puts safety first and is built to be dependable. Many of the systems behind it are proprietary and patent-pending. They are what makes safe re-engagement possible at this scale.</p>
+                    </div>
+                </div>
+                <div class="faq-item">
+                    <button class="faq-question" aria-expanded="false">
+                        <span>&ldquo;Can I really let an AI assistant run this?&rdquo;</span>
+                        <i class="ph ph-caret-down faq-chevron" style="font-size:18px;"></i>
+                    </button>
+                    <div class="faq-answer">
+                        <p class="text-base-c" style="color:var(--color-text-secondary);margin:0;">Yes. Every plan includes a connection for Claude, ChatGPT, Gemini, or any assistant that supports MCP. You decide how much it can do with three key levels: Read (look, don&rsquo;t touch), Operate (start, pause, resume), and Manage (pacing, schedules, safety thresholds). Every change it requests is previewed and confirmed before it happens, and three things always stay in your dashboard: creating a campaign, connecting an ESP, and connecting a Postmaster account. That last part is deliberate. It protects your sending reputation. <a href="#claude-answer" style="color:var(--color-accent);text-decoration:none;font-weight:500;">See exactly what it can do.</a></p>
                     </div>
                 </div>
                 <div class="faq-item">
