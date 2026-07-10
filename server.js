@@ -85,6 +85,14 @@ For agencies and large senders there is also a custom Agency option (unlimited s
 ## Supported ESPs
 Klaviyo, ActiveCampaign, and Kit. Mailchimp and HubSpot are coming soon.
 
+## AI Assistant Connection (API and MCP)
+Every plan includes an AI assistant connection. You can connect Claude, ChatGPT, Gemini, or any assistant that supports MCP to your account, ask it questions in plain language, and let it run things for you.
+- What a connected assistant can do: check your dashboard, campaigns, results, deliverability, and safety status; start, pause, resume, and cancel campaigns; sync connections. With a Manage-level key it can also edit, rename, and duplicate campaigns, set pacing and sending schedules, tune safety thresholds, and manage webhooks.
+- You control how much it can do with three API key levels, created in the ReEngage Pro dashboard: Read (view only), Operate (day-to-day campaign control), and Manage (full account management).
+- Every change an assistant requests is previewed and confirmed before it takes effect. Nothing happens without sign-off.
+- Three things always stay in the dashboard, purely to protect your account and sending reputation: creating a campaign, connecting an ESP, and connecting a Postmaster account.
+The assistant connection itself is NOT one of the proprietary inventions — describe its capabilities, key levels, and confirmation flow freely. The mechanism-secrecy rules still apply to the send-pacing and reputation-protection systems, including when discussing what a connected assistant can see.
+
 ## Common Questions
 
 Q: Will this hurt my sender reputation?
@@ -106,7 +114,10 @@ Q: What happens to subscribers who don't re-engage?
 A: They stay in your ESP. Nothing is ever deleted. You decide what to do with non-responders.
 
 Q: Is this an AI product?
-A: No. AI is one of several tools used to build it, not the centerpiece. ReEngage Pro puts safety first and is built to be dependable; the systems behind it are proprietary, patent-pending original inventions.
+A: No. AI is one of several tools used to build it, not the centerpiece. ReEngage Pro puts safety first and is built to be dependable; the systems behind it are proprietary, patent-pending original inventions. Separately, every plan lets you connect your own AI assistant (Claude, ChatGPT, or Gemini) to monitor and control your account.
+
+Q: Can I connect Claude or ChatGPT to my account?
+A: Yes. Every plan includes the AI assistant connection — Claude, ChatGPT, Gemini, or any assistant that supports MCP. You choose how much it can do with a Read, Operate, or Manage key, and every change it requests is previewed and confirmed before it happens. Creating campaigns and connecting ESP or Postmaster accounts stay in the dashboard to protect your sending reputation.
 
 ## About the Founder
 Chuck Mullaney — 25 years in digital marketing, 16 of them in email deliverability. Former Email Admin for 26,000 businesses, and he has navigated every major Gmail, Yahoo, and Apple deliverability shift since 2009. Author of "Phantom Engaged" (phantomengaged.com). The safety logic is built on proprietary, patent-pending original inventions.
