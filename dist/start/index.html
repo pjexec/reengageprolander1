@@ -13,16 +13,16 @@
     <meta property="og:url" content="https://reengage.pro/start">
     <meta property="og:title" content="The cheapest sales you'll ever make are sitting in your own email list.">
     <meta property="og:description" content="ReEngage Pro brings your quiet past customers back for you. You approve the emails; it does the rest. Free 7-day trial, no credit card.">
-    <meta property="og:image" content="https://reengage.pro/og-image-v2.png">
+    <meta property="og:image" content="https://reengage.pro/og-start.png">
     <meta property="og:image:width" content="1200">
     <meta property="og:image:height" content="630">
-    <meta property="og:image:alt" content="ReEngage Pro sales page hero showing a Claude AI assistant chat connected to ReEngage Pro">
+    <meta property="og:image:alt" content="Headline: The cheapest sales you'll ever make are sitting in your own email list. ReEngage Pro, patent-pending technology.">
     <meta property="og:site_name" content="ReEngage Pro">
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="The cheapest sales you'll ever make are sitting in your own email list.">
     <meta name="twitter:description" content="ReEngage Pro brings your quiet past customers back for you. You approve the emails; it does the rest. Free 7-day trial, no credit card.">
-    <meta name="twitter:image" content="https://reengage.pro/og-image-v2.png">
+    <meta name="twitter:image" content="https://reengage.pro/og-start.png">
     <meta name="last-modified" content="2026-07-17">
     <!-- Microsoft Clarity -->
     <script type="text/javascript">
@@ -31,6 +31,21 @@
             t=l.createElement(r);t.async=1;t.src="https://www.clarity.ms/tag/"+i;
             y=l.getElementsByTagName(r)[0];y.parentNode.insertBefore(t,y);
         })(window,document,"clarity","script","uyc2sm9vdl");
+    </script>
+    <!-- Meta Pixel (INACTIVE until an ID is set). To activate: replace REPLACE_WITH_PIXEL_ID
+         below with the real pixel ID from Meta Events Manager. One-line swap; nothing else
+         to edit. The signup success handler fires a 'Lead' event automatically once active. -->
+    <script type="text/javascript">
+        var META_PIXEL_ID = 'REPLACE_WITH_PIXEL_ID';
+        if (META_PIXEL_ID && META_PIXEL_ID.indexOf('REPLACE_WITH') === -1) {
+            !function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?
+            n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;
+            n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;
+            t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,
+            document,'script','https://connect.facebook.net/en_US/fbevents.js');
+            fbq('init', META_PIXEL_ID);
+            fbq('track', 'PageView');
+        }
     </script>
     <!-- Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com">
@@ -1387,7 +1402,7 @@
                         </div>
                         <div style="display:flex;align-items:center;gap:8px;margin-left:auto;">
                             <i class="ph ph-heart-half" style="font-size:14px;color:var(--color-success);"></i>
-                            <span class="font-mono text-xs-c" style="color:var(--color-text-muted);">Deliverability Monitor</span>
+                            <span class="font-mono text-xs-c" style="color:var(--color-text-muted);">Inbox Monitor</span>
                         </div>
                     </div>
                     <div style="padding:24px;">
@@ -1502,7 +1517,7 @@
         <div style="max-width:760px;margin:0 auto;text-align:center;">
             <div class="label" style="color:var(--color-accent);margin-bottom:12px;">Bring your AI assistant</div>
             <h2 class="font-display text-3xl-c" style="font-weight:700;margin:0 0 12px;color:var(--color-brand);line-height:1.15;">Run the whole thing by asking your AI assistant in plain English.</h2>
-            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 36px;">We connected Claude to a real ReEngage Pro account and asked what it could do. This is its unedited answer.</p>
+            <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 36px;">We connected Claude to a real ReEngage Pro account and asked what it could do. This is its unedited answer. Where it says &ldquo;ESP&rdquo;, that just means your email platform (Klaviyo, ActiveCampaign, and so on).</p>
         </div>
         <div class="cwt cw-skin">
             <div class="cw-bar">
@@ -1873,7 +1888,7 @@
 <!-- ========== STICKY MOBILE CTA BAR ========== -->
 <div id="sticky-cta-bar" style="position:fixed;left:0;right:0;bottom:0;z-index:80;background:var(--color-surface-1);border-top:1px solid var(--color-border);box-shadow:0 -4px 16px -4px oklch(20% 0.02 255 / 0.15);padding:10px 14px;display:none;align-items:center;gap:10px;transform:translateY(110%);transition:transform 0.25s ease;">
     <div style="flex:1;min-width:0;">
-        <span class="font-display" style="display:block;font-weight:700;font-size:var(--text-sm);color:var(--color-brand);line-height:1.2;">Wake the list. Keep the domain.</span>
+        <span class="font-display" style="display:block;font-weight:700;font-size:var(--text-sm);color:var(--color-brand);line-height:1.2;">Your past customers are still worth money.</span>
         <span class="text-xs-c" style="color:var(--color-text-muted);">No credit card &middot; Cancel anytime</span>
     </div>
     <button class="btn-primary" id="sticky-cta" style="padding:10px 16px;font-size:var(--text-xs);white-space:nowrap;">Start Free Trial</button>
@@ -2105,6 +2120,7 @@
             .then(function(r) { return r.json().then(function(d) { return { ok: r.ok, data: d }; }); })
             .then(function(result) {
                 if (!result.ok) throw new Error((result.data && result.data.error) || 'Registration failed.');
+                if (window.fbq) { fbq('track', 'Lead'); }
                 formContainer.style.display = 'none';
                 successContainer.style.display = 'block';
                 setTimeout(function() { window.location.href = 'https://app.reengage.pro/login'; }, 3000);
