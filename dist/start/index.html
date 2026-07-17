@@ -533,15 +533,24 @@
 <main>
 
 <!-- ========== HERO ========== -->
+<style>
+    /* Desktop-only: center the single-column hero; mobile keeps the approved left-aligned layout */
+    @media (min-width: 900px) {
+        .hero-inner { max-width: 880px !important; margin: 0 auto; text-align: center; }
+        .hero-inner img, .hero-inner p { margin-left: auto !important; margin-right: auto !important; }
+        .hero-inner .hero-cta-row { justify-content: center; }
+        #hero-video > .container-c > div { margin: 0 auto; }
+    }
+</style>
 <section style="padding-top:144px;padding-bottom:96px;background:var(--color-surface-0);">
     <div class="container-c">
-        <div style="max-width:720px;">
+        <div class="hero-inner" style="max-width:720px;">
             <div class="reveal">
                 <img src="/patent-pending-badge.png" alt="Patent-pending technology" style="height:44px;width:auto;display:block;margin-bottom:20px;">
                 <h1 class="font-display text-hero" style="font-weight:700;color:var(--color-brand);margin:0 0 24px;">The cheapest sales you&rsquo;ll ever make are sitting in your own email list.</h1>
                 <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 16px;max-width:600px;">For Shopify and ecommerce store owners. ReEngage Pro wakes up the past customers on your email list and brings them back to buy. It does the work for you, it keeps your email safe, and you can watch it work free for 7 days.</p>
                 <p class="text-lg-c" style="color:var(--color-text-primary);font-weight:600;margin:0 0 32px;max-width:600px;">You don&rsquo;t set anything up. You approve the emails; it does the rest.</p>
-                <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
+                <div class="hero-cta-row" style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
                     <button class="btn-primary" id="hero-cta"><i class="ph ph-arrow-right" style="font-size:16px;"></i> Start Free Trial</button>
                     <a href="#roi" class="btn-ghost">See what your list is worth</a>
                 </div>
