@@ -2130,6 +2130,7 @@
             .then(function(result) {
                 if (!result.ok) throw new Error((result.data && result.data.error) || 'Registration failed.');
                 if (window.fbq) { fbq('track', 'Lead'); }
+                if (typeof fbq === 'function') { fbq('track', 'StartTrial'); }
                 formContainer.style.display = 'none';
                 successContainer.style.display = 'block';
                 setTimeout(function() { window.location.href = 'https://app.reengage.pro/login'; }, 3000);
