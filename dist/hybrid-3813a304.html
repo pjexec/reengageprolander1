@@ -631,10 +631,18 @@
     src: url("assets-dark-baked/fonts/fraunces-600-italic.woff2") format("woff2");
     font-weight: 600; font-style: italic; font-display: swap;
   }
+  /* STICKY FIX (hybrid only): the production styles set overflow-x: hidden on
+     html and body, which makes body a scroll container ("hidden auto") that
+     never actually scrolls; position: sticky descendants bind to it and ride
+     away with the content in some Chromium builds. overflow-x: clip keeps the
+     horizontal clipping WITHOUT creating a scroll container, so sticky binds
+     to the real viewport scroller. Placed after the production styles. */
+  html, body { overflow-x: clip !important; }
   #lw-root { --lw-gold: #d0a24f; --lw-serif: "Fraunces", ui-serif, Georgia, "Times New Roman", serif; }
   #lw-root, #lw-root * { box-sizing: border-box; margin: 0; padding: 0; }
   #lw-root { color: #fff; }
-  #lw-scrolly { position: relative; }
+  /* defensive: any future pin failure degrades to a dark pause, not white void */
+  #lw-scrolly { position: relative; background: #0b0e13; }
   #lw-stage {
     position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0b0e13;
   }
