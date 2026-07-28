@@ -2,7 +2,8 @@
 <html lang="en">
 <head>
 <meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1"><meta name="robots" content="noindex, nofollow">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
 <title>ReEngage Pro | This is not a demo</title>
 <style>
   * { margin: 0; padding: 0; box-sizing: border-box; }
@@ -33,7 +34,7 @@
   #plane {
     position: absolute;
     transform-origin: 100% 50%;
-    will-change: transform, filter;
+    will-change: transform;
     /* edge dissolution: long vertical fades so no top/bottom plane boundary
        ever shows; the plane is oversized by JS so these fades sit mostly
        outside the viewport at rest and swallow the tilted edges in the wall */
@@ -54,27 +55,27 @@
     mask-image: linear-gradient(90deg,
       transparent 0%, rgba(0, 0, 0, 0.45) 18%, #000 34%);
   }
-  /* depth-of-field strips: each spans from its left boundary to the plane's
-     right edge; later (sharper) layers stack on top; a left-edge mask
-     crossfades each blur level into the one beneath (no hard seams) */
-  .dof {
-    position: absolute;
-    top: 0;
-    bottom: 0;
-    right: 0;
-    overflow: hidden;
-  }
-  .dof + .dof {
-    -webkit-mask-image: linear-gradient(to right, transparent 0, #000 70px);
-    mask-image: linear-gradient(to right, transparent 0, #000 70px);
-  }
-  .dofInner {
+  /* single flat log stream: the DOF lens treatment is baked into the slice
+     pixels offline (assets-dark-baked), so runtime compositing is one
+     unfiltered texture */
+  #logStream {
     position: absolute;
     top: 0;
     background: #0d1524; /* lead-in/out filler above and below the log stream */
     will-change: transform;
   }
-  .dofInner img { display: block; width: 100%; height: auto; }
+  #logStream img { display: block; width: 100%; height: auto; }
+  /* crisp unbaked top region for the flat landing view; fades out during
+     rotation as the baked DOF becomes the depth cue */
+  #landingOverlay {
+    position: absolute;
+    left: 0;
+    width: 100%;
+    height: auto;
+    pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
+  }
 
   /* ---------- cinematic grade overlays (all static or scroll-driven) ---------- */
   /* static horizontal light band the rows stream through */
@@ -353,47 +354,17 @@
     <div id="persp">
       <div id="plane">
        <div id="fadeWrap">
-        <!-- DOF strips, back (most blurred, far left) to front (sharp right) -->
-        <div class="dof" id="dof0"><div class="dofInner">
-          <img src="assets-dark/log-slice-0.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-1.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-2.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-3.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-4.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-5.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-6.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-7.webp" alt="" decoding="async">
-        </div></div>
-        <div class="dof" id="dof1"><div class="dofInner">
-          <img src="assets-dark/log-slice-0.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-1.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-2.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-3.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-4.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-5.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-6.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-7.webp" alt="" decoding="async">
-        </div></div>
-        <div class="dof" id="dof2"><div class="dofInner">
-          <img src="assets-dark/log-slice-0.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-1.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-2.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-3.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-4.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-5.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-6.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-7.webp" alt="" decoding="async">
-        </div></div>
-        <div class="dof" id="dof3"><div class="dofInner">
-          <img src="assets-dark/log-slice-0.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-1.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-2.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-3.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-4.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-5.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-6.webp" alt="" decoding="async">
-          <img src="assets-dark/log-slice-7.webp" alt="" decoding="async">
-        </div></div>
+        <div id="logStream">
+          <img src="assets-dark-baked/log-slice-0.webp" alt="" decoding="async">
+          <img src="assets-dark-baked/log-slice-1.webp" alt="" decoding="async">
+          <img src="assets-dark-baked/log-slice-2.webp" alt="" decoding="async">
+          <img src="assets-dark-baked/log-slice-3.webp" alt="" decoding="async">
+          <img src="assets-dark-baked/log-slice-4.webp" alt="" decoding="async">
+          <img src="assets-dark-baked/log-slice-5.webp" alt="" decoding="async">
+          <img src="assets-dark-baked/log-slice-6.webp" alt="" decoding="async">
+          <img src="assets-dark-baked/log-slice-7.webp" alt="" decoding="async">
+          <img id="landingOverlay" src="assets-dark-baked/log-landing.webp" alt="" decoding="async">
+        </div>
        </div>
       </div>
     </div>
@@ -517,15 +488,6 @@
   <div class="fb-copy"><p>You don't need the full 15%. You need a sliver.</p><p>A 50k list at 40% dormant holds $9,000 a month in recovery potential, against $147. Wake the list. Keep the domain.</p></div>
 </div>
 
-<!-- vertical motion-blur filter for velocity response -->
-<svg width="0" height="0" style="position:absolute" aria-hidden="true">
-  <defs>
-    <filter id="vblur" x="-5%" y="-5%" width="110%" height="110%">
-      <feGaussianBlur id="vblurFe" stdDeviation="0 0"></feGaussianBlur>
-    </filter>
-  </defs>
-</svg>
-
 <script>
 (function () {
   "use strict";
@@ -540,13 +502,6 @@
   var WALL_RATE = 1.35;        // displayed log px per page scroll px
   var LERP = 0.15;             // per-frame settle factor
 
-  // DOF strip boundaries as fractions of plane width (left edge of each strip)
-  // and per-strip lens targets at full rotation
-  var DOF_FRAC   = [0, 0.15, 0.35, 0.55];
-  var DOF_BLUR   = [5, 3, 1.5, 0];        // px
-  var DOF_SAT    = [0.75, 0.85, 0.92, 1];
-  var DOF_BRIGHT = [0.83, 0.90, 0.96, 1]; // max ~17% darkening at far edge
-
   var scrolly = document.getElementById("scrolly");
   var plane = document.getElementById("plane");
   var dim = document.getElementById("dim");
@@ -554,10 +509,9 @@
   var heroH1 = hero.querySelector("h1");
   var cue = document.getElementById("scrollcue");
   var lightBand = document.getElementById("lightBand");
-  var vblurFe = document.getElementById("vblurFe");
   var connSvg = document.getElementById("connectors");
-  var strips = [].slice.call(document.querySelectorAll(".dof"));
-  var inners = [].slice.call(document.querySelectorAll(".dofInner"));
+  var logStream = document.getElementById("logStream");
+  var landingOverlay = document.getElementById("landingOverlay");
   var blocks = [].slice.call(document.querySelectorAll(".copyblock"));
 
   // connector framework: any rail block MAY declare data-target; those get a
@@ -602,15 +556,12 @@
     plane.style.top = (-oy) + "px";
     plane.style.width = (vw + ox + orr) + "px";
     plane.style.height = (vh + 2 * oy) + "px";
-    for (var i = 0; i < strips.length; i++) {
-      var lx = Math.round(DOF_FRAC[i] * vw);
-      strips[i].style.left = (ox + lx) + "px";
-      inners[i].style.left = (-lx) + "px";
-      inners[i].style.width = vw + "px";
-      // lead-in/out filler so the stream enters and exits pre-dissolved
-      inners[i].style.paddingTop = oy + "px";
-      inners[i].style.height = Math.round(logH + 2 * oy + vh) + "px";
-    }
+    // single flat stream, lead-in/out filler so it enters and exits pre-dissolved
+    logStream.style.left = ox + "px";
+    logStream.style.width = vw + "px";
+    logStream.style.paddingTop = oy + "px";
+    logStream.style.height = Math.round(logH + 2 * oy + vh) + "px";
+    landingOverlay.style.top = oy + "px"; // aligned with the stream's first row
     connSvg.setAttribute("viewBox", "0 0 " + vw + " " + vh);
   }
 
@@ -621,11 +572,15 @@
       draw = Math.min(1, smooth(p / 0.22), smooth((1 - p) / 0.22));
     }
     if (draw < 0.01 || o < 0.01) {
-      c.path.setAttribute("opacity", "0");
-      c.path.setAttribute("stroke-dashoffset", "100");
-      c.tip.setAttribute("opacity", "0");
+      if (c.active) {
+        c.path.setAttribute("opacity", "0");
+        c.path.setAttribute("stroke-dashoffset", "100");
+        c.tip.setAttribute("opacity", "0");
+        c.active = false;
+      }
       return;
     }
+    c.active = true;
     var x0 = vw * 0.06 + Math.min(vw * 0.36, 520) + 14;
     var y0 = vh / 2 + (0.5 - p) * 24;
     var tx, tyy;
@@ -650,8 +605,8 @@
 
   var curRot = 0, curWall = 0;
   var tgtRot = 0, tgtWall = 0;
-  var lastY = 0, sVel = 0, vBlur = 0;
-  var lastFilterRot = -1, lastVBlurApplied = 0;
+  var lastRenderRot = -1, overlayGone = false;
+  var lastBlockO = [];
   var raf = null;
 
   function targets() {
@@ -661,56 +616,44 @@
   }
 
   function render() {
-    // camera: yaw + slight pitch, both scroll-driven
-    plane.style.transform =
-      "rotateY(" + (finalRot * curRot) + "deg) rotateX(" + (pitch * curRot) + "deg)";
-
-    // lens DOF strips: rewrite filters only when rotation meaningfully changes
-    if (Math.abs(curRot - lastFilterRot) > 0.002) {
-      lastFilterRot = curRot;
-      for (var i = 0; i < strips.length; i++) {
-        if (DOF_BLUR[i] === 0) continue; // sharp strip never gets a filter
-        var b = DOF_BLUR[i] * curRot;
-        var s = 1 - (1 - DOF_SAT[i]) * curRot;
-        var br = 1 - (1 - DOF_BRIGHT[i]) * curRot;
-        strips[i].style.filter = b < 0.05 ? "none" :
-          "blur(" + b.toFixed(2) + "px) saturate(" + s.toFixed(3) + ") brightness(" + br.toFixed(3) + ")";
-      }
+    // rotation-driven writes happen only while rotation is actually changing;
+    // during the wall phase this whole block is skipped (transform+opacity only)
+    if (Math.abs(curRot - lastRenderRot) > 0.0004) {
+      lastRenderRot = curRot;
+      // camera: yaw + slight pitch, both scroll-driven
+      plane.style.transform =
+        "rotateY(" + (finalRot * curRot) + "deg) rotateX(" + (pitch * curRot) + "deg)";
       lightBand.style.opacity = curRot.toFixed(4);
+      // crisp landing overlay fades out as the baked DOF becomes the depth cue
+      var ovo = 1 - clamp01(curRot / 0.6);
+      if (ovo <= 0.001) {
+        if (!overlayGone) { landingOverlay.style.display = "none"; overlayGone = true; }
+      } else {
+        if (overlayGone) { landingOverlay.style.display = "block"; overlayGone = false; }
+        landingOverlay.style.opacity = ovo.toFixed(4);
+      }
+
+      // phase 1 overlay: exists only for the landing text, fully removed after
+      var fade = 1 - clamp01(curRot / 0.55);
+      if (fade <= 0.001) {
+        dim.style.display = "none";
+        hero.style.visibility = "hidden";
+        cue.style.opacity = "0";
+      } else {
+        dim.style.display = "block";
+        dim.style.opacity = (0.35 * fade).toFixed(4);
+        hero.style.visibility = "visible";
+        hero.style.opacity = fade.toFixed(4);
+        cue.style.opacity = fade.toFixed(4);
+        // cinematic scroll-out: letter-spacing expansion + blur as it leaves
+        var q = 1 - fade;
+        hero.style.filter = q < 0.01 ? "none" : "blur(" + (q * 7).toFixed(2) + "px)";
+        heroH1.style.letterSpacing = (-0.02 + q * 0.05).toFixed(4) + "em";
+      }
     }
 
-    // phase 1 overlay: exists only for the landing text, fully removed after
-    var fade = 1 - clamp01(curRot / 0.55);
-    if (fade <= 0.001) {
-      dim.style.display = "none";
-      hero.style.visibility = "hidden";
-      cue.style.opacity = "0";
-    } else {
-      dim.style.display = "block";
-      dim.style.opacity = (0.35 * fade).toFixed(4);
-      hero.style.visibility = "visible";
-      hero.style.opacity = fade.toFixed(4);
-      cue.style.opacity = fade.toFixed(4);
-      // cinematic scroll-out: letter-spacing expansion + blur as it leaves
-      var q = 1 - fade;
-      hero.style.filter = q < 0.01 ? "none" : "blur(" + (q * 7).toFixed(2) + "px)";
-      heroH1.style.letterSpacing = (-0.02 + q * 0.05).toFixed(4) + "em";
-    }
-
-    // wall streaming (all strip copies move together)
-    var ty = -travel * curWall;
-    for (var k = 0; k < inners.length; k++) {
-      inners[k].style.transform = "translate3d(0," + ty + "px,0)";
-    }
-
-    // velocity motion blur on the plane (vertical only, subtle, decays to none)
-    if (vBlur > 0.15) {
-      vblurFe.setAttribute("stdDeviation", "0 " + vBlur.toFixed(2));
-      if (!lastVBlurApplied) { plane.style.filter = "url(#vblur)"; lastVBlurApplied = 1; }
-    } else if (lastVBlurApplied) {
-      plane.style.filter = "none";
-      lastVBlurApplied = 0;
-    }
+    // wall streaming: one flat unfiltered texture, one transform write
+    logStream.style.transform = "translate3d(0," + (-travel * curWall) + "px,0)";
 
     // copy rail: sequential sections, quick sharp crossfades
     var span = 1 / blocks.length, f = 0.015;
@@ -724,9 +667,13 @@
         o = Math.min(1, inO, outO);
       }
       o *= smooth((curRot - 0.7) / 0.3);
-      var bty = (0.5 - p) * 24;
-      blocks[j].style.opacity = o.toFixed(4);
-      blocks[j].style.transform = "translateY(calc(-50% + " + bty.toFixed(1) + "px))";
+      // write inactive blocks once, not every frame
+      if (o > 0 || lastBlockO[j] !== 0) {
+        var bty = (0.5 - p) * 24;
+        blocks[j].style.opacity = o.toFixed(4);
+        blocks[j].style.transform = "translateY(calc(-50% + " + bty.toFixed(1) + "px))";
+        lastBlockO[j] = o;
+      }
       var c = connByIndex[j];
       if (c) updateConnector(c, p, o);
     }
@@ -735,20 +682,11 @@
   function update() {
     if (!isFinite(curRot)) curRot = tgtRot;
     if (!isFinite(curWall)) curWall = tgtWall;
-    // scroll velocity (px per frame), smoothed, drives the motion blur
-    var y = window.scrollY || 0;
-    var rawV = y - lastY;
-    lastY = y;
-    sVel += (rawV - sVel) * 0.25;
-    var vTarget = Math.min(5, Math.abs(sVel) * 0.08);
-    vBlur += (vTarget - vBlur) * 0.25;
-
     curRot += (tgtRot - curRot) * LERP;
     curWall += (tgtWall - curWall) * LERP;
     var settled = Math.abs(tgtRot - curRot) < 0.0006 &&
-                  Math.abs(tgtWall - curWall) < 0.0006 &&
-                  vBlur < 0.05 && Math.abs(sVel) < 0.2;
-    if (settled) { curRot = tgtRot; curWall = tgtWall; vBlur = 0; sVel = 0; }
+                  Math.abs(tgtWall - curWall) < 0.0006;
+    if (settled) { curRot = tgtRot; curWall = tgtWall; }
     render();
     return settled;
   }
@@ -766,9 +704,9 @@
 
   // dev/test hook: jump straight to the scroll target, or step one frame manually
   window.__logwall = {
-    snap: function () { targets(); curRot = tgtRot; curWall = tgtWall; lastY = window.scrollY || 0; render(); },
+    snap: function () { targets(); curRot = tgtRot; curWall = tgtWall; render(); },
     step: function () { targets(); return update(); },
-    state: function () { return { curRot: curRot, curWall: curWall, P2: P2, P3: P3, travel: travel, vBlur: vBlur, sVel: sVel }; }
+    state: function () { return { curRot: curRot, curWall: curWall, P2: P2, P3: P3, travel: travel }; }
   };
 
   window.addEventListener("scroll", wake, { passive: true });
