@@ -617,6 +617,235 @@
 
 <main>
 
+
+<!-- ========== LOG WALL HERO (dark scroll experience, prototype) ========== -->
+<style>
+  /* NOTE: the Fraunces @font-face rules are injected by the boot script in the
+     desktop branch only; some engines fetch even unused @font-face sources, so
+     keeping them out of static CSS guarantees mobile downloads nothing. */
+  /* STICKY FIX (hybrid only): the production styles set overflow-x: hidden on
+     html and body, which makes body a scroll container ("hidden auto") that
+     never actually scrolls; position: sticky descendants bind to it and ride
+     away with the content in some Chromium builds. overflow-x: clip keeps the
+     horizontal clipping WITHOUT creating a scroll container, so sticky binds
+     to the real viewport scroller. Placed after the production styles. */
+  html.lw-desktop, html.lw-desktop body { overflow-x: clip !important; }
+  /* brand accent: the logo's light blue. #118ec0 is the production page's own
+     --color-accent token (dist index.html) and matches the sampled logo pixel
+     (#158cbf). --lw-accent-soft is a lighter tint for line work and small
+     uppercase text on the dark ground; --lw-accent-text is the lightest tint,
+     for the CTA label (parity with the old light label tint). */
+  #lw-root { --lw-accent: #118ec0; --lw-accent-soft: #4db6e6; --lw-accent-text: #aee0f6; --lw-green: #1fb582; --lw-serif: "Fraunces", ui-serif, Georgia, "Times New Roman", serif; }
+  #lw-root, #lw-root * { box-sizing: border-box; margin: 0; padding: 0; }
+  #lw-root { color: #fff; }
+  /* defensive: any future pin failure degrades to a dark pause, not white void */
+  #lw-scrolly { position: relative; background: #0b0e13; }
+  #lw-stage {
+    position: sticky; top: 0; height: 100vh; overflow: hidden; background: #0b0e13;
+  }
+  #lw-persp { position: absolute; inset: 0; perspective: 950px; perspective-origin: 72% 50%; }
+  #lw-plane {
+    position: absolute; transform-origin: 100% 50%; will-change: transform;
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 12%, #000 24%, #000 76%, rgba(0,0,0,0.55) 88%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 12%, #000 24%, #000 76%, rgba(0,0,0,0.55) 88%, transparent 100%);
+  }
+  #lw-fadewrap {
+    position: absolute; inset: 0;
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%);
+  }
+  #lw-logstream { position: absolute; top: 0; background: #0d1524; will-change: transform; }
+  #lw-logstream img { display: block; width: 100%; height: auto; }
+  #lw-landing {
+    position: absolute; left: 0; width: 100%; height: auto; pointer-events: none;
+    -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
+    mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
+  }
+  #lw-lightband {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen;
+    background: linear-gradient(180deg, rgba(255,255,255,0) 38%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 62%);
+  }
+  #lw-vignette {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(ellipse 150% 125% at 50% 46%,
+      rgba(0,0,0,0) 42%, rgba(0,0,0,0.04) 58%, rgba(0,0,0,0.10) 72%,
+      rgba(0,0,0,0.19) 84%, rgba(0,0,0,0.30) 94%, rgba(0,0,0,0.38) 100%);
+  }
+  #lw-grain {
+    position: absolute; inset: 0; pointer-events: none; opacity: 0.035;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
+    background-size: 160px 160px;
+  }
+  #lw-dim { position: absolute; inset: 0; background: rgba(4,7,12,0.55); pointer-events: none; }
+  /* landing legibility: left-weighted dim under the hero stack, easing to
+     transparent so the outcome column and the 71-emails row stay readable;
+     full-bleed, fades with the hero during rotation */
+  #lw-herodim {
+    position: absolute; inset: 0; pointer-events: none;
+    /* second layer: top-weighted touch of extra dim so the stat tiles at the
+       top of the log recede behind the hero; ~10% at the very top easing to
+       nothing by mid-viewport. Same element, so it shares the hero fade
+       lifecycle exactly. */
+    background: linear-gradient(180deg,
+      rgba(4, 7, 12, 0.10) 0%,
+      rgba(4, 7, 12, 0.05) 28%,
+      rgba(4, 7, 12, 0) 50%),
+    linear-gradient(90deg,
+      rgba(4, 7, 12, 0.72) 0%,
+      rgba(4, 7, 12, 0.62) 40%,
+      rgba(4, 7, 12, 0.30) 56%,
+      rgba(4, 7, 12, 0) 70%);
+  }
+  /* light-side spacing (scoped override, light markup untouched): stakes is the
+     first section in main once the old hero is replaced; tighten its top pad so
+     the heading arrives quickly after the dark section pushes off */
+  html.lw-desktop main > section:first-of-type { padding-top: 40px !important; }
+
+  /* hero stack: left-aligned so the headline connector has clear air to the row */
+  #lw-hero {
+    position: absolute; inset: 0; display: flex; flex-direction: column;
+    justify-content: center; align-items: flex-start; text-align: left;
+    padding: 80px 6vw 0 7vw; pointer-events: none; will-change: filter, opacity;
+  }
+  /* exhibit-label pill above the headline: green, themed to the log's own
+     re-engaged green (#1fb582 sampled from the row icons in log-landing.webp),
+     with a soft status-light glow breathing behind it. This pulse is the page's
+     second and last sanctioned idle animation (the scroll cue is the first). */
+  .lw-casecard {
+    position: relative; z-index: 0;
+    display: inline-block;
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.28em;
+    text-transform: uppercase; color: #7fe7c2;
+    font-family: var(--font-body, sans-serif);
+    border: 1px solid rgba(31, 181, 130, 0.55);
+    background: rgba(9, 26, 21, 0.6);
+    border-radius: 999px;
+    padding: 0.7em 1.6em;
+  }
+  .lw-casecard::before {
+    content: ""; position: absolute; inset: -22px -30px; z-index: -1;
+    border-radius: 999px; pointer-events: none;
+    background: radial-gradient(ellipse 60% 55% at 50% 50%,
+      rgba(31, 181, 130, 0.30) 0%, rgba(31, 181, 130, 0.12) 45%, rgba(31, 181, 130, 0) 72%);
+    opacity: 0.55;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lw-casecard::before { animation: lwPillGlow 2.8s ease-in-out infinite; }
+  }
+  @keyframes lwPillGlow {
+    0%, 100% { opacity: 0.35; transform: scale(0.96); }
+    50% { opacity: 0.85; transform: scale(1.03); }
+  }
+  #lw-hero .lw-casecard { margin-bottom: 2.2rem; }
+  #lw-hero h1 {
+    font-family: var(--lw-serif); font-size: clamp(2.3rem, 4.3vw, 4.2rem);
+    font-weight: 600; letter-spacing: -0.015em; line-height: 1.1; color: #fff;
+    max-width: 17ch;
+    text-shadow: 0 0 30px rgba(255,255,255,0.20), 0 2px 26px rgba(0,0,0,0.6);
+  }
+  #lw-hero h1 em, .lw-copyblock .lw-head em { font-style: italic; }
+  #lw-hero .lw-sub {
+    margin-top: 1.8rem; font-size: clamp(1rem, 1.6vw, 1.3rem); font-weight: 400;
+    color: rgba(255,255,255,0.75); max-width: 44ch; line-height: 1.55;
+    font-family: var(--font-body, sans-serif);
+    text-shadow: 0 2px 18px rgba(0,0,0,0.55);
+  }
+  #lw-hero .lw-cue {
+    margin-top: 4rem; font-size: 0.9rem; letter-spacing: 0.22em;
+    text-transform: uppercase; color: rgba(255,255,255,0.75);
+    font-family: var(--font-body, sans-serif);
+  }
+  #lw-hero .lw-cueinner { display: inline-block; }
+  #lw-hero .lw-chev { display: inline-block; margin-left: 0.5em; }
+  @media (prefers-reduced-motion: no-preference) {
+    #lw-hero .lw-cueinner { animation: lwCueBreathe 2.6s ease-in-out infinite; }
+  }
+  @keyframes lwCueBreathe {
+    0%, 100% { opacity: 0.5; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(4px); }
+  }
+
+  /* headline connector to the actual 71-emails row */
+  #lw-heroconn { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  #lw-heroconn path { fill: none; stroke: var(--lw-accent-soft); stroke-width: 1; opacity: 0.75; }
+  #lw-heroconn circle { fill: var(--lw-accent-soft); filter: blur(2px); }
+
+  /* rail connectors */
+  #lw-connectors { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
+  #lw-connectors path { fill: none; stroke: rgba(255,255,255,0.6); stroke-width: 1; }
+  #lw-connectors circle { fill: #fff; filter: blur(2px); }
+
+  /* copy rail */
+  .lw-copyblock {
+    position: absolute; left: 6vw; top: 50%; transform: translateY(-50%);
+    width: min(36vw, 520px); opacity: 0; pointer-events: none;
+    will-change: transform, opacity;
+  }
+  .lw-copyblock .lw-kicker {
+    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.28em;
+    text-transform: uppercase; color: var(--lw-accent-soft); margin-bottom: 1.2em;
+    font-family: var(--font-body, sans-serif);
+  }
+  .lw-copyblock .lw-head {
+    font-family: var(--lw-serif); font-size: clamp(1.6rem, 2.8vw, 2.5rem);
+    font-weight: 600; line-height: 1.16; letter-spacing: -0.01em; color: #fff;
+    text-shadow: 0 0 20px rgba(255,255,255,0.22), 0 2px 22px rgba(0,0,0,0.7);
+  }
+  .lw-copyblock.lw-big .lw-head {
+    font-size: clamp(2.2rem, 4vw, 3.5rem); letter-spacing: -0.015em; line-height: 1.08;
+  }
+  .lw-copyblock .lw-body {
+    margin-top: 1em; font-size: clamp(0.95rem, 1.35vw, 1.15rem); font-weight: 400;
+    line-height: 1.55; color: rgba(255,255,255,0.78); max-width: 44ch;
+    font-family: var(--font-body, sans-serif);
+    text-shadow: 0 2px 16px rgba(0,0,0,0.7);
+  }
+  @media (max-width: 700px) {
+    .lw-copyblock { left: 7vw; width: 80vw; }
+    #lw-persp { perspective-origin: 80% 50%; }
+    #lw-hero { padding-top: 96px; }
+  }
+  /* reduced motion: static dark cover, no wall machinery */
+  .lw-reduced #lw-scrolly { height: auto !important; }
+  .lw-reduced #lw-stage { position: relative; }
+  .lw-reduced #lw-persp, .lw-reduced #lw-heroconn, .lw-reduced .lw-copyblock,
+  .lw-reduced #lw-lightband, .lw-reduced .lw-cue { display: none; }
+
+  /* persistent rail CTA: fades in with beat 01, holds through the wall,
+     rides off with the sticky stage at release (no fade-out, no idle motion) */
+  #lw-wall-cta-wrap {
+    position: absolute; left: 6vw; bottom: 11vh; z-index: 6;
+    opacity: 0; pointer-events: none; will-change: opacity;
+  }
+  #lw-wall-cta {
+    display: inline-flex; align-items: center; gap: 8px;
+    font-family: var(--font-display, var(--font-body, sans-serif));
+    font-size: var(--text-sm, 0.9rem); font-weight: 600;
+    letter-spacing: 0.03em; text-transform: uppercase;
+    color: var(--lw-accent-text);
+    background: rgba(17, 142, 192, 0.08);
+    border: 1px solid rgba(17, 142, 192, 0.65);
+    border: 1px solid color-mix(in srgb, var(--lw-accent) 65%, transparent);
+    border-radius: 4px; padding: 14px 28px;
+    cursor: pointer; touch-action: manipulation;
+    transition: background 0.15s ease, border-color 0.15s ease;
+  }
+  #lw-wall-cta:hover {
+    background: rgba(17, 142, 192, 0.16);
+    border-color: rgba(17, 142, 192, 0.9);
+  }
+  #lw-wall-cta-wrap .lw-cta-note {
+    margin-top: 10px; font-size: 0.8rem; letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.55);
+    font-family: var(--font-body, sans-serif);
+  }
+  .lw-reduced #lw-wall-cta-wrap { display: none; }
+</style>
+
+<div id="lw-hero-mount"></div>
+
+<!-- inert until boot: template content renders nothing and fetches nothing -->
+<template id="lw-tpl-classic">
 <!-- ========== HERO ========== -->
 <section style="padding-top:144px;padding-bottom:96px;background:var(--color-surface-0);">
     <div class="container-c">
@@ -665,88 +894,367 @@
         </div>
     </div>
 </section>
+</template>
 
-<style>
-    @media (max-width: 768px) {
-        section:first-of-type .container-c > div { grid-template-columns: 1fr !important; }
-    }
-</style>
+<template id="lw-tpl-dark">
+<div id="lw-root">
+ <div id="lw-scrolly">
+  <div id="lw-stage">
+    <div id="lw-persp">
+      <div id="lw-plane">
+        <div id="lw-fadewrap">
+          <div id="lw-logstream"></div><!-- slice imgs are built by JS, desktop branch only -->
+        </div>
+      </div>
+    </div>
+    <div id="lw-lightband"></div>
+    <svg id="lw-connectors" aria-hidden="true"></svg>
 
-<!-- ===== AGENT CONNECTION: Claude window skin + hero animation (2026-07-09) ===== -->
-<style>
-    .cw-col{width:100%;max-width:500px;display:flex;flex-direction:column}
-    .cw{background:#262624;border-radius:14px;box-shadow:var(--shadow-xl),0 20px 60px -12px oklch(20% 0.04 255 / 0.3);overflow:hidden;display:flex;flex-direction:column;height:620px;position:relative;width:100%}
-    .cw-bar{display:flex;align-items:center;gap:12px;padding:11px 14px;background:#1f1e1c;border-bottom:1px solid #413f3b;flex-shrink:0}
-    .cw-lights{display:flex;gap:7px}
-    .cw-lights i{width:12px;height:12px;border-radius:50%}
-    .cw-lights i:nth-child(1){background:#ff5f57}
-    .cw-lights i:nth-child(2){background:#febc2e}
-    .cw-lights i:nth-child(3){background:#28c840}
-    .cw-title{display:flex;align-items:center;gap:7px;color:#f0eee6;font-family:Georgia,'Times New Roman',serif;font-size:15px;margin:0 auto;transform:translateX(-34px)}
-    .cw-conn{display:flex;align-items:center;gap:7px;background:#31302e;border:1px solid #413f3b;border-radius:999px;padding:5px 12px 5px 8px;font-family:var(--font-body);font-size:12px;font-weight:500;color:#f0eee6;white-space:nowrap}
-    .cw-conn img{height:15px}
-    .cw-dot{width:7px;height:7px;border-radius:50%;background:#4cbb7f;box-shadow:0 0 6px #4cbb7f}
-    .cw-chat{flex:1;overflow-y:auto;padding:18px 0 46px;scrollbar-width:none}
-    .cw-chat::-webkit-scrollbar{display:none}
-    .cw-chat.cw-fadeout{opacity:0}
-    .cw-chat{opacity:1;transition:opacity .8s}
-    .cw-fade{position:absolute;left:0;right:0;bottom:58px;height:56px;background:linear-gradient(to bottom,rgba(38,38,36,0),#262624);pointer-events:none}
-    .cw-input{flex-shrink:0;display:flex;align-items:center;gap:10px;margin:0 14px 14px;background:#31302e;border:1px solid #413f3b;border-radius:12px;padding:11px 14px;color:#aeaba0;font-size:13px;font-family:var(--font-body)}
-    .cw-tools{margin-left:auto;font-family:var(--font-mono);font-size:10px;border:1px solid #413f3b;border-radius:999px;padding:3px 8px;display:flex;align-items:center;gap:5px}
-    .cw-caption{margin:14px 4px 0;font-size:var(--text-sm);color:var(--color-text-muted);font-family:var(--font-body)}
-    .cw-caption a{color:var(--color-accent);text-decoration:none;font-weight:500}
-    .cw-caption a:hover{text-decoration:underline}
+    <div class="lw-copyblock" data-i="0">
+      <div class="lw-kicker">01 &middot; A Live Log</div>
+      <p class="lw-head">This is one sender's dead list, <em>waking up</em>.</p>
+      <p class="lw-body">Real account. Real subscribers. Masked for privacy, and every number is real. One campaign. One subject line. Sent one address at a time.</p>
+    </div>
+    <div class="lw-copyblock" data-i="1">
+      <div class="lw-kicker">02 &middot; The Problem</div>
+      <p class="lw-head">Half your email list is quietly <em>wrecking</em> the other half.</p>
+      <p class="lw-body">Dormant subscribers drag your reputation down, and mailbox providers quietly move your paying customers from the inbox to the spam folder.</p>
+    </div>
+    <div class="lw-copyblock" data-i="2" data-target="right-column">
+      <div class="lw-kicker">03 &middot; Read the Right Column</div>
+      <p class="lw-head">First open in 15 months. First open <em>ever</em>.</p>
+      <p class="lw-body">Rows like the one in the headline. 71 ignored emails, then an open. That is what recovery actually looks like.</p>
+    </div>
+    <div class="lw-copyblock" data-i="3">
+      <div class="lw-kicker">04 &middot; How</div>
+      <p class="lw-head">The job <em>no human</em> can do.</p>
+      <p class="lw-body">One email at a time, never batches. Inside your sending window. At 2 a.m., on a Sunday, every time.</p>
+    </div>
+    <div class="lw-copyblock" data-i="4">
+      <div class="lw-kicker">05 &middot; Safety</div>
+      <p class="lw-head">Your domain is the one thing we <em>won't</em> risk.</p>
+      <p class="lw-body">Deliverability is watched continuously across every major mailbox provider. If anything approaches the danger zone, sending pauses automatically.</p>
+    </div>
+    <div class="lw-copyblock lw-big" data-i="5" data-target="counter-area">
+      <div class="lw-kicker">06 &middot; Proof</div>
+      <p class="lw-head">1,344 recovered. <em>One complaint.</em></p>
+      <p class="lw-body">You are watching the audit trail of a live account, not a highlight reel.</p>
+    </div>
+    <div class="lw-copyblock" data-i="6">
+      <div class="lw-kicker">07 &middot; The Handoff</div>
+      <p class="lw-head">That's the <em>proof</em>.</p>
+      <p class="lw-body">The rest of this page is the plan.</p>
+    </div>
 
-    .cw-skin .msg{margin:7px 18px;max-width:82%;opacity:0;transform:translateY(8px);transition:opacity .55s ease,transform .55s ease}
-    .cw-skin .msg.show{opacity:1;transform:none}
-    .cw-skin .msg.user{margin-left:auto;background:#3b3a36;color:#f0eee6;padding:10px 15px;border-radius:16px 16px 4px 16px;font-family:var(--font-body);font-size:14px;line-height:1.45;width:fit-content}
-    .cw-skin .msg.claude{color:#f0eee6;font-family:Georgia,'Times New Roman',serif;font-size:14.5px;line-height:1.6}
-    .cw-skin .msg.claude .tok{opacity:0}
-    .cw-skin .msg.claude .tok.on{opacity:1;transition:opacity .18s}
-    .cw-skin .msg.claude strong{color:#f0eee6}
-    .cw-skin .msg.claude p{margin:12px 0 4px}
-    .cw-skin .msg.claude h5{font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:.02em;margin:14px 0 6px;color:#d97757}
-    .cw-skin .msg.claude ul{margin:4px 0;padding-left:18px;list-style:disc}
-    .cw-skin .msg.claude li{margin:3px 0}
-    .cw-skin .thought{display:flex;align-items:center;gap:6px;margin:10px 18px 2px;color:#aeaba0;font-family:var(--font-body);font-size:12px;opacity:0;transition:opacity .5s}
-    .cw-skin .thought.show{opacity:.85}
-    .cw-skin .thought .chev{font-size:9px}
-    .cw-skin .tgroup{margin:14px 18px 6px;max-width:82%;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
-    .cw-skin .tgroup.show{opacity:1;transform:none}
-    .cw-skin .tg-head{color:#c9c6bc;font-family:var(--font-body);font-size:13.5px;margin-bottom:12px}
-    .cw-skin .tentry{position:relative;padding-left:32px;margin-top:16px}
-    .cw-skin .tentry .ic{position:absolute;left:0;top:0;width:18px;height:18px;color:#aeaba0;display:inline-flex}
-    .cw-skin .tentry img.ic{object-fit:contain}
-    .cw-skin .tentry .tname{color:#d8d5cb;font-family:var(--font-body);font-size:14px}
-    .cw-skin .tentry .tline{position:absolute;left:9px;top:26px;bottom:-12px;width:1px;background:#413f3b}
-    .cw-skin .tentry .result{display:block;width:fit-content;margin:10px 0 2px;background:#1c1b19;border:1px solid #2e2d2a;border-radius:6px;padding:4px 11px;font-family:var(--font-mono);font-size:11px;color:#aeaba0;transition:opacity .4s}
-    .cw-skin .typing{display:inline-flex;margin:14px 18px;opacity:0;transition:opacity .4s}
-    .cw-skin .typing.show{opacity:1}
-    .cw-skin .typing svg{animation:cw-spin 3.2s linear infinite;transform-origin:center}
-    .cw-skin .typing svg g{transform-box:view-box;transform-origin:center;animation:cw-morph 1.3s ease-in-out infinite}
-    @keyframes cw-spin{to{transform:rotate(360deg)}}
-    @keyframes cw-morph{0%,100%{transform:scale(1)}50%{transform:scale(.22)}}
-    .cw-skin .pcard{margin:10px 18px;max-width:82%;background:#31302e;border:1px solid #413f3b;border-radius:12px;padding:14px 16px;opacity:0;transform:translateY(8px);transition:opacity .55s,transform .55s;font-family:var(--font-body)}
-    .cw-skin .pcard.show{opacity:1;transform:none}
-    .cw-skin .pcard .lab{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:#d97757;margin-bottom:7px}
-    .cw-skin .pcard .tt{font-size:14px;font-weight:600;color:#f0eee6;margin-bottom:3px}
-    .cw-skin .pcard .ss{font-size:12px;color:#aeaba0;margin-bottom:12px}
-    .cw-skin .pcard .btns{display:flex;gap:10px}
-    .cw-skin .pcard button{font-family:var(--font-body);font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 18px;border:1px solid #413f3b;background:transparent;color:#aeaba0;transition:transform .12s,filter .12s}
-    .cw-skin .pcard button.go{background:#d97757;border-color:#d97757;color:#1f1e1c}
-    .cw-skin .pcard button.go.pressed{transform:scale(.94);filter:brightness(1.15)}
-    .cw-skin .pcard .done{display:none;align-items:center;gap:8px;color:#4cbb7f;font-size:13px;font-weight:600}
-    .cw-skin .pcard.confirmed .btns{display:none}
-    .cw-skin .pcard.confirmed .done{display:flex}
+    <div id="lw-vignette"></div>
+    <div id="lw-dim"></div>
+    <div id="lw-herodim"></div>
+    <div id="lw-hero">
+      <div class="lw-casecard">Actual Re-Engaged Case Study</div>
+      <h1>&ldquo;Ignored 71 straight emails over 13 months. Then he <em>opened</em> one.&rdquo;</h1>
+      <p class="lw-sub">That row is on this page. So are 1,343 others. Scroll to watch a dead list come back.</p>
+      <p class="lw-cue"><span class="lw-cueinner">Scroll to watch. <span class="lw-chev">&#9662;</span></span></p>
+    </div>
+    <svg id="lw-heroconn" aria-hidden="true"><path d=""></path><circle r="2.4" opacity="0"></circle></svg>
+    <div id="lw-grain"></div>
+    <div id="lw-wall-cta-wrap">
+      <button id="lw-wall-cta" type="button">Start Free Trial, the safe way</button>
+      <p class="lw-cta-note">No credit card &middot; Cancel anytime</p>
+    </div>
+  </div>
+ </div>
+</div>
+</template>
 
-    .cwt{background:#262624;border-radius:14px;box-shadow:var(--shadow-xl),0 20px 60px -12px oklch(20% 0.04 255 / 0.3);overflow:hidden;max-width:760px;margin:0 auto;text-align:left}
-    .cwt .cwt-body{padding:10px 8px 24px}
-    .cwt .msg{max-width:92%}
-
-    @media (max-width:960px){.cw{height:540px}}
-    @media (max-width:768px){.cw-col{max-width:100%;margin-top:8px}}
-</style>
 <script>
+window.__lwStartDark = function () {
+  "use strict";
+  var root = document.getElementById("lw-root");
+  var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+  if (reduced) { root.classList.add("lw-reduced"); return; }
+
+  var SRC_W = 2028, SRC_H = 19942;
+  var WALL_RATE = 2.1, LERP = 0.15; // compressed wall: ~36% less scroll than 1.35
+  var ROW_X_SRC = 1352, ROW_Y_SRC = 773; // the "71 emails unopened" row, measured from pixels
+
+  var scrolly = document.getElementById("lw-scrolly");
+  var persp = document.getElementById("lw-persp");
+  var plane = document.getElementById("lw-plane");
+  var logStream = document.getElementById("lw-logstream");
+  // wall assets exist only in this branch: mobile never fetches them
+  for (var si = 0; si < 8; si++) {
+    var slImg = document.createElement("img");
+    slImg.src = "assets-dark-baked/log-slice-" + si + ".webp";
+    slImg.alt = si === 0 ? "Live re-engagement results log" : "";
+    slImg.setAttribute("decoding", "async");
+    logStream.appendChild(slImg);
+  }
+  var landing = document.createElement("img");
+  landing.id = "lw-landing";
+  landing.src = "assets-dark-baked/log-landing.webp";
+  landing.alt = "";
+  landing.setAttribute("decoding", "async");
+  logStream.appendChild(landing);
+  var dim = document.getElementById("lw-dim");
+  var heroDim = document.getElementById("lw-herodim");
+  var hero = document.getElementById("lw-hero");
+  var heroH1 = hero.querySelector("h1");
+  var lightBand = document.getElementById("lw-lightband");
+  var connSvg = document.getElementById("lw-connectors");
+  var heroConn = document.getElementById("lw-heroconn");
+  var heroConnPath = heroConn.querySelector("path");
+  var heroConnTip = heroConn.querySelector("circle");
+  var blocks = [].slice.call(document.querySelectorAll(".lw-copyblock"));
+  var wallCta = document.getElementById("lw-wall-cta-wrap");
+
+  var NS = "http://www.w3.org/2000/svg";
+  var connByIndex = {};
+  blocks.forEach(function (b, j) {
+    var t = b.getAttribute("data-target");
+    if (!t) return;
+    var path = document.createElementNS(NS, "path");
+    path.setAttribute("pathLength", "100");
+    path.setAttribute("stroke-dasharray", "100");
+    path.setAttribute("stroke-dashoffset", "100");
+    path.setAttribute("opacity", "0");
+    var tip = document.createElementNS(NS, "circle");
+    tip.setAttribute("r", "2");
+    tip.setAttribute("opacity", "0");
+    connSvg.appendChild(path);
+    connSvg.appendChild(tip);
+    connByIndex[j] = { target: t, path: path, tip: tip };
+  });
+
+  var vw = 0, vh = 0, P2 = 0, P3 = 0, travel = 0, finalRot = -30, pitch = 3;
+  var heroConnOn = false;
+
+  function layout() {
+    vw = window.innerWidth;
+    vh = window.innerHeight;
+    finalRot = vw < 700 ? -18 : -30;
+    pitch = vw < 700 ? 2 : 3;
+    var scale = vw / SRC_W;
+    var logH = SRC_H * scale;
+    travel = Math.max(0, logH - vh);
+    P2 = Math.max(1, Math.round(vh * 1.2));
+    P3 = Math.max(1, Math.round(travel / WALL_RATE));
+    // wrapper ends at the release point: sticky releases exactly at wall end
+    scrolly.style.height = (vh + P2 + P3) + "px";
+    var ox = Math.round(vw * 0.12), orr = Math.round(vw * 0.04), oy = Math.round(vh * 0.15);
+    plane.style.left = (-ox) + "px";
+    plane.style.top = (-oy) + "px";
+    plane.style.width = (vw + ox + orr) + "px";
+    plane.style.height = (vh + 2 * oy) + "px";
+    logStream.style.left = ox + "px";
+    logStream.style.width = vw + "px";
+    logStream.style.paddingTop = oy + "px";
+    logStream.style.height = Math.round(logH + 2 * oy + vh) + "px";
+    landing.style.top = oy + "px";
+    connSvg.setAttribute("viewBox", "0 0 " + vw + " " + vh);
+    heroConn.setAttribute("viewBox", "0 0 " + vw + " " + vh);
+    heroConnLayout();
+  }
+
+  // headline connector: anchored to the actual row's pixel position, shown only
+  // where it can truthfully point at the row (wide viewports, row above fold)
+  function heroConnLayout() {
+    heroConnOn = false;
+    heroConnPath.setAttribute("opacity", "0");
+    heroConnTip.setAttribute("opacity", "0");
+    if (vw < 1100) return;
+    var ax = ROW_X_SRC / SRC_W * vw - 16;
+    var ay = ROW_Y_SRC / SRC_W * vw;
+    if (ay > vh - 90) return;
+    var r = heroH1.getBoundingClientRect();
+    if (ax < r.right + 40) return;
+    var sx = r.right + 18, sy = r.top + r.height * 0.6;
+    var cx = (sx + ax) / 2, cy = Math.min(sy, ay) - 30;
+    heroConnPath.setAttribute("d", "M" + sx.toFixed(1) + " " + sy.toFixed(1) +
+      " Q" + cx.toFixed(1) + " " + cy.toFixed(1) + " " + ax.toFixed(1) + " " + ay.toFixed(1));
+    heroConnTip.setAttribute("cx", ax.toFixed(1));
+    heroConnTip.setAttribute("cy", ay.toFixed(1));
+    heroConnOn = true;
+  }
+
+  function clamp01(t) { return t > 0 ? (t < 1 ? t : 1) : 0; }
+  function smooth(t) { t = clamp01(t); return t * t * (3 - 2 * t); }
+
+  var curRot = 0, curWall = 0;
+  var tgtRot = 0, tgtWall = 0;
+  var lastRenderRot = -1, overlayGone = false;
+  var lastBlockO = [];
+  var lastCtaO = -1;
+  var raf = null;
+
+  function targets() {
+    var y = window.scrollY || window.pageYOffset || 0;
+    tgtRot = smooth(y / P2);
+    tgtWall = clamp01((y - P2) / (P3 || 1));
+  }
+
+  function updateConnector(c, p, o) {
+    var draw = 0;
+    if (p > 0 && p < 1) draw = Math.min(1, smooth(p / 0.22), smooth((1 - p) / 0.22));
+    if (draw < 0.01 || o < 0.01) {
+      if (c.active) {
+        c.path.setAttribute("opacity", "0");
+        c.path.setAttribute("stroke-dashoffset", "100");
+        c.tip.setAttribute("opacity", "0");
+        c.active = false;
+      }
+      return;
+    }
+    c.active = true;
+    var x0 = vw * 0.06 + Math.min(vw * 0.36, 520) + 14;
+    var y0 = vh / 2 + (0.5 - p) * 24;
+    var tx, tyy;
+    if (c.target === "right-column") { tx = vw * 0.80; tyy = y0 - 20; }
+    else if (c.target === "counter-area") { tx = vw * 0.78; tyy = vh * 0.30; }
+    else { tx = vw * 0.62; tyy = y0 + 12; }
+    var cx = (x0 + tx) / 2, cy = Math.min(y0, tyy) - 40;
+    c.path.setAttribute("d", "M" + x0.toFixed(1) + " " + y0.toFixed(1) +
+      " Q" + cx.toFixed(1) + " " + cy.toFixed(1) + " " + tx.toFixed(1) + " " + tyy.toFixed(1));
+    c.path.setAttribute("stroke-dashoffset", (100 * (1 - draw)).toFixed(2));
+    c.path.setAttribute("opacity", o.toFixed(3));
+    var it = 1 - draw;
+    var bx = it * it * x0 + 2 * it * draw * cx + draw * draw * tx;
+    var by = it * it * y0 + 2 * it * draw * cy + draw * draw * tyy;
+    c.tip.setAttribute("cx", bx.toFixed(1));
+    c.tip.setAttribute("cy", by.toFixed(1));
+    c.tip.setAttribute("opacity", (o * 0.85).toFixed(3));
+  }
+
+  function render() {
+    if (Math.abs(curRot - lastRenderRot) > 0.0004) {
+      lastRenderRot = curRot;
+      plane.style.transform =
+        "rotateY(" + (finalRot * curRot) + "deg) rotateX(" + (pitch * curRot) + "deg)";
+      var ovo = 1 - clamp01(curRot / 0.6);
+      if (ovo <= 0.001) {
+        if (!overlayGone) { landing.style.display = "none"; overlayGone = true; }
+      } else {
+        if (overlayGone) { landing.style.display = "block"; overlayGone = false; }
+        landing.style.opacity = ovo.toFixed(4);
+      }
+      var fade = 1 - clamp01(curRot / 0.55);
+      if (fade <= 0.001) {
+        dim.style.display = "none";
+        heroDim.style.display = "none";
+        hero.style.visibility = "hidden";
+        heroConn.style.display = "none";
+      } else {
+        dim.style.display = "block";
+        dim.style.opacity = (0.35 * fade).toFixed(4);
+        heroDim.style.display = "block";
+        heroDim.style.opacity = fade.toFixed(4);
+        hero.style.visibility = "visible";
+        hero.style.opacity = fade.toFixed(4);
+        var q = 1 - fade;
+        hero.style.filter = q < 0.01 ? "none" : "blur(" + (q * 7).toFixed(2) + "px)";
+        heroH1.style.letterSpacing = (-0.015 + q * 0.045).toFixed(4) + "em";
+        if (heroConnOn) {
+          // connector exits ahead of the hero: starts fading with the very
+          // first rotation progress and is fully gone by ~38% of the rotation
+          // phase (its own faster curve, still purely scroll-driven)
+          var connFade = 1 - clamp01(curRot / 0.38);
+          if (connFade <= 0.001) {
+            heroConn.style.display = "none";
+          } else {
+            heroConn.style.display = "block";
+            heroConnPath.setAttribute("opacity", (0.75 * connFade).toFixed(3));
+            heroConnTip.setAttribute("opacity", (0.8 * connFade).toFixed(3));
+          }
+        }
+      }
+    }
+
+    logStream.style.transform = "translate3d(0," + (-travel * curWall) + "px,0)";
+
+    var span = 1 / blocks.length, f = 0.018;
+    var gate = smooth((curRot - 0.7) / 0.3);
+    var lastIdx = blocks.length - 1;
+    for (var j = 0; j < blocks.length; j++) {
+      var b0 = j * span;
+      var p = (curWall - b0) / span;
+      var o = 0;
+      if (j === lastIdx) {
+        // beat 07 never fades out: it reaches full opacity well before the
+        // sticky releases and stays readable during the push-off
+        if (p > 0) o = Math.min(1, smooth(p * span / f));
+      } else if (p > 0 && p < 1) {
+        var inO = smooth(p * span / f);
+        var outO = smooth((1 - p) * span / f);
+        o = Math.min(1, inO, outO);
+      }
+      o *= gate;
+      if (o > 0 || lastBlockO[j] !== 0) {
+        var bty = (0.5 - p) * 24;
+        blocks[j].style.opacity = o.toFixed(4);
+        blocks[j].style.transform = "translateY(calc(-50% + " + bty.toFixed(1) + "px))";
+        lastBlockO[j] = o;
+      }
+      var c = connByIndex[j];
+      if (c) updateConnector(c, p, o);
+    }
+
+    // persistent rail CTA: identical fade-in curve to beat 01 (gated by the
+    // rotation gate, in over the first f of wall progress), then holds at 1
+    // for the rest of the wall; the sticky release carries it off unchanged
+    var ctaO = gate * Math.min(1, smooth(curWall / f));
+    if (ctaO !== lastCtaO) {
+      wallCta.style.opacity = ctaO.toFixed(4);
+      wallCta.style.pointerEvents = ctaO > 0.5 ? "auto" : "none";
+      lastCtaO = ctaO;
+    }
+  }
+
+  function update() {
+    if (!isFinite(curRot)) curRot = tgtRot;
+    if (!isFinite(curWall)) curWall = tgtWall;
+    curRot += (tgtRot - curRot) * LERP;
+    curWall += (tgtWall - curWall) * LERP;
+    var settled = Math.abs(tgtRot - curRot) < 0.0006 &&
+                  Math.abs(tgtWall - curWall) < 0.0006;
+    if (settled) { curRot = tgtRot; curWall = tgtWall; }
+    render();
+    return settled;
+  }
+
+  function tick() {
+    var settled = update();
+    if (settled) { raf = null; return; }
+    raf = requestAnimationFrame(tick);
+  }
+
+  function wake() {
+    targets();
+    if (raf === null) raf = requestAnimationFrame(tick);
+  }
+
+  window.__logwall = {
+    snap: function () { targets(); curRot = tgtRot; curWall = tgtWall; render(); },
+    step: function () { targets(); return update(); },
+    state: function () { return { curRot: curRot, curWall: curWall, P2: P2, P3: P3, travel: travel, heroConnOn: heroConnOn }; }
+  };
+
+  window.addEventListener("scroll", wake, { passive: true });
+  window.addEventListener("resize", function () { layout(); wake(); }, { passive: true });
+  document.addEventListener("visibilitychange", function () {
+    if (!document.hidden) { layout(); wake(); }
+  });
+  if (document.fonts && document.fonts.ready) {
+    document.fonts.ready.then(function () { layout(); });
+  }
+
+  layout();
+  targets();
+  curRot = tgtRot; curWall = tgtWall;
+  render();
+};
+</script>
+
+<script>
+window.__lwStartClassic = function () {
 (function(){
   var chat = document.getElementById('cw-chat');
   if(!chat) return;
@@ -905,7 +1413,142 @@
   if(REDUCED){ window.__cwSeek(steps.length-1); }
   else { setTimeout(function(){ runFrom(0); }, 800); }
 })();
+};
 </script>
+
+<script>
+(function () {
+  function lwBoot() {
+    var desktop = window.matchMedia("(min-width: 1100px)").matches;
+    var dark = document.getElementById("lw-tpl-dark");
+    var classic = document.getElementById("lw-tpl-classic");
+    var mount = document.getElementById("lw-hero-mount");
+    mount.appendChild((desktop ? dark : classic).content.cloneNode(true));
+    dark.remove();
+    classic.remove();
+    // the production .reveal IntersectionObserver ran before this stamp and
+    // never saw these nodes; the hero is above the fold, so show it directly
+    var reveals = mount.querySelectorAll(".reveal");
+    for (var ri = 0; ri < reveals.length; ri++) reveals[ri].classList.add("visible");
+    // the production CTA-binding IIFE ran at parse time, before this stamp, so
+    // any CTA id living inside a template never received its click listener.
+    // Re-run the same binding (window.openSignupModal, exposed by that IIFE)
+    // for template-resident ids only, scoped to the mount to avoid double-binding
+    // the static buttons. Currently only #hero-cta (classic template) qualifies.
+    var lwCtaIds = ["nav-cta", "mobile-cta", "hero-cta", "dilemma-cta", "roi-cta", "final-cta", "proof-cta", "sticky-cta", "lw-wall-cta"];
+    for (var ci = 0; ci < lwCtaIds.length; ci++) {
+      var lwBtn = mount.querySelector("#" + lwCtaIds[ci]);
+      if (lwBtn && window.openSignupModal) lwBtn.addEventListener("click", window.openSignupModal);
+    }
+    if (desktop) {
+      document.documentElement.classList.add("lw-desktop");
+      var ff = document.createElement("style");
+      ff.textContent =
+        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked/fonts/fraunces-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}' +
+        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked/fonts/fraunces-600-italic.woff2") format("woff2");font-weight:600;font-style:italic;font-display:swap;}';
+      document.head.appendChild(ff);
+      ["fraunces-600.woff2", "fraunces-600-italic.woff2"].forEach(function (f) {
+        var l = document.createElement("link");
+        l.rel = "preload"; l.as = "font"; l.type = "font/woff2";
+        l.crossOrigin = "anonymous";
+        l.href = "assets-dark-baked/fonts/" + f;
+        document.head.appendChild(l);
+      });
+      if (window.__lwStartDark) window.__lwStartDark();
+    } else {
+      if (window.__lwStartClassic) window.__lwStartClassic();
+    }
+  }
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", lwBoot);
+  } else {
+    lwBoot();
+  }
+})();
+</script>
+<!-- ========== /LOG WALL HERO ========== -->
+
+
+<style>
+    @media (max-width: 768px) {
+        section:first-of-type .container-c > div { grid-template-columns: 1fr !important; }
+    }
+</style>
+
+<!-- ===== AGENT CONNECTION: Claude window skin + hero animation (2026-07-09) ===== -->
+<style>
+    .cw-col{width:100%;max-width:500px;display:flex;flex-direction:column}
+    .cw{background:#262624;border-radius:14px;box-shadow:var(--shadow-xl),0 20px 60px -12px oklch(20% 0.04 255 / 0.3);overflow:hidden;display:flex;flex-direction:column;height:620px;position:relative;width:100%}
+    .cw-bar{display:flex;align-items:center;gap:12px;padding:11px 14px;background:#1f1e1c;border-bottom:1px solid #413f3b;flex-shrink:0}
+    .cw-lights{display:flex;gap:7px}
+    .cw-lights i{width:12px;height:12px;border-radius:50%}
+    .cw-lights i:nth-child(1){background:#ff5f57}
+    .cw-lights i:nth-child(2){background:#febc2e}
+    .cw-lights i:nth-child(3){background:#28c840}
+    .cw-title{display:flex;align-items:center;gap:7px;color:#f0eee6;font-family:Georgia,'Times New Roman',serif;font-size:15px;margin:0 auto;transform:translateX(-34px)}
+    .cw-conn{display:flex;align-items:center;gap:7px;background:#31302e;border:1px solid #413f3b;border-radius:999px;padding:5px 12px 5px 8px;font-family:var(--font-body);font-size:12px;font-weight:500;color:#f0eee6;white-space:nowrap}
+    .cw-conn img{height:15px}
+    .cw-dot{width:7px;height:7px;border-radius:50%;background:#4cbb7f;box-shadow:0 0 6px #4cbb7f}
+    .cw-chat{flex:1;overflow-y:auto;padding:18px 0 46px;scrollbar-width:none}
+    .cw-chat::-webkit-scrollbar{display:none}
+    .cw-chat.cw-fadeout{opacity:0}
+    .cw-chat{opacity:1;transition:opacity .8s}
+    .cw-fade{position:absolute;left:0;right:0;bottom:58px;height:56px;background:linear-gradient(to bottom,rgba(38,38,36,0),#262624);pointer-events:none}
+    .cw-input{flex-shrink:0;display:flex;align-items:center;gap:10px;margin:0 14px 14px;background:#31302e;border:1px solid #413f3b;border-radius:12px;padding:11px 14px;color:#aeaba0;font-size:13px;font-family:var(--font-body)}
+    .cw-tools{margin-left:auto;font-family:var(--font-mono);font-size:10px;border:1px solid #413f3b;border-radius:999px;padding:3px 8px;display:flex;align-items:center;gap:5px}
+    .cw-caption{margin:14px 4px 0;font-size:var(--text-sm);color:var(--color-text-muted);font-family:var(--font-body)}
+    .cw-caption a{color:var(--color-accent);text-decoration:none;font-weight:500}
+    .cw-caption a:hover{text-decoration:underline}
+
+    .cw-skin .msg{margin:7px 18px;max-width:82%;opacity:0;transform:translateY(8px);transition:opacity .55s ease,transform .55s ease}
+    .cw-skin .msg.show{opacity:1;transform:none}
+    .cw-skin .msg.user{margin-left:auto;background:#3b3a36;color:#f0eee6;padding:10px 15px;border-radius:16px 16px 4px 16px;font-family:var(--font-body);font-size:14px;line-height:1.45;width:fit-content}
+    .cw-skin .msg.claude{color:#f0eee6;font-family:Georgia,'Times New Roman',serif;font-size:14.5px;line-height:1.6}
+    .cw-skin .msg.claude .tok{opacity:0}
+    .cw-skin .msg.claude .tok.on{opacity:1;transition:opacity .18s}
+    .cw-skin .msg.claude strong{color:#f0eee6}
+    .cw-skin .msg.claude p{margin:12px 0 4px}
+    .cw-skin .msg.claude h5{font-family:var(--font-body);font-size:13px;font-weight:600;letter-spacing:.02em;margin:14px 0 6px;color:#d97757}
+    .cw-skin .msg.claude ul{margin:4px 0;padding-left:18px;list-style:disc}
+    .cw-skin .msg.claude li{margin:3px 0}
+    .cw-skin .thought{display:flex;align-items:center;gap:6px;margin:10px 18px 2px;color:#aeaba0;font-family:var(--font-body);font-size:12px;opacity:0;transition:opacity .5s}
+    .cw-skin .thought.show{opacity:.85}
+    .cw-skin .thought .chev{font-size:9px}
+    .cw-skin .tgroup{margin:14px 18px 6px;max-width:82%;opacity:0;transform:translateY(6px);transition:opacity .5s,transform .5s}
+    .cw-skin .tgroup.show{opacity:1;transform:none}
+    .cw-skin .tg-head{color:#c9c6bc;font-family:var(--font-body);font-size:13.5px;margin-bottom:12px}
+    .cw-skin .tentry{position:relative;padding-left:32px;margin-top:16px}
+    .cw-skin .tentry .ic{position:absolute;left:0;top:0;width:18px;height:18px;color:#aeaba0;display:inline-flex}
+    .cw-skin .tentry img.ic{object-fit:contain}
+    .cw-skin .tentry .tname{color:#d8d5cb;font-family:var(--font-body);font-size:14px}
+    .cw-skin .tentry .tline{position:absolute;left:9px;top:26px;bottom:-12px;width:1px;background:#413f3b}
+    .cw-skin .tentry .result{display:block;width:fit-content;margin:10px 0 2px;background:#1c1b19;border:1px solid #2e2d2a;border-radius:6px;padding:4px 11px;font-family:var(--font-mono);font-size:11px;color:#aeaba0;transition:opacity .4s}
+    .cw-skin .typing{display:inline-flex;margin:14px 18px;opacity:0;transition:opacity .4s}
+    .cw-skin .typing.show{opacity:1}
+    .cw-skin .typing svg{animation:cw-spin 3.2s linear infinite;transform-origin:center}
+    .cw-skin .typing svg g{transform-box:view-box;transform-origin:center;animation:cw-morph 1.3s ease-in-out infinite}
+    @keyframes cw-spin{to{transform:rotate(360deg)}}
+    @keyframes cw-morph{0%,100%{transform:scale(1)}50%{transform:scale(.22)}}
+    .cw-skin .pcard{margin:10px 18px;max-width:82%;background:#31302e;border:1px solid #413f3b;border-radius:12px;padding:14px 16px;opacity:0;transform:translateY(8px);transition:opacity .55s,transform .55s;font-family:var(--font-body)}
+    .cw-skin .pcard.show{opacity:1;transform:none}
+    .cw-skin .pcard .lab{font-family:var(--font-mono);font-size:10px;letter-spacing:.08em;color:#d97757;margin-bottom:7px}
+    .cw-skin .pcard .tt{font-size:14px;font-weight:600;color:#f0eee6;margin-bottom:3px}
+    .cw-skin .pcard .ss{font-size:12px;color:#aeaba0;margin-bottom:12px}
+    .cw-skin .pcard .btns{display:flex;gap:10px}
+    .cw-skin .pcard button{font-family:var(--font-body);font-size:12.5px;font-weight:600;border-radius:8px;padding:8px 18px;border:1px solid #413f3b;background:transparent;color:#aeaba0;transition:transform .12s,filter .12s}
+    .cw-skin .pcard button.go{background:#d97757;border-color:#d97757;color:#1f1e1c}
+    .cw-skin .pcard button.go.pressed{transform:scale(.94);filter:brightness(1.15)}
+    .cw-skin .pcard .done{display:none;align-items:center;gap:8px;color:#4cbb7f;font-size:13px;font-weight:600}
+    .cw-skin .pcard.confirmed .btns{display:none}
+    .cw-skin .pcard.confirmed .done{display:flex}
+
+    .cwt{background:#262624;border-radius:14px;box-shadow:var(--shadow-xl),0 20px 60px -12px oklch(20% 0.04 255 / 0.3);overflow:hidden;max-width:760px;margin:0 auto;text-align:left}
+    .cwt .cwt-body{padding:10px 8px 24px}
+    .cwt .msg{max-width:92%}
+
+    @media (max-width:960px){.cw{height:540px}}
+    @media (max-width:768px){.cw-col{max-width:100%;margin-top:8px}}
+</style>
 
 <!-- ========== STAKES (REPUTATION = REVENUE PIPE) ========== -->
 <section style="padding:72px 0;background:var(--color-surface-1);border-top:1px solid var(--color-border);">
