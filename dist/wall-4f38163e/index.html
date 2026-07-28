@@ -5,7 +5,27 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="robots" content="noindex, nofollow">
 <title>ReEngage Pro | This is not a demo</title>
+<link rel="preload" href="assets-dark-baked/fonts/fraunces-600.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="preload" href="assets-dark-baked/fonts/fraunces-600-italic.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  @font-face {
+    font-family: "Fraunces";
+    src: url("assets-dark-baked/fonts/fraunces-600.woff2") format("woff2");
+    font-weight: 600;
+    font-style: normal;
+    font-display: swap;
+  }
+  @font-face {
+    font-family: "Fraunces";
+    src: url("assets-dark-baked/fonts/fraunces-600-italic.woff2") format("woff2");
+    font-weight: 600;
+    font-style: italic;
+    font-display: swap;
+  }
+  :root {
+    --serif: "Fraunces", ui-serif, Georgia, "Times New Roman", serif;
+    --gold: #d0a24f;
+  }
   * { margin: 0; padding: 0; box-sizing: border-box; }
   html { background: #0b0e13; }
   body {
@@ -132,37 +152,51 @@
     pointer-events: none;
     will-change: filter, opacity;
   }
-  #hero h1 {
-    font-size: clamp(2.4rem, 5.4vw, 4.6rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.08;
-    text-shadow: 0 0 26px rgba(255, 255, 255, 0.30), 0 2px 24px rgba(0, 0, 0, 0.55);
+  .goldKicker {
+    font-size: 0.82rem;
+    font-weight: 600;
+    letter-spacing: 0.32em;
+    text-transform: uppercase;
+    color: var(--gold);
   }
+  #hero .heroKicker { margin-bottom: 2.4rem; }
+  #hero h1 {
+    font-family: var(--serif);
+    font-size: clamp(3rem, 7vw, 6.2rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
+    line-height: 1.05;
+    text-shadow: 0 0 30px rgba(255, 255, 255, 0.22), 0 2px 26px rgba(0, 0, 0, 0.6);
+  }
+  #hero h1 em, .copyblock .head em, #final h2 em { font-style: italic; }
   #hero p.sub {
-    margin-top: 1.4rem;
-    font-size: clamp(1.15rem, 2.3vw, 1.7rem);
+    margin-top: 2rem;
+    font-size: clamp(1.05rem, 1.9vw, 1.45rem);
     font-weight: 400;
-    color: rgba(255, 255, 255, 0.92);
+    color: rgba(255, 255, 255, 0.75);
     max-width: 46ch;
-    line-height: 1.4;
-    text-shadow: 0 0 18px rgba(255, 255, 255, 0.20), 0 2px 18px rgba(0, 0, 0, 0.55);
+    line-height: 1.5;
+    text-shadow: 0 2px 18px rgba(0, 0, 0, 0.55);
   }
   #hero p.cue {
-    margin-top: 3.2rem;
+    margin-top: 5rem;
     font-size: 0.95rem;
     letter-spacing: 0.22em;
     text-transform: uppercase;
     color: rgba(255, 255, 255, 0.75);
   }
-  #scrollcue {
-    position: absolute;
-    left: 50%;
-    bottom: 3.2vh;
-    transform: translateX(-50%);
-    font-size: 1.5rem;
-    color: rgba(255, 255, 255, 0.7);
-    pointer-events: none;
+  #hero .cueInner { display: inline-block; }
+  #hero .chev { display: inline-block; margin-left: 0.5em; }
+  /* client-sanctioned exception to the no-idle-motion rule: this cue ONLY.
+     Pure CSS, so the JS loop stays settled while it breathes. */
+  @media (prefers-reduced-motion: no-preference) {
+    #hero .cueInner {
+      animation: cueBreathe 2.6s ease-in-out infinite;
+    }
+  }
+  @keyframes cueBreathe {
+    0%, 100% { opacity: 0.5; transform: translateY(0); }
+    50% { opacity: 1; transform: translateY(4px); }
   }
 
   /* scroll-driven connectors from rail copy toward the wall */
@@ -198,21 +232,21 @@
     font-weight: 600;
     letter-spacing: 0.28em;
     text-transform: uppercase;
-    color: rgba(255, 255, 255, 0.55);
-    margin-bottom: 1.1em;
+    color: var(--gold);
+    margin-bottom: 1.2em;
   }
   .copyblock .head {
-    font-size: clamp(1.45rem, 2.5vw, 2.2rem);
-    font-weight: 650;
-    line-height: 1.22;
-    letter-spacing: -0.014em;
-    text-shadow: 0 0 20px rgba(255, 255, 255, 0.25), 0 2px 22px rgba(0, 0, 0, 0.7);
+    font-family: var(--serif);
+    font-size: clamp(1.6rem, 2.8vw, 2.5rem);
+    font-weight: 600;
+    line-height: 1.16;
+    letter-spacing: -0.01em;
+    text-shadow: 0 0 20px rgba(255, 255, 255, 0.22), 0 2px 22px rgba(0, 0, 0, 0.7);
   }
   .copyblock.big .head {
-    font-size: clamp(2rem, 3.8vw, 3.2rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
-    line-height: 1.12;
+    font-size: clamp(2.2rem, 4vw, 3.5rem);
+    letter-spacing: -0.015em;
+    line-height: 1.08;
   }
   .copyblock .body {
     margin-top: 1em;
@@ -238,25 +272,26 @@
     gap: 2.6rem;
   }
   #final h2 {
-    font-size: clamp(2rem, 4.6vw, 3.8rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-family: var(--serif);
+    font-size: clamp(2.2rem, 4.8vw, 4.2rem);
+    font-weight: 600;
+    letter-spacing: -0.015em;
     max-width: 22ch;
-    line-height: 1.12;
+    line-height: 1.08;
   }
   #final .cta {
     appearance: none;
-    border: none;
     cursor: pointer;
     font: inherit;
     font-size: clamp(1.05rem, 1.6vw, 1.3rem);
     font-weight: 600;
     letter-spacing: 0.01em;
-    color: #07110d;
-    background: linear-gradient(180deg, #2fd39a 0%, #17a37a 100%);
+    color: #f3e3c3;
+    background: rgba(208, 162, 79, 0.08);
+    border: 1px solid rgba(208, 162, 79, 0.65);
     padding: 1.05em 2.6em;
     border-radius: 999px;
-    box-shadow: 0 8px 30px rgba(23, 163, 122, 0.35), inset 0 1px 0 rgba(255, 255, 255, 0.35);
+    box-shadow: 0 8px 30px rgba(208, 162, 79, 0.15), inset 0 1px 0 rgba(255, 255, 255, 0.08);
   }
   #final .cta:hover { filter: brightness(1.06); }
   #final .lede {
@@ -313,9 +348,10 @@
     text-align: center;
   }
   #fallback .fb-hero h1 {
+    font-family: var(--serif);
     font-size: clamp(2.2rem, 5vw, 4rem);
-    font-weight: 700;
-    letter-spacing: -0.02em;
+    font-weight: 600;
+    letter-spacing: -0.015em;
     line-height: 1.1;
   }
   #fallback .fb-hero p {
@@ -373,81 +409,82 @@
     <svg id="connectors" aria-hidden="true"></svg>
 
     <div class="copyblock" data-i="0" data-target="row">
-      <div class="kicker">A Live Log</div>
-      <p class="head">This is one sender's dead list, waking up.</p>
+      <div class="kicker">01 &middot; A Live Log</div>
+      <p class="head">This is one sender's dead list, <em>waking up</em>.</p>
       <p class="body">Real account. Real subscribers. Masked for privacy, and every number is real.</p>
     </div>
     <div class="copyblock" data-i="1">
-      <div class="kicker">The Problem</div>
-      <p class="head">Half your email list is quietly wrecking the other half.</p>
+      <div class="kicker">02 &middot; The Problem</div>
+      <p class="head">Half your email list is quietly <em>wrecking</em> the other half.</p>
       <p class="body">Dormant subscribers drag your reputation down, and mailbox providers quietly move your paying customers from the inbox to the spam folder.</p>
     </div>
     <div class="copyblock" data-i="2">
-      <div class="kicker">The Trap</div>
-      <p class="head">Mail them. Delete them. Ignore them. All three lose.</p>
+      <div class="kicker">03 &middot; The Trap</div>
+      <p class="head">Mail them. Delete them. Ignore them. <em>All three lose.</em></p>
       <p class="body">Dormant subscribers are not dead. They are just dangerous to wake up by hand.</p>
     </div>
     <div class="copyblock" data-i="3" data-target="right-column">
-      <div class="kicker">Read the Right Column</div>
-      <p class="head">First open in 15 months. First open ever.</p>
+      <div class="kicker">04 &middot; Read the Right Column</div>
+      <p class="head">First open in 15 months. First open <em>ever</em>.</p>
       <p class="body">71 ignored emails, then an open. That is what recovery actually looks like.</p>
     </div>
     <div class="copyblock" data-i="4">
-      <div class="kicker">How</div>
-      <p class="head">The job no human can do.</p>
+      <div class="kicker">05 &middot; How</div>
+      <p class="head">The job <em>no human</em> can do.</p>
       <p class="body">One email at a time, never batches. Inside your sending window. At 2 a.m., on a Sunday, every time.</p>
     </div>
     <div class="copyblock" data-i="5">
-      <div class="kicker">Safety</div>
-      <p class="head">Your domain is the one thing we won't risk.</p>
+      <div class="kicker">06 &middot; Safety</div>
+      <p class="head">Your domain is the one thing we <em>won't</em> risk.</p>
       <p class="body">Deliverability is watched continuously across every major mailbox provider. If anything approaches the danger zone, sending pauses automatically.</p>
     </div>
     <div class="copyblock big" data-i="6" data-target="counter-area">
-      <div class="kicker">Proof</div>
-      <p class="head">1,344 recovered. One complaint.</p>
+      <div class="kicker">07 &middot; Proof</div>
+      <p class="head">1,344 recovered. <em>One complaint.</em></p>
       <p class="body">You are watching the audit trail of a live account, not a highlight reel.</p>
     </div>
     <div class="copyblock" data-i="7">
-      <div class="kicker">Results</div>
-      <p class="head">21.6% of a 'dead' list came back.</p>
+      <div class="kicker">08 &middot; Results</div>
+      <p class="head">21.6% of a 'dead' list <em>came back</em>.</p>
       <p class="body">Some campaigns clear 35%. Some land in the teens. The point is the platform ran the whole thing safely, on autopilot.</p>
     </div>
     <div class="copyblock" data-i="8">
-      <div class="kicker">The Engine Room</div>
-      <p class="head">Proprietary, patent-pending mechanisms.</p>
+      <div class="kicker">09 &middot; The Engine Room</div>
+      <p class="head">Proprietary, <em>patent-pending</em> mechanisms.</p>
       <p class="body">You get the outcomes. The engine room stays closed.</p>
     </div>
     <div class="copyblock" data-i="9">
-      <div class="kicker">Who Built This</div>
-      <p class="head">25 years in digital marketing. 16 solving email deliverability.</p>
+      <div class="kicker">10 &middot; Who Built This</div>
+      <p class="head">25 years in digital marketing. 16 solving <em>email deliverability</em>.</p>
       <p class="body">Email Admin for 26,000 businesses. Author of Phantom Engaged.</p>
     </div>
     <div class="copyblock" data-i="10">
-      <div class="kicker">The Math</div>
-      <p class="head">You don't need the full 15%. You need a sliver.</p>
+      <div class="kicker">11 &middot; The Math</div>
+      <p class="head">You don't need the full 15%. You need a <em>sliver</em>.</p>
       <p class="body">A 50k list at 40% dormant holds $9,000 a month in recovery potential, against $147.</p>
     </div>
     <div class="copyblock" data-i="11">
-      <div class="kicker">Your Turn</div>
-      <p class="head">Wake the list. Keep the domain.</p>
+      <div class="kicker">12 &middot; Your Turn</div>
+      <p class="head">Wake the list. <em>Keep the domain.</em></p>
       <p class="body">Your list has rows like these waiting.</p>
     </div>
 
     <div id="filmVignette"></div>
     <div id="dim"></div>
     <div id="hero">
-      <h1>This is not a demo.</h1>
+      <div class="goldKicker heroKicker">A Live Re-engagement Log</div>
+      <h1>This is <em>not</em> a demo.</h1>
       <p class="sub">This is one sender's dead list, coming back to life.</p>
-      <p class="cue">Scroll to watch.</p>
+      <p class="cue"><span class="cueInner">Scroll to watch. <span class="chev">&#9662;</span></span></p>
     </div>
-    <div id="scrollcue">&#9662;</div>
     <div id="grain"></div>
   </div>
 </div>
 
 <!-- ============ final section (normal flow) ============ -->
 <section id="final">
-  <h2>Wake the list. Keep the domain.</h2>
+  <div class="goldKicker">13 &middot; Start</div>
+  <h2>Wake the list. <em>Keep the domain.</em></h2>
   <p class="lede">Your list has rows like these waiting.</p>
   <button class="cta" type="button">Start Free Trial, the safe way</button>
   <p class="micro">No credit card &middot; Cancel anytime &middot; 7 days free</p>
@@ -507,7 +544,6 @@
   var dim = document.getElementById("dim");
   var hero = document.getElementById("hero");
   var heroH1 = hero.querySelector("h1");
-  var cue = document.getElementById("scrollcue");
   var lightBand = document.getElementById("lightBand");
   var connSvg = document.getElementById("connectors");
   var logStream = document.getElementById("logStream");
@@ -638,13 +674,11 @@
       if (fade <= 0.001) {
         dim.style.display = "none";
         hero.style.visibility = "hidden";
-        cue.style.opacity = "0";
       } else {
         dim.style.display = "block";
         dim.style.opacity = (0.35 * fade).toFixed(4);
         hero.style.visibility = "visible";
         hero.style.opacity = fade.toFixed(4);
-        cue.style.opacity = fade.toFixed(4);
         // cinematic scroll-out: letter-spacing expansion + blur as it leaves
         var q = 1 - fade;
         hero.style.filter = q < 0.01 ? "none" : "blur(" + (q * 7).toFixed(2) + "px)";
