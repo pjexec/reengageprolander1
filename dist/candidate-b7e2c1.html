@@ -630,7 +630,12 @@
      horizontal clipping WITHOUT creating a scroll container, so sticky binds
      to the real viewport scroller. Placed after the production styles. */
   html.lw-desktop, html.lw-desktop body { overflow-x: clip !important; }
-  #lw-root { --lw-gold: #d0a24f; --lw-serif: "Fraunces", ui-serif, Georgia, "Times New Roman", serif; }
+  /* brand accent: the logo's light blue. #118ec0 is the production page's own
+     --color-accent token (dist index.html) and matches the sampled logo pixel
+     (#158cbf). --lw-accent-soft is a lighter tint for line work and small
+     uppercase text on the dark ground; --lw-accent-text is the lightest tint,
+     for the CTA label (parity with the old light label tint). */
+  #lw-root { --lw-accent: #118ec0; --lw-accent-soft: #4db6e6; --lw-accent-text: #aee0f6; --lw-green: #1fb582; --lw-serif: "Fraunces", ui-serif, Georgia, "Times New Roman", serif; }
   #lw-root, #lw-root * { box-sizing: border-box; margin: 0; padding: 0; }
   #lw-root { color: #fff; }
   /* defensive: any future pin failure degrades to a dark pause, not white void */
@@ -677,7 +682,15 @@
      full-bleed, fades with the hero during rotation */
   #lw-herodim {
     position: absolute; inset: 0; pointer-events: none;
-    background: linear-gradient(90deg,
+    /* second layer: top-weighted touch of extra dim so the stat tiles at the
+       top of the log recede behind the hero; ~10% at the very top easing to
+       nothing by mid-viewport. Same element, so it shares the hero fade
+       lifecycle exactly. */
+    background: linear-gradient(180deg,
+      rgba(4, 7, 12, 0.10) 0%,
+      rgba(4, 7, 12, 0.05) 28%,
+      rgba(4, 7, 12, 0) 50%),
+    linear-gradient(90deg,
       rgba(4, 7, 12, 0.72) 0%,
       rgba(4, 7, 12, 0.62) 40%,
       rgba(4, 7, 12, 0.30) 56%,
@@ -694,16 +707,34 @@
     justify-content: center; align-items: flex-start; text-align: left;
     padding: 80px 6vw 0 7vw; pointer-events: none; will-change: filter, opacity;
   }
-  /* exhibit-label chip above the headline: quiet, bordered, premium */
+  /* exhibit-label pill above the headline: green, themed to the log's own
+     re-engaged green (#1fb582 sampled from the row icons in log-landing.webp),
+     with a soft status-light glow breathing behind it. This pulse is the page's
+     second and last sanctioned idle animation (the scroll cue is the first). */
   .lw-casecard {
+    position: relative; z-index: 0;
     display: inline-block;
     font-size: 0.78rem; font-weight: 600; letter-spacing: 0.28em;
-    text-transform: uppercase; color: var(--lw-gold);
+    text-transform: uppercase; color: #7fe7c2;
     font-family: var(--font-body, sans-serif);
-    border: 1px solid rgba(208, 162, 79, 0.42);
-    background: rgba(11, 17, 29, 0.55);
-    border-radius: 6px;
-    padding: 0.7em 1.4em;
+    border: 1px solid rgba(31, 181, 130, 0.55);
+    background: rgba(9, 26, 21, 0.6);
+    border-radius: 999px;
+    padding: 0.7em 1.6em;
+  }
+  .lw-casecard::before {
+    content: ""; position: absolute; inset: -22px -30px; z-index: -1;
+    border-radius: 999px; pointer-events: none;
+    background: radial-gradient(ellipse 60% 55% at 50% 50%,
+      rgba(31, 181, 130, 0.30) 0%, rgba(31, 181, 130, 0.12) 45%, rgba(31, 181, 130, 0) 72%);
+    opacity: 0.55;
+  }
+  @media (prefers-reduced-motion: no-preference) {
+    .lw-casecard::before { animation: lwPillGlow 2.8s ease-in-out infinite; }
+  }
+  @keyframes lwPillGlow {
+    0%, 100% { opacity: 0.35; transform: scale(0.96); }
+    50% { opacity: 0.85; transform: scale(1.03); }
   }
   #lw-hero .lw-casecard { margin-bottom: 2.2rem; }
   #lw-hero h1 {
@@ -736,8 +767,8 @@
 
   /* headline connector to the actual 71-emails row */
   #lw-heroconn { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
-  #lw-heroconn path { fill: none; stroke: var(--lw-gold); stroke-width: 1; opacity: 0.75; }
-  #lw-heroconn circle { fill: var(--lw-gold); filter: blur(2px); }
+  #lw-heroconn path { fill: none; stroke: var(--lw-accent-soft); stroke-width: 1; opacity: 0.75; }
+  #lw-heroconn circle { fill: var(--lw-accent-soft); filter: blur(2px); }
 
   /* rail connectors */
   #lw-connectors { position: absolute; inset: 0; pointer-events: none; overflow: visible; }
@@ -752,7 +783,7 @@
   }
   .lw-copyblock .lw-kicker {
     font-size: 0.78rem; font-weight: 600; letter-spacing: 0.28em;
-    text-transform: uppercase; color: var(--lw-gold); margin-bottom: 1.2em;
+    text-transform: uppercase; color: var(--lw-accent-soft); margin-bottom: 1.2em;
     font-family: var(--font-body, sans-serif);
   }
   .lw-copyblock .lw-head {
@@ -791,17 +822,17 @@
     font-family: var(--font-display, var(--font-body, sans-serif));
     font-size: var(--text-sm, 0.9rem); font-weight: 600;
     letter-spacing: 0.03em; text-transform: uppercase;
-    color: #f0ddb0;
-    background: rgba(208, 162, 79, 0.08);
-    border: 1px solid rgba(208, 162, 79, 0.65);
-    border: 1px solid color-mix(in srgb, var(--lw-gold) 65%, transparent);
+    color: var(--lw-accent-text);
+    background: rgba(17, 142, 192, 0.08);
+    border: 1px solid rgba(17, 142, 192, 0.65);
+    border: 1px solid color-mix(in srgb, var(--lw-accent) 65%, transparent);
     border-radius: 4px; padding: 14px 28px;
     cursor: pointer; touch-action: manipulation;
     transition: background 0.15s ease, border-color 0.15s ease;
   }
   #lw-wall-cta:hover {
-    background: rgba(208, 162, 79, 0.16);
-    border-color: rgba(208, 162, 79, 0.9);
+    background: rgba(17, 142, 192, 0.16);
+    border-color: rgba(17, 142, 192, 0.9);
   }
   #lw-wall-cta-wrap .lw-cta-note {
     margin-top: 10px; font-size: 0.8rem; letter-spacing: 0.02em;
@@ -1122,9 +1153,17 @@ window.__lwStartDark = function () {
         hero.style.filter = q < 0.01 ? "none" : "blur(" + (q * 7).toFixed(2) + "px)";
         heroH1.style.letterSpacing = (-0.015 + q * 0.045).toFixed(4) + "em";
         if (heroConnOn) {
-          heroConn.style.display = "block";
-          heroConnPath.setAttribute("opacity", (0.75 * fade).toFixed(3));
-          heroConnTip.setAttribute("opacity", (0.8 * fade).toFixed(3));
+          // connector exits ahead of the hero: starts fading with the very
+          // first rotation progress and is fully gone by ~38% of the rotation
+          // phase (its own faster curve, still purely scroll-driven)
+          var connFade = 1 - clamp01(curRot / 0.38);
+          if (connFade <= 0.001) {
+            heroConn.style.display = "none";
+          } else {
+            heroConn.style.display = "block";
+            heroConnPath.setAttribute("opacity", (0.75 * connFade).toFixed(3));
+            heroConnTip.setAttribute("opacity", (0.8 * connFade).toFixed(3));
+          }
         }
       }
     }
