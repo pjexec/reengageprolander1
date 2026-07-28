@@ -656,11 +656,11 @@
   }
   #lw-logstream { position: absolute; top: 0; background: #0d1524; will-change: transform; }
   #lw-logstream img { display: block; width: 100%; height: auto; }
-  #lw-landing {
-    position: absolute; left: 0; width: 100%; height: auto; pointer-events: none;
-    -webkit-mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
-    mask-image: linear-gradient(180deg, #000 82%, transparent 100%);
-  }
+  /* invisible 2px probe pinned to the "71 emails unopened" row inside the log
+     stream. Reading its rect lets the browser do the 3D projection maths for us,
+     so the headline connector anchors to where the row ACTUALLY lands in the
+     tilted plane rather than to a flat-frame guess. Paints nothing. */
+  #lw-rowmark { position: absolute; width: 2px; height: 2px; pointer-events: none; }
   #lw-lightband {
     position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen;
     background: linear-gradient(180deg, rgba(255,255,255,0) 38%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 62%);
@@ -678,8 +678,10 @@
   }
   #lw-dim { position: absolute; inset: 0; background: rgba(4,7,12,0.55); pointer-events: none; }
   /* landing legibility: left-weighted dim under the hero stack, easing to
-     transparent so the outcome column and the 71-emails row stay readable;
-     full-bleed, fades with the hero during rotation */
+     transparent so the outcome column and the 71-emails row stay readable.
+     Tied to the hero's own opacity, so it resolves away exactly as the rail
+     hands off to beat 02, leaving the beats on the same untreated wall they
+     have always used (fadewrap mask on the left plus their text shadow). */
   #lw-herodim {
     position: absolute; inset: 0; pointer-events: none;
     /* second layer: top-weighted touch of extra dim so the stat tiles at the
@@ -701,42 +703,57 @@
      the heading arrives quickly after the dark section pushes off */
   html.lw-desktop main > section:first-of-type { padding-top: 40px !important; }
 
-  /* hero stack: left-aligned so the headline connector has clear air to the row */
+  /* hero stack: it IS rail slot 01. Same left-rail geometry as every beat, so
+     the copy sits on the tilted wall from the first pixel and hands off to
+     beat 02 the way one beat hands off to the next.
+     Vertically it is centred in the band between the live card and the rail
+     CTA rather than on a hard 50%, because it is the only rail item tall
+     enough to reach both; the band keeps it collision-free at every desktop
+     viewport height while landing within ~26px of the beats' centre line. */
   #lw-hero {
-    position: absolute; inset: 0; display: flex; flex-direction: column;
-    justify-content: center; align-items: flex-start; text-align: left;
-    padding: 80px 6vw 0 7vw; pointer-events: none; will-change: filter, opacity;
+    position: absolute; left: 6vw;
+    top: 152px; bottom: calc(11vh + 104px);
+    width: min(36vw, 520px);
+    display: flex; flex-direction: column; justify-content: center;
+    align-items: flex-start;
+    text-align: left; pointer-events: none;
+    will-change: transform, opacity;
   }
-  /* exhibit-label pill above the headline: green, themed to the log's own
-     re-engaged green (#1fb582 sampled from the row icons in log-landing.webp),
-     with a soft status-light glow breathing behind it. This pulse is the page's
-     second and last sanctioned idle animation (the scroll cue is the first). */
-  .lw-casecard {
-    position: relative; z-index: 0;
-    display: inline-block;
-    font-size: 0.78rem; font-weight: 600; letter-spacing: 0.28em;
+  /* standing live-proof stamp: sits just under the fixed nav banner, left
+     aligned with the rail copy, overlaying the wall, persistent for the whole
+     wall phase and riding off with the stage at push-off. Its soft status-light
+     glow is the page's second and last sanctioned idle animation (the scroll
+     cue is the first). Green is the log's own re-engaged green, #1fb582. */
+  #lw-livecard {
+    position: absolute; left: 6vw; top: 104px; z-index: 6;
+    display: inline-flex; align-items: center; gap: 0.75em;
+    font-size: 0.72rem; font-weight: 600; letter-spacing: 0.24em;
     text-transform: uppercase; color: #7fe7c2;
     font-family: var(--font-body, sans-serif);
     border: 1px solid rgba(31, 181, 130, 0.55);
-    background: rgba(9, 26, 21, 0.6);
+    background: rgba(9, 26, 21, 0.72);
     border-radius: 999px;
-    padding: 0.7em 1.6em;
+    padding: 0.72em 1.5em;
+    pointer-events: none; white-space: nowrap;
   }
-  .lw-casecard::before {
-    content: ""; position: absolute; inset: -22px -30px; z-index: -1;
+  #lw-livecard .lw-livedot {
+    width: 7px; height: 7px; border-radius: 50%; flex: 0 0 auto;
+    background: var(--lw-green);
+  }
+  #lw-livecard::before {
+    content: ""; position: absolute; inset: -20px -28px; z-index: -1;
     border-radius: 999px; pointer-events: none;
     background: radial-gradient(ellipse 60% 55% at 50% 50%,
       rgba(31, 181, 130, 0.30) 0%, rgba(31, 181, 130, 0.12) 45%, rgba(31, 181, 130, 0) 72%);
     opacity: 0.55;
   }
   @media (prefers-reduced-motion: no-preference) {
-    .lw-casecard::before { animation: lwPillGlow 2.8s ease-in-out infinite; }
+    #lw-livecard::before { animation: lwLiveGlow 2.7s ease-in-out infinite; }
   }
-  @keyframes lwPillGlow {
+  @keyframes lwLiveGlow {
     0%, 100% { opacity: 0.35; transform: scale(0.96); }
     50% { opacity: 0.85; transform: scale(1.03); }
   }
-  #lw-hero .lw-casecard { margin-bottom: 2.2rem; }
   #lw-hero h1 {
     font-family: var(--lw-serif); font-size: clamp(2.3rem, 4.3vw, 4.2rem);
     font-weight: 600; letter-spacing: -0.015em; line-height: 1.1; color: #fff;
@@ -745,13 +762,13 @@
   }
   #lw-hero h1 em, .lw-copyblock .lw-head em { font-style: italic; }
   #lw-hero .lw-sub {
-    margin-top: 1.8rem; font-size: clamp(1rem, 1.6vw, 1.3rem); font-weight: 400;
+    margin-top: 1.4rem; font-size: clamp(1rem, 1.6vw, 1.3rem); font-weight: 400;
     color: rgba(255,255,255,0.75); max-width: 44ch; line-height: 1.55;
     font-family: var(--font-body, sans-serif);
     text-shadow: 0 2px 18px rgba(0,0,0,0.55);
   }
   #lw-hero .lw-cue {
-    margin-top: 4rem; font-size: 0.9rem; letter-spacing: 0.22em;
+    margin-top: 2rem; font-size: 0.9rem; letter-spacing: 0.22em;
     text-transform: uppercase; color: rgba(255,255,255,0.75);
     font-family: var(--font-body, sans-serif);
   }
@@ -763,6 +780,20 @@
   @keyframes lwCueBreathe {
     0%, 100% { opacity: 0.5; transform: translateY(0); }
     50% { opacity: 1; transform: translateY(4px); }
+  }
+  /* short desktop viewports (13" laptops and smaller browser windows): the
+     hero is the only rail item tall enough to reach the live card above and
+     the CTA below, so trim its type to keep the band clear. Beats are short
+     enough that they never need this. */
+  @media (min-width: 1100px) and (max-height: 900px) {
+    #lw-hero h1 { font-size: clamp(1.9rem, 3.1vw, 2.9rem); }
+    #lw-hero .lw-sub { margin-top: 1.1rem; font-size: clamp(0.95rem, 1.25vw, 1.1rem); }
+    #lw-hero .lw-cue { margin-top: 1.5rem; font-size: 0.82rem; }
+  }
+  @media (min-width: 1100px) and (max-height: 760px) {
+    #lw-hero h1 { font-size: clamp(1.7rem, 2.6vw, 2.4rem); }
+    #lw-hero .lw-sub { margin-top: 0.9rem; }
+    #lw-hero .lw-cue { margin-top: 1.1rem; }
   }
 
   /* headline connector to the actual 71-emails row */
@@ -811,11 +842,12 @@
   .lw-reduced #lw-persp, .lw-reduced #lw-heroconn, .lw-reduced .lw-copyblock,
   .lw-reduced #lw-lightband, .lw-reduced .lw-cue { display: none; }
 
-  /* persistent rail CTA: fades in with beat 01, holds through the wall,
-     rides off with the sticky stage at release (no fade-out, no idle motion) */
+  /* persistent rail CTA: present from the landing frame (the hero stack owns
+     rail slot 01 now), holds through the wall, rides off with the sticky stage
+     at release. Fully static: no fade, no per-frame writes, no idle motion. */
   #lw-wall-cta-wrap {
     position: absolute; left: 6vw; bottom: 11vh; z-index: 6;
-    opacity: 0; pointer-events: none; will-change: opacity;
+    opacity: 1; pointer-events: auto;
   }
   #lw-wall-cta {
     display: inline-flex; align-items: center; gap: 8px;
@@ -910,11 +942,8 @@
     <div id="lw-lightband"></div>
     <svg id="lw-connectors" aria-hidden="true"></svg>
 
-    <div class="lw-copyblock" data-i="0">
-      <div class="lw-kicker">01 &middot; A Live Log</div>
-      <p class="lw-head">This is one sender's dead list, <em>waking up</em>.</p>
-      <p class="lw-body">Real account. Real subscribers. Masked for privacy, and every number is real. One campaign. One subject line. Sent one address at a time.</p>
-    </div>
+    <!-- rail slot 01 is the hero stack itself (#lw-hero, below); the rail runs
+         hero, then 02 through 07 -->
     <div class="lw-copyblock" data-i="1">
       <div class="lw-kicker">02 &middot; The Problem</div>
       <p class="lw-head">Half your email list is quietly <em>wrecking</em> the other half.</p>
@@ -950,13 +979,13 @@
     <div id="lw-dim"></div>
     <div id="lw-herodim"></div>
     <div id="lw-hero">
-      <div class="lw-casecard">Actual Re-Engaged Case Study</div>
       <h1>&ldquo;Ignored 71 straight emails over 13 months. Then he <em>opened</em> one.&rdquo;</h1>
       <p class="lw-sub">That row is on this page. So are 1,343 others. Scroll to watch a dead list come back.</p>
       <p class="lw-cue"><span class="lw-cueinner">Scroll to watch. <span class="lw-chev">&#9662;</span></span></p>
     </div>
     <svg id="lw-heroconn" aria-hidden="true"><path d=""></path><circle r="2.4" opacity="0"></circle></svg>
     <div id="lw-grain"></div>
+    <div id="lw-livecard"><span class="lw-livedot"></span>Live account &middot; Real user log</div>
     <div id="lw-wall-cta-wrap">
       <button id="lw-wall-cta" type="button">Start Free Trial, the safe way</button>
       <p class="lw-cta-note">No credit card &middot; Cancel anytime</p>
@@ -975,6 +1004,16 @@ window.__lwStartDark = function () {
 
   var SRC_W = 2028, SRC_H = 19942;
   var WALL_RATE = 2.1, LERP = 0.15; // compressed wall: ~36% less scroll than 1.35
+  // Fade width as a fraction of one rail slot. 0.126 is exactly the old
+  // f/span (0.018 * 7), so every beat keeps its ~75% full-opacity plateau.
+  var FADE = 0.126;
+  // The hero owns rail slot 01 and holds for 1.55 viewports before handing off.
+  // This is a deliberate anti-resonance measure, not a taste call: with equal
+  // slots the slot length lands at ~1.00 vh, so a repeated one-viewport flick
+  // parks on the beat-to-beat seam every single time and reads as blank rail.
+  // Swept across 36 desktop viewports x 3 realistic flick steps, 1.55 cuts dead
+  // landings roughly in half versus equal slots and is clean at 1440x900.
+  var HERO_HOLD = 1.55;
   var ROW_X_SRC = 1352, ROW_Y_SRC = 773; // the "71 emails unopened" row, measured from pixels
 
   var scrolly = document.getElementById("lw-scrolly");
@@ -989,12 +1028,13 @@ window.__lwStartDark = function () {
     slImg.setAttribute("decoding", "async");
     logStream.appendChild(slImg);
   }
-  var landing = document.createElement("img");
-  landing.id = "lw-landing";
-  landing.src = "assets-dark-baked/log-landing.webp";
-  landing.alt = "";
-  landing.setAttribute("decoding", "async");
-  logStream.appendChild(landing);
+  // invisible probe pinned to the "71 emails unopened" row: the browser
+  // projects it through the tilted plane for us, so the headline connector can
+  // anchor to the row's real on-screen position instead of a flat-frame guess
+  var rowMark = document.createElement("div");
+  rowMark.id = "lw-rowmark";
+  rowMark.setAttribute("aria-hidden", "true");
+  logStream.appendChild(rowMark);
   var dim = document.getElementById("lw-dim");
   var heroDim = document.getElementById("lw-herodim");
   var hero = document.getElementById("lw-hero");
@@ -1005,7 +1045,6 @@ window.__lwStartDark = function () {
   var heroConnPath = heroConn.querySelector("path");
   var heroConnTip = heroConn.querySelector("circle");
   var blocks = [].slice.call(document.querySelectorAll(".lw-copyblock"));
-  var wallCta = document.getElementById("lw-wall-cta-wrap");
 
   var NS = "http://www.w3.org/2000/svg";
   var connByIndex = {};
@@ -1025,8 +1064,11 @@ window.__lwStartDark = function () {
     connByIndex[j] = { target: t, path: path, tip: tip };
   });
 
-  var vw = 0, vh = 0, P2 = 0, P3 = 0, travel = 0, finalRot = -30, pitch = 3;
-  var heroConnOn = false;
+  var vw = 0, vh = 0, P3 = 0, travel = 0, finalRot = -30, pitch = 3;
+  var heroConnOn = false, connDirty = true;
+  // rail slots: the hero stack is slot 01, then one slot per remaining beat
+  var RAIL_N = blocks.length + 1;
+  var heroSpan = 1 / RAIL_N, beatSpan = 1 / RAIL_N;
 
   function layout() {
     vw = window.innerWidth;
@@ -1036,37 +1078,55 @@ window.__lwStartDark = function () {
     var scale = vw / SRC_W;
     var logH = SRC_H * scale;
     travel = Math.max(0, logH - vh);
-    P2 = Math.max(1, Math.round(vh * 1.2));
     P3 = Math.max(1, Math.round(travel / WALL_RATE));
-    // wrapper ends at the release point: sticky releases exactly at wall end
-    scrolly.style.height = (vh + P2 + P3) + "px";
+    // no rotation phase any more: the wrapper IS the wall, and the sticky
+    // releases exactly at wall end
+    scrolly.style.height = (vh + P3) + "px";
+    // rail slot geometry: hero holds HERO_HOLD viewports, the beats split the
+    // rest evenly. Clamped so a very short wall cannot starve the beats.
+    heroSpan = Math.max(0.06, Math.min(0.45, (HERO_HOLD * vh) / P3));
+    beatSpan = (1 - heroSpan) / blocks.length;
     var ox = Math.round(vw * 0.12), orr = Math.round(vw * 0.04), oy = Math.round(vh * 0.15);
     plane.style.left = (-ox) + "px";
     plane.style.top = (-oy) + "px";
     plane.style.width = (vw + ox + orr) + "px";
     plane.style.height = (vh + 2 * oy) + "px";
+    // rest tilt, written once here and never per frame: the plane is already
+    // the designed background at scroll 0
+    plane.style.transform = "rotateY(" + finalRot + "deg) rotateX(" + pitch + "deg)";
     logStream.style.left = ox + "px";
     logStream.style.width = vw + "px";
     logStream.style.paddingTop = oy + "px";
     logStream.style.height = Math.round(logH + 2 * oy + vh) + "px";
-    landing.style.top = oy + "px";
+    rowMark.style.left = (ROW_X_SRC * scale).toFixed(1) + "px";
+    rowMark.style.top = (oy + ROW_Y_SRC * scale).toFixed(1) + "px";
     connSvg.setAttribute("viewBox", "0 0 " + vw + " " + vh);
     heroConn.setAttribute("viewBox", "0 0 " + vw + " " + vh);
-    heroConnLayout();
+    connDirty = true;
   }
 
-  // headline connector: anchored to the actual row's pixel position, shown only
-  // where it can truthfully point at the row (wide viewports, row above fold)
+  // headline connector: anchored to where the "71 emails unopened" row actually
+  // lands in the TILTED projection (measured off the probe, with the stream
+  // momentarily at rest so the measurement is scroll-independent). Shown only
+  // where it can truthfully point at the row: wide viewports, row comfortably
+  // on screen, and clear air between the headline and the row.
   function heroConnLayout() {
     heroConnOn = false;
     heroConnPath.setAttribute("opacity", "0");
     heroConnTip.setAttribute("opacity", "0");
+    heroConn.style.display = "none";
     if (vw < 1100) return;
-    var ax = ROW_X_SRC / SRC_W * vw - 16;
-    var ay = ROW_Y_SRC / SRC_W * vw;
-    if (ay > vh - 90) return;
+    var prev = logStream.style.transform;
+    logStream.style.transform = "translate3d(0,0,0)";
+    var m = rowMark.getBoundingClientRect();
+    logStream.style.transform = prev;
+    var ax = m.left + m.width / 2, ay = m.top + m.height / 2;
+    if (!isFinite(ax) || !isFinite(ay)) return;
+    if (ay < 90 || ay > vh - 90) return;
+    if (ax < 0 || ax > vw) return;
     var r = heroH1.getBoundingClientRect();
-    if (ax < r.right + 40) return;
+    if (ax - 16 < r.right + 40) return;
+    ax -= 16;
     var sx = r.right + 18, sy = r.top + r.height * 0.6;
     var cx = (sx + ax) / 2, cy = Math.min(sy, ay) - 30;
     heroConnPath.setAttribute("d", "M" + sx.toFixed(1) + " " + sy.toFixed(1) +
@@ -1074,22 +1134,20 @@ window.__lwStartDark = function () {
     heroConnTip.setAttribute("cx", ax.toFixed(1));
     heroConnTip.setAttribute("cy", ay.toFixed(1));
     heroConnOn = true;
+    heroConn.style.display = "block";
   }
 
   function clamp01(t) { return t > 0 ? (t < 1 ? t : 1) : 0; }
   function smooth(t) { t = clamp01(t); return t * t * (3 - 2 * t); }
 
-  var curRot = 0, curWall = 0;
-  var tgtRot = 0, tgtWall = 0;
-  var lastRenderRot = -1, overlayGone = false;
+  var curWall = 0, tgtWall = 0;
+  var lastHeroO = -1;
   var lastBlockO = [];
-  var lastCtaO = -1;
   var raf = null;
 
   function targets() {
     var y = window.scrollY || window.pageYOffset || 0;
-    tgtRot = smooth(y / P2);
-    tgtWall = clamp01((y - P2) / (P3 || 1));
+    tgtWall = clamp01(y / (P3 || 1));
   }
 
   function updateConnector(c, p, o) {
@@ -1125,68 +1183,50 @@ window.__lwStartDark = function () {
   }
 
   function render() {
-    if (Math.abs(curRot - lastRenderRot) > 0.0004) {
-      lastRenderRot = curRot;
-      plane.style.transform =
-        "rotateY(" + (finalRot * curRot) + "deg) rotateX(" + (pitch * curRot) + "deg)";
-      var ovo = 1 - clamp01(curRot / 0.6);
-      if (ovo <= 0.001) {
-        if (!overlayGone) { landing.style.display = "none"; overlayGone = true; }
-      } else {
-        if (overlayGone) { landing.style.display = "block"; overlayGone = false; }
-        landing.style.opacity = ovo.toFixed(4);
-      }
-      var fade = 1 - clamp01(curRot / 0.55);
-      if (fade <= 0.001) {
-        dim.style.display = "none";
-        heroDim.style.display = "none";
-        hero.style.visibility = "hidden";
-        heroConn.style.display = "none";
-      } else {
-        dim.style.display = "block";
-        dim.style.opacity = (0.35 * fade).toFixed(4);
-        heroDim.style.display = "block";
-        heroDim.style.opacity = fade.toFixed(4);
-        hero.style.visibility = "visible";
-        hero.style.opacity = fade.toFixed(4);
-        var q = 1 - fade;
-        hero.style.filter = q < 0.01 ? "none" : "blur(" + (q * 7).toFixed(2) + "px)";
-        heroH1.style.letterSpacing = (-0.015 + q * 0.045).toFixed(4) + "em";
-        if (heroConnOn) {
-          // connector exits ahead of the hero: starts fading with the very
-          // first rotation progress and is fully gone by ~38% of the rotation
-          // phase (its own faster curve, still purely scroll-driven)
-          var connFade = 1 - clamp01(curRot / 0.38);
-          if (connFade <= 0.001) {
-            heroConn.style.display = "none";
-          } else {
-            heroConn.style.display = "block";
-            heroConnPath.setAttribute("opacity", (0.75 * connFade).toFixed(3));
-            heroConnTip.setAttribute("opacity", (0.8 * connFade).toFixed(3));
-          }
-        }
-      }
-    }
-
     logStream.style.transform = "translate3d(0," + (-travel * curWall) + "px,0)";
 
-    var span = 1 / blocks.length, f = 0.018;
-    var gate = smooth((curRot - 0.7) / 0.3);
+    // rail slot 01 is the hero stack. It lands at full opacity (no fade-in,
+    // because there is nothing before it) and then hands off to beat 02 on the
+    // same fade-out curve every beat uses. The landing dim rides its opacity,
+    // so the treatment resolves exactly as the handoff completes.
+    var ph = curWall / heroSpan;
+    var heroO = ph <= 0 ? 1 : Math.min(1, smooth((1 - ph) / FADE));
+    if (heroO > 0.0005) {
+      if (lastHeroO <= 0.0005) {
+        hero.style.visibility = "visible";
+        dim.style.display = "block";
+        heroDim.style.display = "block";
+        if (heroConnOn) heroConn.style.display = "block";
+      }
+      hero.style.opacity = heroO.toFixed(4);
+      hero.style.transform = "translateY(" + ((0.5 - ph) * 24).toFixed(1) + "px)";
+      dim.style.opacity = (0.35 * heroO).toFixed(4);
+      heroDim.style.opacity = heroO.toFixed(4);
+      if (heroConnOn) {
+        heroConnPath.setAttribute("opacity", (0.75 * heroO).toFixed(3));
+        heroConnTip.setAttribute("opacity", (0.8 * heroO).toFixed(3));
+      }
+    } else if (lastHeroO > 0.0005 || lastHeroO < 0) {
+      hero.style.visibility = "hidden";
+      dim.style.display = "none";
+      heroDim.style.display = "none";
+      heroConn.style.display = "none";
+    }
+    lastHeroO = heroO;
+
     var lastIdx = blocks.length - 1;
     for (var j = 0; j < blocks.length; j++) {
-      var b0 = j * span;
-      var p = (curWall - b0) / span;
+      var p = (curWall - heroSpan - j * beatSpan) / beatSpan;
       var o = 0;
       if (j === lastIdx) {
         // beat 07 never fades out: it reaches full opacity well before the
         // sticky releases and stays readable during the push-off
-        if (p > 0) o = Math.min(1, smooth(p * span / f));
+        if (p > 0) o = Math.min(1, smooth(p / FADE));
       } else if (p > 0 && p < 1) {
-        var inO = smooth(p * span / f);
-        var outO = smooth((1 - p) * span / f);
+        var inO = smooth(p / FADE);
+        var outO = smooth((1 - p) / FADE);
         o = Math.min(1, inO, outO);
       }
-      o *= gate;
       if (o > 0 || lastBlockO[j] !== 0) {
         var bty = (0.5 - p) * 24;
         blocks[j].style.opacity = o.toFixed(4);
@@ -1197,25 +1237,30 @@ window.__lwStartDark = function () {
       if (c) updateConnector(c, p, o);
     }
 
-    // persistent rail CTA: identical fade-in curve to beat 01 (gated by the
-    // rotation gate, in over the first f of wall progress), then holds at 1
-    // for the rest of the wall; the sticky release carries it off unchanged
-    var ctaO = gate * Math.min(1, smooth(curWall / f));
-    if (ctaO !== lastCtaO) {
-      wallCta.style.opacity = ctaO.toFixed(4);
-      wallCta.style.pointerEvents = ctaO > 0.5 ? "auto" : "none";
-      lastCtaO = ctaO;
+    // the rail CTA is static now (visible from the landing frame), so nothing
+    // is written to it per frame; the sticky release carries it off unchanged
+
+    // measure the connector anchor only after the frame's transforms are
+    // written, so the probe reads the real projected position of the row, then
+    // re-apply this frame's hero opacity to whatever the measurement decided
+    if (connDirty) {
+      connDirty = false;
+      heroConnLayout();
+      if (heroConnOn && heroO > 0.0005) {
+        heroConn.style.display = "block";
+        heroConnPath.setAttribute("opacity", (0.75 * heroO).toFixed(3));
+        heroConnTip.setAttribute("opacity", (0.8 * heroO).toFixed(3));
+      } else {
+        heroConn.style.display = "none";
+      }
     }
   }
 
   function update() {
-    if (!isFinite(curRot)) curRot = tgtRot;
     if (!isFinite(curWall)) curWall = tgtWall;
-    curRot += (tgtRot - curRot) * LERP;
     curWall += (tgtWall - curWall) * LERP;
-    var settled = Math.abs(tgtRot - curRot) < 0.0006 &&
-                  Math.abs(tgtWall - curWall) < 0.0006;
-    if (settled) { curRot = tgtRot; curWall = tgtWall; }
+    var settled = Math.abs(tgtWall - curWall) < 0.0006;
+    if (settled) curWall = tgtWall;
     render();
     return settled;
   }
@@ -1232,9 +1277,9 @@ window.__lwStartDark = function () {
   }
 
   window.__logwall = {
-    snap: function () { targets(); curRot = tgtRot; curWall = tgtWall; render(); },
+    snap: function () { targets(); curWall = tgtWall; render(); },
     step: function () { targets(); return update(); },
-    state: function () { return { curRot: curRot, curWall: curWall, P2: P2, P3: P3, travel: travel, heroConnOn: heroConnOn }; }
+    state: function () { return { curWall: curWall, P3: P3, travel: travel, railN: RAIL_N, heroSpan: heroSpan, beatSpan: beatSpan, heroConnOn: heroConnOn, heroO: lastHeroO }; }
   };
 
   window.addEventListener("scroll", wake, { passive: true });
@@ -1248,7 +1293,7 @@ window.__lwStartDark = function () {
 
   layout();
   targets();
-  curRot = tgtRot; curWall = tgtWall;
+  curWall = tgtWall;
   render();
 };
 </script>
