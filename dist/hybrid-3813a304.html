@@ -679,12 +679,22 @@
     background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='160' height='160' filter='url(%23n)'/%3E%3C/svg%3E");
     background-size: 160px 160px;
   }
-  /* the surfacing veil: dark stage lightens through the brand light background */
-  #lw-veil {
-    position: absolute; inset: 0; pointer-events: none; opacity: 0;
-    background: var(--color-surface-0);
-  }
   #lw-dim { position: absolute; inset: 0; background: rgba(4,7,12,0.55); pointer-events: none; }
+  /* landing legibility: left-weighted dim under the hero stack, easing to
+     transparent so the outcome column and the 71-emails row stay readable;
+     full-bleed, fades with the hero during rotation */
+  #lw-herodim {
+    position: absolute; inset: 0; pointer-events: none;
+    background: linear-gradient(90deg,
+      rgba(4, 7, 12, 0.72) 0%,
+      rgba(4, 7, 12, 0.62) 40%,
+      rgba(4, 7, 12, 0.30) 56%,
+      rgba(4, 7, 12, 0) 70%);
+  }
+  /* light-side spacing (scoped override, light markup untouched): stakes is the
+     first section in main once the old hero is replaced; tighten its top pad so
+     the heading arrives quickly after the dark section pushes off */
+  main > section:first-of-type { padding-top: 40px !important; }
 
   /* hero stack: left-aligned so the headline connector has clear air to the row */
   #lw-hero {
@@ -770,7 +780,7 @@
   .lw-reduced #lw-scrolly { height: auto !important; }
   .lw-reduced #lw-stage { position: relative; }
   .lw-reduced #lw-persp, .lw-reduced #lw-heroconn, .lw-reduced .lw-copyblock,
-  .lw-reduced #lw-veil, .lw-reduced #lw-lightband, .lw-reduced .lw-cue { display: none; }
+  .lw-reduced #lw-lightband, .lw-reduced .lw-cue { display: none; }
 </style>
 
 <div id="lw-root">
@@ -834,6 +844,7 @@
 
     <div id="lw-vignette"></div>
     <div id="lw-dim"></div>
+    <div id="lw-herodim"></div>
     <div id="lw-hero">
       <div class="lw-goldkicker">This is not a demo.</div>
       <h1>He ignored 71 straight emails over 13 months. Then he <em>opened</em> one.</h1>
@@ -842,7 +853,6 @@
     </div>
     <svg id="lw-heroconn" aria-hidden="true"><path d=""></path><circle r="2.4" opacity="0"></circle></svg>
     <div id="lw-grain"></div>
-    <div id="lw-veil"></div>
   </div>
  </div>
 </div>
@@ -855,7 +865,7 @@
   if (reduced) { root.classList.add("lw-reduced"); return; }
 
   var SRC_W = 2028, SRC_H = 19942;
-  var WALL_RATE = 1.35, LERP = 0.15;
+  var WALL_RATE = 2.1, LERP = 0.15; // compressed wall: ~36% less scroll than 1.35
   var ROW_X_SRC = 1352, ROW_Y_SRC = 773; // the "71 emails unopened" row, measured from pixels
 
   var scrolly = document.getElementById("lw-scrolly");
@@ -864,12 +874,10 @@
   var logStream = document.getElementById("lw-logstream");
   var landing = document.getElementById("lw-landing");
   var dim = document.getElementById("lw-dim");
+  var heroDim = document.getElementById("lw-herodim");
   var hero = document.getElementById("lw-hero");
   var heroH1 = hero.querySelector("h1");
   var lightBand = document.getElementById("lw-lightband");
-  var vignette = document.getElementById("lw-vignette");
-  var grain = document.getElementById("lw-grain");
-  var veil = document.getElementById("lw-veil");
   var connSvg = document.getElementById("lw-connectors");
   var heroConn = document.getElementById("lw-heroconn");
   var heroConnPath = heroConn.querySelector("path");
@@ -894,7 +902,7 @@
     connByIndex[j] = { target: t, path: path, tip: tip };
   });
 
-  var vw = 0, vh = 0, P2 = 0, P3 = 0, SEAM = 0, travel = 0, finalRot = -30, pitch = 3;
+  var vw = 0, vh = 0, P2 = 0, P3 = 0, travel = 0, finalRot = -30, pitch = 3;
   var heroConnOn = false;
 
   function layout() {
@@ -907,8 +915,8 @@
     travel = Math.max(0, logH - vh);
     P2 = Math.max(1, Math.round(vh * 1.2));
     P3 = Math.max(1, Math.round(travel / WALL_RATE));
-    SEAM = Math.max(1, Math.round(vh * 1.2));
-    scrolly.style.height = (vh + P2 + P3 + SEAM) + "px";
+    // wrapper ends at the release point: sticky releases exactly at wall end
+    scrolly.style.height = (vh + P2 + P3) + "px";
     var ox = Math.round(vw * 0.12), orr = Math.round(vw * 0.04), oy = Math.round(vh * 0.15);
     plane.style.left = (-ox) + "px";
     plane.style.top = (-oy) + "px";
@@ -948,9 +956,9 @@
   function clamp01(t) { return t > 0 ? (t < 1 ? t : 1) : 0; }
   function smooth(t) { t = clamp01(t); return t * t * (3 - 2 * t); }
 
-  var curRot = 0, curWall = 0, curSeam = 0;
-  var tgtRot = 0, tgtWall = 0, tgtSeam = 0;
-  var lastRenderRot = -1, lastSeam = -1, overlayGone = false;
+  var curRot = 0, curWall = 0;
+  var tgtRot = 0, tgtWall = 0;
+  var lastRenderRot = -1, overlayGone = false;
   var lastBlockO = [];
   var raf = null;
 
@@ -958,7 +966,6 @@
     var y = window.scrollY || window.pageYOffset || 0;
     tgtRot = smooth(y / P2);
     tgtWall = clamp01((y - P2) / (P3 || 1));
-    tgtSeam = clamp01((y - P2 - P3) / (SEAM || 1));
   }
 
   function updateConnector(c, p, o) {
@@ -1008,11 +1015,14 @@
       var fade = 1 - clamp01(curRot / 0.55);
       if (fade <= 0.001) {
         dim.style.display = "none";
+        heroDim.style.display = "none";
         hero.style.visibility = "hidden";
         heroConn.style.display = "none";
       } else {
         dim.style.display = "block";
         dim.style.opacity = (0.35 * fade).toFixed(4);
+        heroDim.style.display = "block";
+        heroDim.style.opacity = fade.toFixed(4);
         hero.style.visibility = "visible";
         hero.style.opacity = fade.toFixed(4);
         var q = 1 - fade;
@@ -1026,27 +1036,20 @@
       }
     }
 
-    // the surfacing seam: veil to the light theme, wall recedes, film fades
-    if (Math.abs(curSeam - lastSeam) > 0.0004) {
-      lastSeam = curSeam;
-      var sv = smooth(curSeam);
-      veil.style.opacity = sv.toFixed(4);
-      vignette.style.opacity = (1 - sv).toFixed(4);
-      grain.style.opacity = (0.035 * (1 - sv)).toFixed(4);
-      persp.style.opacity = (1 - smooth((curSeam - 0.55) / 0.45)).toFixed(4);
-      lightBand.style.opacity = (curRot * (1 - sv)).toFixed(4);
-    }
-
-    var ty = -(travel * curWall + vh * 0.5 * smooth(curSeam));
-    logStream.style.transform = "translate3d(0," + ty + "px,0)";
+    logStream.style.transform = "translate3d(0," + (-travel * curWall) + "px,0)";
 
     var span = 1 / blocks.length, f = 0.018;
-    var gate = smooth((curRot - 0.7) / 0.3) * (1 - smooth(curSeam / 0.6));
+    var gate = smooth((curRot - 0.7) / 0.3);
+    var lastIdx = blocks.length - 1;
     for (var j = 0; j < blocks.length; j++) {
       var b0 = j * span;
       var p = (curWall - b0) / span;
       var o = 0;
-      if (p > 0 && p < 1) {
+      if (j === lastIdx) {
+        // beat 07 never fades out: it reaches full opacity well before the
+        // sticky releases and stays readable during the push-off
+        if (p > 0) o = Math.min(1, smooth(p * span / f));
+      } else if (p > 0 && p < 1) {
         var inO = smooth(p * span / f);
         var outO = smooth((1 - p) * span / f);
         o = Math.min(1, inO, outO);
@@ -1066,14 +1069,11 @@
   function update() {
     if (!isFinite(curRot)) curRot = tgtRot;
     if (!isFinite(curWall)) curWall = tgtWall;
-    if (!isFinite(curSeam)) curSeam = tgtSeam;
     curRot += (tgtRot - curRot) * LERP;
     curWall += (tgtWall - curWall) * LERP;
-    curSeam += (tgtSeam - curSeam) * LERP;
     var settled = Math.abs(tgtRot - curRot) < 0.0006 &&
-                  Math.abs(tgtWall - curWall) < 0.0006 &&
-                  Math.abs(tgtSeam - curSeam) < 0.0006;
-    if (settled) { curRot = tgtRot; curWall = tgtWall; curSeam = tgtSeam; }
+                  Math.abs(tgtWall - curWall) < 0.0006;
+    if (settled) { curRot = tgtRot; curWall = tgtWall; }
     render();
     return settled;
   }
@@ -1090,9 +1090,9 @@
   }
 
   window.__logwall = {
-    snap: function () { targets(); curRot = tgtRot; curWall = tgtWall; curSeam = tgtSeam; render(); },
+    snap: function () { targets(); curRot = tgtRot; curWall = tgtWall; render(); },
     step: function () { targets(); return update(); },
-    state: function () { return { curRot: curRot, curWall: curWall, curSeam: curSeam, P2: P2, P3: P3, SEAM: SEAM, travel: travel, heroConnOn: heroConnOn }; }
+    state: function () { return { curRot: curRot, curWall: curWall, P2: P2, P3: P3, travel: travel, heroConnOn: heroConnOn }; }
   };
 
   window.addEventListener("scroll", wake, { passive: true });
@@ -1106,7 +1106,7 @@
 
   layout();
   targets();
-  curRot = tgtRot; curWall = tgtWall; curSeam = tgtSeam;
+  curRot = tgtRot; curWall = tgtWall;
   render();
 })();
 </script>
