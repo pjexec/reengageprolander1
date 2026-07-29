@@ -726,8 +726,21 @@
      wall phase and riding off with the stage at push-off. Its soft status-light
      glow is the page's second and last sanctioned idle animation (the scroll
      cue is the first). Green is the log's own re-engaged green, #1fb582. */
-  #lw-livecard {
+  /* the wall shows real addresses with their middles blurred out. Unexplained
+     that reads as evasive; named, it proves the data is real and that the
+     subscribers are protected, so the note sits directly under the badge */
+  #lw-livewrap {
     position: absolute; right: 6vw; top: 104px; z-index: 6;
+    text-align: right; pointer-events: none;
+  }
+  .lw-livenote {
+    margin: 0.6em 0.4em 0 0;
+    font-size: 0.72rem; letter-spacing: 0.02em;
+    color: rgba(255, 255, 255, 0.42);
+    font-family: var(--font-body, sans-serif);
+  }
+  #lw-livecard {
+    position: relative; z-index: 6;
     display: inline-flex; align-items: center; gap: 0.75em;
     font-size: 0.72rem; font-weight: 600; letter-spacing: 0.24em;
     text-transform: uppercase; color: #7fe7c2;
@@ -987,7 +1000,10 @@
     </div>
     <svg id="lw-heroconn" aria-hidden="true"><path d=""></path><circle r="2.4" opacity="0"></circle></svg>
     <div id="lw-grain"></div>
-    <div id="lw-livecard"><span class="lw-livedot"></span>Live account &middot; Real user log</div>
+    <div id="lw-livewrap">
+      <div id="lw-livecard"><span class="lw-livedot"></span>Live account &middot; Real user log</div>
+      <p class="lw-livenote">Addresses masked. Every number real.</p>
+    </div>
     <div id="lw-wall-cta-wrap">
       <button id="lw-wall-cta" type="button">Start Free Trial, the safe way</button>
       <p class="lw-cta-note">No credit card &middot; Cancel anytime</p>
