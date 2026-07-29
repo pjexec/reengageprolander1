@@ -646,21 +646,23 @@
   #lw-persp { position: absolute; inset: 0; perspective: 950px; perspective-origin: 72% 50%; }
   #lw-plane {
     position: absolute; transform-origin: 100% 50%; will-change: transform;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 12%, #000 24%, #000 76%, rgba(0,0,0,0.55) 88%, transparent 100%);
-    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 12%, #000 24%, #000 76%, rgba(0,0,0,0.55) 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 11%, #000 22%, #000 78%, rgba(0,0,0,0.55) 89%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 11%, #000 22%, #000 78%, rgba(0,0,0,0.55) 89%, transparent 100%);
   }
   #lw-fadewrap {
     position: absolute; inset: 0;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%);
-    mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%, #000 96.5%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%, #000 96.5%, transparent 100%);
   }
   #lw-logstream { position: absolute; top: 0; background: #0d1524; will-change: transform; }
-  #lw-logstream img { display: block; width: 100%; height: auto; }
+  /* height is written per slice by layout(): the wall is drawn anisotropically,
+     so the slices must not fall back to their natural aspect ratio */
+  #lw-logstream img { display: block; width: 100%; }
   /* invisible 2px probe pinned to the "71 emails unopened" row inside the log
      stream. Reading its rect lets the browser do the 3D projection maths for us,
      so the headline connector anchors to where the row ACTUALLY lands in the
      tilted plane rather than to a flat-frame guess. Paints nothing. */
-  #lw-rowmark { position: absolute; width: 2px; height: 2px; pointer-events: none; }
+  #lw-rowmark, .lw-rowmark2 { position: absolute; width: 2px; height: 2px; pointer-events: none; }
   #lw-lightband {
     position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen;
     background: linear-gradient(180deg, rgba(255,255,255,0) 38%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 62%);
@@ -725,7 +727,7 @@
      glow is the page's second and last sanctioned idle animation (the scroll
      cue is the first). Green is the log's own re-engaged green, #1fb582. */
   #lw-livecard {
-    position: absolute; left: 6vw; top: 104px; z-index: 6;
+    position: absolute; right: 6vw; top: 104px; z-index: 6;
     display: inline-flex; align-items: center; gap: 0.75em;
     font-size: 0.72rem; font-weight: 600; letter-spacing: 0.24em;
     text-transform: uppercase; color: #7fe7c2;
@@ -1002,8 +1004,33 @@ window.__lwStartDark = function () {
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduced) { root.classList.add("lw-reduced"); return; }
 
-  var SRC_W = 2028, SRC_H = 19942;
-  var WALL_RATE = 2.1, LERP = 0.15; // compressed wall: ~36% less scroll than 1.35
+  // v3 texture: v2 already removed 464px of dead gutter (two windows at
+  // 701-1045 and 1212-1330 in the original 2028px space). v3 removes a further
+  // 224px from the LEFT edge: the 68px margin that carries no ink at all, plus
+  // 156px of the email/subject column. That column is the wall's furthest,
+  // most out-of-focus content, it sits under the horizontal fade mask where
+  // alpha is already near zero, and at this tilt it is compressed into a very
+  // narrow screen band, so those pixels cost almost nothing on screen while
+  // buying magnification everywhere. Net: 2028/1340 = 1.513x more content in
+  // the same footprint, outcome column now starts at 48.1% of the width.
+  var SRC_W = 1340, SRC_H = 19942;
+  var SLICE_H = [2492, 2492, 2492, 2492, 2492, 2492, 2492, 2498];
+  // The texture is drawn anisotropically: the stream spans the full viewport
+  // width, but vertically it is only VSTRETCH of that scale. This is the whole
+  // trick behind "bigger without losing rows". A uniform scale-up magnifies the
+  // row pitch by exactly the factor it magnifies the type, so size and row
+  // count trade one for one and the no-lost-rows constraint is unsatisfiable.
+  // Decoupling the axes lets the horizontal scale carry the size increase while
+  // the vertical scale holds the row pitch. VSTRETCH = SRC_W/2028 = 0.7713
+  // reproduces the old vertical geometry exactly; above that is a real vertical
+  // gain, funded by the outcome column now sitting further from the viewer
+  // (it moved left, so perspective renders it slightly smaller for free).
+  // The pre-stretch also partly undoes the rotateY foreshortening, which had
+  // been squeezing the wall's type horizontally to ~0.91 of its natural aspect.
+  var VSTRETCH = 0.79;
+  // scroll budget scales with the texture's rendered height so the per-beat
+  // feel (~0.91 viewports at 1440x900) survives any VSTRETCH retune
+  var WALL_RATE = 2.1 * VSTRETCH * (2028 / SRC_W), LERP = 0.15;
   // Fade width as a fraction of one rail slot. 0.126 is exactly the old
   // f/span (0.018 * 7), so every beat keeps its ~75% full-opacity plateau.
   var FADE = 0.126;
@@ -1014,19 +1041,24 @@ window.__lwStartDark = function () {
   // Swept across 36 desktop viewports x 3 realistic flick steps, 1.55 cuts dead
   // landings roughly in half versus equal slots and is clean at 1440x900.
   var HERO_HOLD = 1.55;
-  var ROW_X_SRC = 1352, ROW_Y_SRC = 773; // the "71 emails unopened" row, measured from pixels
+  // the "71 emails unopened" row, measured from pixels. x is re-derived again
+  // for v3: it sat at 888 in the v2 space and the left crop removes a further
+  // 224px, so it lands at 664. y is untouched (no vertical cut was ever made).
+  var ROW_X_SRC = 664, ROW_Y_SRC = 773;
 
   var scrolly = document.getElementById("lw-scrolly");
   var persp = document.getElementById("lw-persp");
   var plane = document.getElementById("lw-plane");
   var logStream = document.getElementById("lw-logstream");
   // wall assets exist only in this branch: mobile never fetches them
+  var sliceImgs = [];
   for (var si = 0; si < 8; si++) {
     var slImg = document.createElement("img");
-    slImg.src = "assets-dark-baked/log-slice-" + si + ".webp";
+    slImg.src = "assets-dark-baked-v3/log-slice-" + si + ".webp";
     slImg.alt = si === 0 ? "Live re-engagement results log" : "";
     slImg.setAttribute("decoding", "async");
     logStream.appendChild(slImg);
+    sliceImgs.push(slImg);
   }
   // invisible probe pinned to the "71 emails unopened" row: the browser
   // projects it through the tilted plane for us, so the headline connector can
@@ -1035,6 +1067,20 @@ window.__lwStartDark = function () {
   rowMark.id = "lw-rowmark";
   rowMark.setAttribute("aria-hidden", "true");
   logStream.appendChild(rowMark);
+  // beat 03 names two specific outcomes, so it gets two probes pinned to the
+  // real rows that say them: +47 rows reads "First open in 15 months, 86 emails
+  // unopened" and +52 reads "First open ever". Both live inside the stream, so
+  // they travel with the log exactly like the hero probe does.
+  var markA = document.createElement("div");
+  var markB = document.createElement("div");
+  var markC = document.createElement("div");
+  markA.className = markB.className = markC.className = "lw-rowmark2";
+  markA.setAttribute("aria-hidden", "true");
+  markB.setAttribute("aria-hidden", "true");
+  markC.setAttribute("aria-hidden", "true");
+  logStream.appendChild(markA);
+  logStream.appendChild(markB);
+  logStream.appendChild(markC);
   var dim = document.getElementById("lw-dim");
   var heroDim = document.getElementById("lw-herodim");
   var hero = document.getElementById("lw-hero");
@@ -1062,10 +1108,32 @@ window.__lwStartDark = function () {
     connSvg.appendChild(path);
     connSvg.appendChild(tip);
     connByIndex[j] = { target: t, path: path, tip: tip };
+    if (t === "right-column") {
+      var path2 = document.createElementNS(NS, "path");
+      path2.setAttribute("pathLength", "100");
+      path2.setAttribute("stroke-dasharray", "100");
+      path2.setAttribute("stroke-dashoffset", "100");
+      path2.setAttribute("opacity", "0");
+      var tip2 = document.createElementNS(NS, "circle");
+      tip2.setAttribute("r", "2");
+      tip2.setAttribute("opacity", "0");
+      connSvg.appendChild(path2);
+      connSvg.appendChild(tip2);
+      connByIndex[j].path2 = path2;
+      connByIndex[j].tip2 = tip2;
+    }
   });
 
-  var vw = 0, vh = 0, P3 = 0, travel = 0, finalRot = -30, pitch = 3;
-  var heroConnOn = false, connDirty = true;
+  // tilt: v2 sat at -30deg. Measured across the outcome column, easing to
+  // -22deg is the single most efficient lever available: it undoes part of the
+  // cosine squeeze AND pulls the wall closer, so glyph width grows about twice
+  // as fast as row pitch (roughly 3 percent of area per 1 percent of pitch,
+  // versus 1.8 for cropping and 1.0 for vertical stretch). The wall still
+  // recedes leftward hard: the near-to-far scale gradient is 2.41x at -22deg
+  // against 3.01x at -30deg. Below about -20deg the gradient collapses toward
+  // 2x and the left edge starts crowding the copy rail, so -22 is the floor.
+  var vw = 0, vh = 0, P3 = 0, travel = 0, finalRot = -22, pitch = 3;
+  var heroConnOn = false, connDirty = true, lastConnO = 1, connRowY = 0;
   // rail slots: the hero stack is slot 01, then one slot per remaining beat
   var RAIL_N = blocks.length + 1;
   var heroSpan = 1 / RAIL_N, beatSpan = 1 / RAIL_N;
@@ -1073,10 +1141,13 @@ window.__lwStartDark = function () {
   function layout() {
     vw = window.innerWidth;
     vh = window.innerHeight;
-    finalRot = vw < 700 ? -18 : -30;
+    finalRot = vw < 700 ? -18 : -22;
     pitch = vw < 700 ? 2 : 3;
-    var scale = vw / SRC_W;
-    var logH = SRC_H * scale;
+    // sx drives type width, sy drives row pitch. Keeping them separate is what
+    // lets the wall read bigger without showing fewer rows.
+    var sx = vw / SRC_W;
+    var sy = sx * VSTRETCH;
+    var logH = SRC_H * sy;
     travel = Math.max(0, logH - vh);
     P3 = Math.max(1, Math.round(travel / WALL_RATE));
     // no rotation phase any more: the wrapper IS the wall, and the sticky
@@ -1086,7 +1157,14 @@ window.__lwStartDark = function () {
     // rest evenly. Clamped so a very short wall cannot starve the beats.
     heroSpan = Math.max(0.06, Math.min(0.45, (HERO_HOLD * vh) / P3));
     beatSpan = (1 - heroSpan) / blocks.length;
-    var ox = Math.round(vw * 0.12), orr = Math.round(vw * 0.04), oy = Math.round(vh * 0.15);
+    // oy oversizes the plane vertically. It was 0.15, then 0.175; at 0.24 the
+    // plane's soft-masked band covers still more of the viewport. This is the
+    // one lever that adds rows at zero cost to type size: it changes the mask
+    // geometry only, never the texture scale, so v3 spends it to fund the
+    // magnification the crop and the shallower tilt buy. Both plane edges stay
+    // well off-viewport and land where the mask alpha is 0, so nothing hardens
+    // at the boundary; raising oy pushes them further out, not closer in.
+    var ox = Math.round(vw * 0.12), orr = Math.round(vw * 0.04), oy = Math.round(vh * 0.24);
     plane.style.left = (-ox) + "px";
     plane.style.top = (-oy) + "px";
     plane.style.width = (vw + ox + orr) + "px";
@@ -1098,8 +1176,27 @@ window.__lwStartDark = function () {
     logStream.style.width = vw + "px";
     logStream.style.paddingTop = oy + "px";
     logStream.style.height = Math.round(logH + 2 * oy + vh) + "px";
-    rowMark.style.left = (ROW_X_SRC * scale).toFixed(1) + "px";
-    rowMark.style.top = (oy + ROW_Y_SRC * scale).toFixed(1) + "px";
+    // explicit per-slice heights: the slices must not keep their natural aspect
+    // or sy collapses back onto sx. Unrounded so the eight heights still sum to
+    // exactly SRC_H * sy and the row probe below stays aligned to the texture.
+    for (var k = 0; k < sliceImgs.length; k++) {
+      sliceImgs[k].style.height = (SLICE_H[k] * sy).toFixed(3) + "px";
+    }
+    rowMark.style.left = (ROW_X_SRC * sx).toFixed(1) + "px";
+    rowMark.style.top = (oy + ROW_Y_SRC * sy).toFixed(1) + "px";
+    // the outcome column is right-aligned, so a short row like "First open
+    // ever" starts further right: anchor B accordingly so the tip lands on its
+    // words rather than in the empty space beside them
+    // source Y values are the measured ink centres of the actual text rows,
+    // read off the master image, not derived from an assumed row pitch:
+    //   7189  "First open in 15 months, 86 emails unopened"  (beat 03, line 1)
+    //   7708  "First open ever"                              (beat 03, line 2)
+    //  14848  the long outcome row sitting mid-frame at beat 06
+    markA.style.left = markC.style.left = (ROW_X_SRC * sx).toFixed(1) + "px";
+    markB.style.left = ((ROW_X_SRC + 390) * sx).toFixed(1) + "px";
+    markA.style.top = (oy + 7189 * sy).toFixed(1) + "px";
+    markB.style.top = (oy + 7708 * sy).toFixed(1) + "px";
+    markC.style.top = (oy + 14848 * sy).toFixed(1) + "px";
     connSvg.setAttribute("viewBox", "0 0 " + vw + " " + vh);
     heroConn.setAttribute("viewBox", "0 0 " + vw + " " + vh);
     connDirty = true;
@@ -1116,13 +1213,14 @@ window.__lwStartDark = function () {
     heroConnTip.setAttribute("opacity", "0");
     heroConn.style.display = "none";
     if (vw < 1100) return;
-    var prev = logStream.style.transform;
-    logStream.style.transform = "translate3d(0,0,0)";
+    // measure the probe WHERE IT ACTUALLY IS: it lives inside the log stream,
+    // so its live rect follows the row as the log travels, and the line stays
+    // attached instead of pointing at a position the row has left
     var m = rowMark.getBoundingClientRect();
-    logStream.style.transform = prev;
     var ax = m.left + m.width / 2, ay = m.top + m.height / 2;
     if (!isFinite(ax) || !isFinite(ay)) return;
-    if (ay < 90 || ay > vh - 90) return;
+    connRowY = ay;
+    if (ay < 60 || ay > vh - 40) return;
     if (ax < 0 || ax > vw) return;
     var r = heroH1.getBoundingClientRect();
     if (ax - 16 < r.right + 40) return;
@@ -1150,7 +1248,48 @@ window.__lwStartDark = function () {
     tgtWall = clamp01(y / (P3 || 1));
   }
 
+  // draws one line from the rail copy to a probe pinned inside the log, so the
+  // line stays welded to its row while the log travels and eases off over the
+  // last 90px before that row leaves the top of the frame
+  function drawRowLink(path, tip, x0, y0, mark, draw, o) {
+    var r = mark.getBoundingClientRect();
+    var ax = r.left + r.width / 2 - 14, ay = r.top + r.height / 2;
+    var edge = clamp01((ay - 70) / 90);
+    if (!isFinite(ax) || draw < 0.01 || o < 0.01 || edge <= 0.002 ||
+        ax < x0 + 60 || ax > vw) {
+      path.setAttribute("opacity", "0");
+      tip.setAttribute("opacity", "0");
+      return;
+    }
+    var cx = (x0 + ax) / 2, cy = Math.min(y0, ay) - 40;
+    path.setAttribute("d", "M" + x0.toFixed(1) + " " + y0.toFixed(1) +
+      " Q" + cx.toFixed(1) + " " + cy.toFixed(1) + " " + ax.toFixed(1) + " " + ay.toFixed(1));
+    path.setAttribute("stroke-dashoffset", (100 * (1 - draw)).toFixed(2));
+    path.setAttribute("opacity", (o * edge).toFixed(3));
+    var it = 1 - draw;
+    tip.setAttribute("cx", (it * it * x0 + 2 * it * draw * cx + draw * draw * ax).toFixed(1));
+    tip.setAttribute("cy", (it * it * y0 + 2 * it * draw * cy + draw * draw * ay).toFixed(1));
+    tip.setAttribute("opacity", (o * edge * 0.85).toFixed(3));
+  }
+
   function updateConnector(c, p, o) {
+    // beat 03 names two outcomes, so it draws two row-tracked lines: the first
+    // to the row that says "First open in 15 months", then a beat later the
+    // second to the row that says "First open ever"
+    if (c.path2 || c.target === "counter-area") {
+      var rx0 = vw * 0.06 + Math.min(vw * 0.36, 520) + 14;
+      var ry0 = vh / 2 + (0.5 - p) * 24;
+      var out = (p > 0 && p < 1) ? smooth((1 - p) / 0.22) : 0;
+      var dA = (p > 0 && p < 1) ? Math.min(1, smooth(p / 0.22), out) : 0;
+      if (c.path2) {
+        var dB = (p > 0.06 && p < 1) ? Math.min(1, smooth((p - 0.06) / 0.22), out) : 0;
+        drawRowLink(c.path, c.tip, rx0, ry0 - 20, markA, dA, o);
+        drawRowLink(c.path2, c.tip2, rx0, ry0 + 6, markB, dB, o);
+      } else {
+        drawRowLink(c.path, c.tip, rx0, ry0 - 8, markC, dA, o);
+      }
+      return;
+    }
     var draw = 0;
     if (p > 0 && p < 1) draw = Math.min(1, smooth(p / 0.22), smooth((1 - p) / 0.22));
     if (draw < 0.01 || o < 0.01) {
@@ -1243,17 +1382,24 @@ window.__lwStartDark = function () {
     // measure the connector anchor only after the frame's transforms are
     // written, so the probe reads the real projected position of the row, then
     // re-apply this frame's hero opacity to whatever the measurement decided
-    if (connDirty) {
-      connDirty = false;
+    // the connector TRACKS its row: re-measured every frame while the row is
+    // still plausibly on screen, so the line stays attached as the log travels,
+    // then eases off over the last 90px before the row leaves the top.
+    connDirty = false;
+    if (ph <= 1.6) {
       heroConnLayout();
-      if (heroConnOn && heroO > 0.0005) {
-        heroConn.style.display = "block";
-        heroConnPath.setAttribute("opacity", (0.75 * heroO).toFixed(3));
-        heroConnTip.setAttribute("opacity", (0.8 * heroO).toFixed(3));
-      } else {
-        heroConn.style.display = "none";
-      }
+    } else {
+      heroConnOn = false;
     }
+    var connO = heroConnOn ? clamp01((connRowY - 70) / 90) : 0;
+    if (connO > 0.0005) {
+      heroConn.style.display = "block";
+      heroConnPath.setAttribute("opacity", (0.75 * connO).toFixed(3));
+      heroConnTip.setAttribute("opacity", (0.8 * connO).toFixed(3));
+    } else {
+      heroConn.style.display = "none";
+    }
+    lastConnO = connO;
   }
 
   function update() {
@@ -1489,14 +1635,14 @@ window.__lwStartClassic = function () {
       document.documentElement.classList.add("lw-desktop");
       var ff = document.createElement("style");
       ff.textContent =
-        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked/fonts/fraunces-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}' +
-        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked/fonts/fraunces-600-italic.woff2") format("woff2");font-weight:600;font-style:italic;font-display:swap;}';
+        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked-v3/fonts/fraunces-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}' +
+        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked-v3/fonts/fraunces-600-italic.woff2") format("woff2");font-weight:600;font-style:italic;font-display:swap;}';
       document.head.appendChild(ff);
       ["fraunces-600.woff2", "fraunces-600-italic.woff2"].forEach(function (f) {
         var l = document.createElement("link");
         l.rel = "preload"; l.as = "font"; l.type = "font/woff2";
         l.crossOrigin = "anonymous";
-        l.href = "assets-dark-baked/fonts/" + f;
+        l.href = "assets-dark-baked-v3/fonts/" + f;
         document.head.appendChild(l);
       });
       if (window.__lwStartDark) window.__lwStartDark();
