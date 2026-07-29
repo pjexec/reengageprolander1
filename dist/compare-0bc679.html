@@ -663,7 +663,7 @@
      stream. Reading its rect lets the browser do the 3D projection maths for us,
      so the headline connector anchors to where the row ACTUALLY lands in the
      tilted plane rather than to a flat-frame guess. Paints nothing. */
-  #lw-rowmark { position: absolute; width: 2px; height: 2px; pointer-events: none; }
+  #lw-rowmark, .lw-rowmark2 { position: absolute; width: 2px; height: 2px; pointer-events: none; }
   #lw-lightband {
     position: absolute; inset: 0; pointer-events: none; opacity: 0; mix-blend-mode: screen;
     background: linear-gradient(180deg, rgba(255,255,255,0) 38%, rgba(255,255,255,0.07) 50%, rgba(255,255,255,0) 62%);
@@ -1068,6 +1068,17 @@ window.__lwStartDark = function () {
   rowMark.id = "lw-rowmark";
   rowMark.setAttribute("aria-hidden", "true");
   logStream.appendChild(rowMark);
+  // beat 03 names two specific outcomes, so it gets two probes pinned to the
+  // real rows that say them: +47 rows reads "First open in 15 months, 86 emails
+  // unopened" and +52 reads "First open ever". Both live inside the stream, so
+  // they travel with the log exactly like the hero probe does.
+  var markA = document.createElement("div");
+  var markB = document.createElement("div");
+  markA.className = markB.className = "lw-rowmark2";
+  markA.setAttribute("aria-hidden", "true");
+  markB.setAttribute("aria-hidden", "true");
+  logStream.appendChild(markA);
+  logStream.appendChild(markB);
   var dim = document.getElementById("lw-dim");
   var heroDim = document.getElementById("lw-herodim");
   var hero = document.getElementById("lw-hero");
@@ -1095,6 +1106,20 @@ window.__lwStartDark = function () {
     connSvg.appendChild(path);
     connSvg.appendChild(tip);
     connByIndex[j] = { target: t, path: path, tip: tip };
+    if (t === "right-column") {
+      var path2 = document.createElementNS(NS, "path");
+      path2.setAttribute("pathLength", "100");
+      path2.setAttribute("stroke-dasharray", "100");
+      path2.setAttribute("stroke-dashoffset", "100");
+      path2.setAttribute("opacity", "0");
+      var tip2 = document.createElementNS(NS, "circle");
+      tip2.setAttribute("r", "2");
+      tip2.setAttribute("opacity", "0");
+      connSvg.appendChild(path2);
+      connSvg.appendChild(tip2);
+      connByIndex[j].path2 = path2;
+      connByIndex[j].tip2 = tip2;
+    }
   });
 
   // tilt: v2 sat at -30deg. Measured across the outcome column, easing to
@@ -1157,6 +1182,13 @@ window.__lwStartDark = function () {
     }
     rowMark.style.left = (ROW_X_SRC * sx).toFixed(1) + "px";
     rowMark.style.top = (oy + ROW_Y_SRC * sy).toFixed(1) + "px";
+    // the outcome column is right-aligned, so a short row like "First open
+    // ever" starts further right: anchor B accordingly so the tip lands on its
+    // words rather than in the empty space beside them
+    markA.style.left = (ROW_X_SRC * sx).toFixed(1) + "px";
+    markB.style.left = ((ROW_X_SRC + 390) * sx).toFixed(1) + "px";
+    markA.style.top = (oy + 7126 * sy).toFixed(1) + "px";
+    markB.style.top = (oy + 7744 * sy).toFixed(1) + "px";
     connSvg.setAttribute("viewBox", "0 0 " + vw + " " + vh);
     heroConn.setAttribute("viewBox", "0 0 " + vw + " " + vh);
     connDirty = true;
@@ -1208,7 +1240,44 @@ window.__lwStartDark = function () {
     tgtWall = clamp01(y / (P3 || 1));
   }
 
+  // draws one line from the rail copy to a probe pinned inside the log, so the
+  // line stays welded to its row while the log travels and eases off over the
+  // last 90px before that row leaves the top of the frame
+  function drawRowLink(path, tip, x0, y0, mark, draw, o) {
+    var r = mark.getBoundingClientRect();
+    var ax = r.left + r.width / 2 - 14, ay = r.top + r.height / 2;
+    var edge = clamp01((ay - 70) / 90);
+    if (!isFinite(ax) || draw < 0.01 || o < 0.01 || edge <= 0.002 ||
+        ax < x0 + 60 || ax > vw) {
+      path.setAttribute("opacity", "0");
+      tip.setAttribute("opacity", "0");
+      return;
+    }
+    var cx = (x0 + ax) / 2, cy = Math.min(y0, ay) - 40;
+    path.setAttribute("d", "M" + x0.toFixed(1) + " " + y0.toFixed(1) +
+      " Q" + cx.toFixed(1) + " " + cy.toFixed(1) + " " + ax.toFixed(1) + " " + ay.toFixed(1));
+    path.setAttribute("stroke-dashoffset", (100 * (1 - draw)).toFixed(2));
+    path.setAttribute("opacity", (o * edge).toFixed(3));
+    var it = 1 - draw;
+    tip.setAttribute("cx", (it * it * x0 + 2 * it * draw * cx + draw * draw * ax).toFixed(1));
+    tip.setAttribute("cy", (it * it * y0 + 2 * it * draw * cy + draw * draw * ay).toFixed(1));
+    tip.setAttribute("opacity", (o * edge * 0.85).toFixed(3));
+  }
+
   function updateConnector(c, p, o) {
+    // beat 03 names two outcomes, so it draws two row-tracked lines: the first
+    // to the row that says "First open in 15 months", then a beat later the
+    // second to the row that says "First open ever"
+    if (c.path2) {
+      var rx0 = vw * 0.06 + Math.min(vw * 0.36, 520) + 14;
+      var ry0 = vh / 2 + (0.5 - p) * 24;
+      var out = (p > 0 && p < 1) ? smooth((1 - p) / 0.22) : 0;
+      var dA = (p > 0 && p < 1) ? Math.min(1, smooth(p / 0.22), out) : 0;
+      var dB = (p > 0.06 && p < 1) ? Math.min(1, smooth((p - 0.06) / 0.22), out) : 0;
+      drawRowLink(c.path, c.tip, rx0, ry0 - 20, markA, dA, o);
+      drawRowLink(c.path2, c.tip2, rx0, ry0 + 6, markB, dB, o);
+      return;
+    }
     var draw = 0;
     if (p > 0 && p < 1) draw = Math.min(1, smooth(p / 0.22), smooth((1 - p) / 0.22));
     if (draw < 0.01 || o < 0.01) {
