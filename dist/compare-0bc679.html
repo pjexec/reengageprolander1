@@ -647,13 +647,13 @@
   #lw-persp { position: absolute; inset: 0; perspective: 950px; perspective-origin: 72% 50%; }
   #lw-plane {
     position: absolute; transform-origin: 100% 50%; will-change: transform;
-    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 12%, #000 24%, #000 76%, rgba(0,0,0,0.55) 88%, transparent 100%);
-    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 12%, #000 24%, #000 76%, rgba(0,0,0,0.55) 88%, transparent 100%);
+    -webkit-mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 11%, #000 22%, #000 78%, rgba(0,0,0,0.55) 89%, transparent 100%);
+    mask-image: linear-gradient(180deg, transparent 0%, rgba(0,0,0,0.55) 11%, #000 22%, #000 78%, rgba(0,0,0,0.55) 89%, transparent 100%);
   }
   #lw-fadewrap {
     position: absolute; inset: 0;
-    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%);
-    mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%);
+    -webkit-mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%, #000 96.5%, transparent 100%);
+    mask-image: linear-gradient(90deg, transparent 0%, rgba(0,0,0,0.45) 18%, #000 34%, #000 96.5%, transparent 100%);
   }
   #lw-logstream { position: absolute; top: 0; background: #0d1524; will-change: transform; }
   /* height is written per slice by layout(): the wall is drawn anisotropically,
@@ -1005,12 +1005,16 @@ window.__lwStartDark = function () {
   var reduced = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
   if (reduced) { root.classList.add("lw-reduced"); return; }
 
-  // v2 texture: the dead gutter between the subject column and the outcome
-  // column is cut out of the source (464px of verified pure background, two
-  // windows at 701-1045 and 1212-1330 in the old 2028px space), so the same
-  // on-screen footprint now carries 2028/1564 = 1.297x more content and the
-  // outcome column starts at 55.4% of the width instead of 65.6%.
-  var SRC_W = 1564, SRC_H = 19942;
+  // v3 texture: v2 already removed 464px of dead gutter (two windows at
+  // 701-1045 and 1212-1330 in the original 2028px space). v3 removes a further
+  // 224px from the LEFT edge: the 68px margin that carries no ink at all, plus
+  // 156px of the email/subject column. That column is the wall's furthest,
+  // most out-of-focus content, it sits under the horizontal fade mask where
+  // alpha is already near zero, and at this tilt it is compressed into a very
+  // narrow screen band, so those pixels cost almost nothing on screen while
+  // buying magnification everywhere. Net: 2028/1340 = 1.513x more content in
+  // the same footprint, outcome column now starts at 48.1% of the width.
+  var SRC_W = 1340, SRC_H = 19942;
   var SLICE_H = [2492, 2492, 2492, 2492, 2492, 2492, 2492, 2498];
   // The texture is drawn anisotropically: the stream spans the full viewport
   // width, but vertically it is only VSTRETCH of that scale. This is the whole
@@ -1038,10 +1042,10 @@ window.__lwStartDark = function () {
   // Swept across 36 desktop viewports x 3 realistic flick steps, 1.55 cuts dead
   // landings roughly in half versus equal slots and is clean at 1440x900.
   var HERO_HOLD = 1.55;
-  // the "71 emails unopened" row, measured from pixels. x is re-derived for the
-  // v2 texture: it sat at 1352 in the old space, right of both cut windows, so
-  // it shifts left by the full 464px removed. y is untouched (no vertical cut).
-  var ROW_X_SRC = 888, ROW_Y_SRC = 773;
+  // the "71 emails unopened" row, measured from pixels. x is re-derived again
+  // for v3: it sat at 888 in the v2 space and the left crop removes a further
+  // 224px, so it lands at 664. y is untouched (no vertical cut was ever made).
+  var ROW_X_SRC = 664, ROW_Y_SRC = 773;
 
   var scrolly = document.getElementById("lw-scrolly");
   var persp = document.getElementById("lw-persp");
@@ -1051,7 +1055,7 @@ window.__lwStartDark = function () {
   var sliceImgs = [];
   for (var si = 0; si < 8; si++) {
     var slImg = document.createElement("img");
-    slImg.src = "assets-dark-baked-v2/log-slice-" + si + ".webp";
+    slImg.src = "assets-dark-baked-v3/log-slice-" + si + ".webp";
     slImg.alt = si === 0 ? "Live re-engagement results log" : "";
     slImg.setAttribute("decoding", "async");
     logStream.appendChild(slImg);
@@ -1093,7 +1097,15 @@ window.__lwStartDark = function () {
     connByIndex[j] = { target: t, path: path, tip: tip };
   });
 
-  var vw = 0, vh = 0, P3 = 0, travel = 0, finalRot = -30, pitch = 3;
+  // tilt: v2 sat at -30deg. Measured across the outcome column, easing to
+  // -22deg is the single most efficient lever available: it undoes part of the
+  // cosine squeeze AND pulls the wall closer, so glyph width grows about twice
+  // as fast as row pitch (roughly 3 percent of area per 1 percent of pitch,
+  // versus 1.8 for cropping and 1.0 for vertical stretch). The wall still
+  // recedes leftward hard: the near-to-far scale gradient is 2.41x at -22deg
+  // against 3.01x at -30deg. Below about -20deg the gradient collapses toward
+  // 2x and the left edge starts crowding the copy rail, so -22 is the floor.
+  var vw = 0, vh = 0, P3 = 0, travel = 0, finalRot = -22, pitch = 3;
   var heroConnOn = false, connDirty = true;
   // rail slots: the hero stack is slot 01, then one slot per remaining beat
   var RAIL_N = blocks.length + 1;
@@ -1102,7 +1114,7 @@ window.__lwStartDark = function () {
   function layout() {
     vw = window.innerWidth;
     vh = window.innerHeight;
-    finalRot = vw < 700 ? -18 : -30;
+    finalRot = vw < 700 ? -18 : -22;
     pitch = vw < 700 ? 2 : 3;
     // sx drives type width, sy drives row pitch. Keeping them separate is what
     // lets the wall read bigger without showing fewer rows.
@@ -1118,13 +1130,14 @@ window.__lwStartDark = function () {
     // rest evenly. Clamped so a very short wall cannot starve the beats.
     heroSpan = Math.max(0.06, Math.min(0.45, (HERO_HOLD * vh) / P3));
     beatSpan = (1 - heroSpan) / blocks.length;
-    // oy oversizes the plane vertically. It was 0.15; at 0.175 the plane's
-    // soft-masked band covers more of the viewport, which buys back the rows
-    // the outcome column's extra distance would otherwise cost. It changes the
-    // mask geometry only, never the texture scale, so it adds rows at zero cost
-    // to type size. Both plane edges stay off-viewport-centre and land where
-    // the mask alpha is 0, so nothing hardens at the boundary.
-    var ox = Math.round(vw * 0.12), orr = Math.round(vw * 0.04), oy = Math.round(vh * 0.175);
+    // oy oversizes the plane vertically. It was 0.15, then 0.175; at 0.24 the
+    // plane's soft-masked band covers still more of the viewport. This is the
+    // one lever that adds rows at zero cost to type size: it changes the mask
+    // geometry only, never the texture scale, so v3 spends it to fund the
+    // magnification the crop and the shallower tilt buy. Both plane edges stay
+    // well off-viewport and land where the mask alpha is 0, so nothing hardens
+    // at the boundary; raising oy pushes them further out, not closer in.
+    var ox = Math.round(vw * 0.12), orr = Math.round(vw * 0.04), oy = Math.round(vh * 0.24);
     plane.style.left = (-ox) + "px";
     plane.style.top = (-oy) + "px";
     plane.style.width = (vw + ox + orr) + "px";
@@ -1533,14 +1546,14 @@ window.__lwStartClassic = function () {
       document.documentElement.classList.add("lw-desktop");
       var ff = document.createElement("style");
       ff.textContent =
-        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked-v2/fonts/fraunces-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}' +
-        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked-v2/fonts/fraunces-600-italic.woff2") format("woff2");font-weight:600;font-style:italic;font-display:swap;}';
+        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked-v3/fonts/fraunces-600.woff2") format("woff2");font-weight:600;font-style:normal;font-display:swap;}' +
+        '@font-face{font-family:"Fraunces";src:url("assets-dark-baked-v3/fonts/fraunces-600-italic.woff2") format("woff2");font-weight:600;font-style:italic;font-display:swap;}';
       document.head.appendChild(ff);
       ["fraunces-600.woff2", "fraunces-600-italic.woff2"].forEach(function (f) {
         var l = document.createElement("link");
         l.rel = "preload"; l.as = "font"; l.type = "font/woff2";
         l.crossOrigin = "anonymous";
-        l.href = "assets-dark-baked-v2/fonts/" + f;
+        l.href = "assets-dark-baked-v3/fonts/" + f;
         document.head.appendChild(l);
       });
       if (window.__lwStartDark) window.__lwStartDark();
