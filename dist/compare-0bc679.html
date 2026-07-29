@@ -1106,7 +1106,7 @@ window.__lwStartDark = function () {
   // against 3.01x at -30deg. Below about -20deg the gradient collapses toward
   // 2x and the left edge starts crowding the copy rail, so -22 is the floor.
   var vw = 0, vh = 0, P3 = 0, travel = 0, finalRot = -22, pitch = 3;
-  var heroConnOn = false, connDirty = true, lastConnO = 1;
+  var heroConnOn = false, connDirty = true, lastConnO = 1, connRowY = 0;
   // rail slots: the hero stack is slot 01, then one slot per remaining beat
   var RAIL_N = blocks.length + 1;
   var heroSpan = 1 / RAIL_N, beatSpan = 1 / RAIL_N;
@@ -1173,12 +1173,13 @@ window.__lwStartDark = function () {
     heroConnTip.setAttribute("opacity", "0");
     heroConn.style.display = "none";
     if (vw < 1100) return;
-    var prev = logStream.style.transform;
-    logStream.style.transform = "translate3d(0,0,0)";
+    // measure the probe WHERE IT ACTUALLY IS: it lives inside the log stream,
+    // so its live rect follows the row as the log travels, and the line stays
+    // attached instead of pointing at a position the row has left
     var m = rowMark.getBoundingClientRect();
-    logStream.style.transform = prev;
     var ax = m.left + m.width / 2, ay = m.top + m.height / 2;
     if (!isFinite(ax) || !isFinite(ay)) return;
+    connRowY = ay;
     if (ay < 60 || ay > vh - 40) return;
     if (ax < 0 || ax > vw) return;
     var r = heroH1.getBoundingClientRect();
@@ -1300,19 +1301,21 @@ window.__lwStartDark = function () {
     // measure the connector anchor only after the frame's transforms are
     // written, so the probe reads the real projected position of the row, then
     // re-apply this frame's hero opacity to whatever the measurement decided
-    if (connDirty) {
-      connDirty = false;
+    // the connector TRACKS its row: re-measured every frame while the row is
+    // still plausibly on screen, so the line stays attached as the log travels,
+    // then eases off over the last 90px before the row leaves the top.
+    connDirty = false;
+    if (ph <= 1.6) {
       heroConnLayout();
+    } else {
+      heroConnOn = false;
     }
-    // the connector points at ONE specific row. The instant the log starts
-    // moving it is pointing at nothing, so it leaves on the first scroll
-    // instead of riding the hero copy's much slower fade.
-    var connO = heroConnOn ? (ph <= 0 ? 1 : Math.max(0, 1 - ph / 0.05)) : 0;
+    var connO = heroConnOn ? clamp01((connRowY - 70) / 90) : 0;
     if (connO > 0.0005) {
       heroConn.style.display = "block";
       heroConnPath.setAttribute("opacity", (0.75 * connO).toFixed(3));
       heroConnTip.setAttribute("opacity", (0.8 * connO).toFixed(3));
-    } else if (lastConnO > 0.0005 || connO === 0) {
+    } else {
       heroConn.style.display = "none";
     }
     lastConnO = connO;
