@@ -728,7 +728,7 @@
      glow is the page's second and last sanctioned idle animation (the scroll
      cue is the first). Green is the log's own re-engaged green, #1fb582. */
   #lw-livecard {
-    position: absolute; left: 6vw; top: 104px; z-index: 6;
+    position: absolute; right: 6vw; top: 104px; z-index: 6;
     display: inline-flex; align-items: center; gap: 0.75em;
     font-size: 0.72rem; font-weight: 600; letter-spacing: 0.24em;
     text-transform: uppercase; color: #7fe7c2;
@@ -1179,7 +1179,7 @@ window.__lwStartDark = function () {
     logStream.style.transform = prev;
     var ax = m.left + m.width / 2, ay = m.top + m.height / 2;
     if (!isFinite(ax) || !isFinite(ay)) return;
-    if (ay < 90 || ay > vh - 90) return;
+    if (ay < 60 || ay > vh - 40) return;
     if (ax < 0 || ax > vw) return;
     var r = heroH1.getBoundingClientRect();
     if (ax - 16 < r.right + 40) return;
