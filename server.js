@@ -20,7 +20,13 @@ const io = new Server(httpServer, {
 });
 
 const PORT = process.env.PORT || 3000;
-const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD || 'reengage2026';
+// No fallback value. If ADMIN_PASSWORD is unset, admin access stays closed rather than
+// defaulting to a value that would live in this file. Every check below treats an unset
+// password as "deny", because an undefined key would otherwise match an undefined password.
+const ADMIN_PASSWORD = process.env.ADMIN_PASSWORD;
+if (!ADMIN_PASSWORD) {
+    console.warn('[admin] ADMIN_PASSWORD is not set. Admin dashboard access is disabled.');
+}
 
 // Active Campaign API Configuration
 const ACTIVE_CAMPAIGN_URL = process.env.ACTIVE_CAMPAIGN_URL || 'https://reengage22324.activehosted.com';
@@ -377,7 +383,7 @@ async function sendTicketEmail(ticket) {
     }).join('')}
             </div>
             <p style="text-align: center; margin-top: 16px; font-size: 12px; color: #94a3b8;">
-                <a href="https://reengage.pro/admin?key=${ADMIN_PASSWORD}" style="color: #1C3166;">Open Admin Dashboard</a>
+                <a href="https://reengage.pro/admin" style="color: #1C3166;">Open Admin Dashboard</a> (admin key required)
             </p>
         </div>
     `;
@@ -540,7 +546,7 @@ io.on('connection', async (socket) => {
 
     if (isAdmin) {
         // Admin connection
-        if (adminKey !== ADMIN_PASSWORD) {
+        if (!ADMIN_PASSWORD || adminKey !== ADMIN_PASSWORD) {
             socket.emit('error', 'Invalid admin password');
             socket.disconnect();
             return;
@@ -1096,12 +1102,23 @@ app.post('/api/register', async (req, res) => {
     return res.json({ success: true });
 });
 
-// Admin page route
-app.get('/admin', (req, res) => {
-    if (req.query.key !== ADMIN_PASSWORD) {
+// Admin page route.
+//
+// Two things keep this gate from being bypassed:
+//   1. admin.html lives in private/, OUTSIDE the dist/ static root, so
+//      express.static below has no admin file to serve. Previously it sat in
+//      dist/ and was reachable at /admin.html with no key at all.
+//   2. This runs as middleware over EVERY path beginning with /admin, before
+//      express.static is mounted. So even if an admin file is dropped into
+//      dist/ again later, the request is gated before static ever sees it.
+// Do not move this below the express.static mount.
+app.use((req, res, next) => {
+    if (!/^\/admin/i.test(req.path)) return next();
+    if (!ADMIN_PASSWORD || req.query.key !== ADMIN_PASSWORD) {
         return res.status(401).send('Unauthorized. Please provide the correct key parameter.');
     }
-    res.sendFile(path.join(__dirname, 'dist', 'admin.html'));
+    if (req.method !== 'GET' && req.method !== 'HEAD') return next();
+    return res.sendFile(path.join(__dirname, 'private', 'admin.html'));
 });
 
 // Serve static files from the dist directory
@@ -1114,5 +1131,6 @@ app.get('*', (req, res) => {
 
 httpServer.listen(PORT, () => {
     console.log(`Server running on port ${PORT}`);
-    console.log(`Admin dashboard: http://localhost:${PORT}/admin?key=${ADMIN_PASSWORD}`);
+    // Never log the key itself. This line lands in the hosting provider's deploy logs.
+    console.log(`Admin dashboard: http://localhost:${PORT}/admin?key=<ADMIN_PASSWORD>${ADMIN_PASSWORD ? '' : '  [NOT SET, admin disabled]'}`);
 });

@@ -114,9 +114,12 @@ Extract colors from the existing landing page and apply to:
 
 ## Admin Access
 
-Default password: `reengage2026` (configurable via `ADMIN_PASSWORD` env var)
+The admin key is set via the `ADMIN_PASSWORD` environment variable. There is no default
+value and no fallback. If the variable is unset, admin access is disabled entirely.
 
 Access at: `https://your-domain.com/admin?key=YOUR_PASSWORD`
+
+Never commit the value to this repository. It is public.
 
 ## UTM Tracking
 
