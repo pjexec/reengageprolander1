@@ -52,7 +52,7 @@
                     "availability": "https://schema.org/InStock",
                     "price": "147",
                     "priceCurrency": "USD",
-                    "description": "Starts with a 7-day free trial, no credit card required. $147/mo Pro plan after the trial."
+                    "description": "Join the waitlist for early access. $147/mo Pro plan at launch."
                 },
                 "featureList": [
                     "AES-256 encrypted ESP connections",
@@ -580,7 +580,7 @@
             <a href="#faq" class="nav-link">FAQ</a>
             <a href="about.html" class="nav-link">About</a>
             <a href="https://app.reengage.pro/login" class="nav-link" target="_blank" rel="noopener">Login</a>
-            <button class="btn-primary" style="padding:8px 16px;font-size:var(--text-xs);letter-spacing:0.05em;box-shadow:0 1px 0 0 oklch(20% 0.02 255 / 0.12);" id="nav-cta">Start Free Trial</button>
+            <button class="btn-primary" style="padding:8px 16px;font-size:var(--text-xs);letter-spacing:0.05em;box-shadow:0 1px 0 0 oklch(20% 0.02 255 / 0.12);" id="nav-cta">Join Waitlist</button>
         </div>
         <button id="hamburger-btn" style="display:none;background:none;border:none;cursor:pointer;padding:8px;color:var(--color-text-primary);touch-action:manipulation;" aria-label="Open menu">
             <i class="ph ph-list" style="font-size:24px;"></i>
@@ -603,7 +603,7 @@
         <a href="#faq" class="nav-link mobile-nav-link" style="font-size:var(--text-lg);">FAQ</a>
         <a href="about.html" class="nav-link mobile-nav-link" style="font-size:var(--text-lg);">About</a>
         <a href="https://app.reengage.pro/login" class="nav-link mobile-nav-link" style="font-size:var(--text-lg);" target="_blank" rel="noopener">Login</a>
-        <button class="btn-primary" id="mobile-cta" style="margin-top:16px;width:100%;justify-content:center;">Start Free Trial</button>
+        <button class="btn-primary" id="mobile-cta" style="margin-top:16px;width:100%;justify-content:center;">Join Waitlist</button>
     </div>
 </div>
 
@@ -902,11 +902,10 @@
                 <h1 class="font-display text-hero" style="font-weight:700;color:var(--color-brand);margin:0 0 24px;">Half your email list is quietly wrecking the other half.</h1>
                 <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 32px;max-width:560px;"><span class="font-display" style="font-weight:700;color:var(--color-brand);">Good News:</span> there&rsquo;s <span style="text-decoration:underline;text-underline-offset:3px;text-decoration-thickness:1.5px;text-decoration-skip-ink:none;">finally</span> a safe way to fix it. ReEngage Pro wakes your quiet subscribers automatically without risking your inbox deliverability.</p>
                 <div style="display:flex;align-items:center;gap:16px;flex-wrap:wrap;">
-                    <button class="btn-primary" id="hero-cta"><i class="ph ph-arrow-right" style="font-size:16px;"></i> Start Free Trial, the safe way</button>
+                    <button class="btn-primary" id="hero-cta"><i class="ph ph-arrow-right" style="font-size:16px;"></i> Join the Waitlist</button>
                     <a href="#safety" class="btn-ghost">How is this safe?</a>
                     <a href="#roi" class="btn-ghost">See what the leak costs you</a>
                 </div>
-                <p class="text-sm-c" style="color:var(--color-text-muted);margin-top:12px;">No credit card &middot; Cancel anytime</p>
             </div>
             <div class="reveal" style="display:flex;justify-content:flex-end;">
                 <!-- AGENT HERO: animated Claude conversation via ReEngage Pro MCP (2026-07-09).
@@ -1005,8 +1004,7 @@
       <p class="lw-livenote">Addresses masked. Every number real.</p>
     </div>
     <div id="lw-wall-cta-wrap">
-      <button id="lw-wall-cta" type="button">Start Free Trial, the safe way</button>
-      <p class="lw-cta-note">No credit card &middot; Cancel anytime</p>
+      <button id="lw-wall-cta" type="button">Join the Waitlist</button>
     </div>
   </div>
  </div>
@@ -1639,13 +1637,15 @@ window.__lwStartClassic = function () {
     for (var ri = 0; ri < reveals.length; ri++) reveals[ri].classList.add("visible");
     // the production CTA-binding IIFE ran at parse time, before this stamp, so
     // any CTA id living inside a template never received its click listener.
-    // Re-run the same binding (window.openSignupModal, exposed by that IIFE)
-    // for template-resident ids only, scoped to the mount to avoid double-binding
-    // the static buttons. Currently only #hero-cta (classic template) qualifies.
+    // Re-run the same binding (window.openWaitlistModal, exposed by the waitlist
+    // IIFE) for template-resident ids only, scoped to the mount to avoid
+    // double-binding the static buttons. Currently only #hero-cta (classic
+    // template) qualifies. Pre-launch this must be the WAITLIST modal, not the
+    // trial modal, or this button would still open account creation.
     var lwCtaIds = ["nav-cta", "mobile-cta", "hero-cta", "dilemma-cta", "roi-cta", "final-cta", "proof-cta", "sticky-cta", "lw-wall-cta"];
     for (var ci = 0; ci < lwCtaIds.length; ci++) {
       var lwBtn = mount.querySelector("#" + lwCtaIds[ci]);
-      if (lwBtn && window.openSignupModal) lwBtn.addEventListener("click", window.openSignupModal);
+      if (lwBtn && window.openWaitlistModal) lwBtn.addEventListener("click", window.openWaitlistModal);
     }
     if (desktop) {
       document.documentElement.classList.add("lw-desktop");
@@ -1853,8 +1853,7 @@ window.__lwStartClassic = function () {
                         <p class="text-sm-c" style="margin:12px 0 0;padding-top:14px;border-top:1px solid oklch(35% 0.03 255);color:var(--color-text-secondary);" id="roi-bridge">Recovering even a fraction of those <strong class="tabular-nums" style="color:var(--color-text-primary);" id="bridge-recovered">3,000</strong> subscribers covers the <strong style="color:var(--color-text-primary);">$147/mo Pro plan</strong> many times over.</p>
                     </div>
                 </div>
-                <button class="btn-primary" style="width:100%;justify-content:center;margin-top:20px;" id="roi-cta">Start Recovering Revenue</button>
-                <p class="text-xs-c" style="color:var(--color-text-muted);margin-top:10px;text-align:center;">No credit card &middot; Cancel anytime</p>
+                <button class="btn-primary" style="width:100%;justify-content:center;margin-top:20px;" id="roi-cta">Join the Waitlist</button>
             </div>
         </div>
     </div>
@@ -2272,8 +2271,7 @@ window.__lwStartClassic = function () {
             </div>
         </div>
         <div style="text-align:center;margin-top:48px;" class="reveal">
-            <button class="btn-primary" id="proof-cta">Start Free Trial, the safe way</button>
-            <p class="text-xs-c" style="color:var(--color-text-muted);margin-top:10px;">No credit card &middot; Cancel anytime</p>
+            <button class="btn-primary" id="proof-cta">Join the Waitlist</button>
         </div>
     </div>
 </section>
@@ -2606,7 +2604,7 @@ window.__lwStartClassic = function () {
                 <li style="display:flex;align-items:flex-start;gap:12px;"><i class="ph ph-check-square" style="color:var(--color-success);font-size:18px;flex-shrink:0;margin-top:4px;"></i><span class="text-base-c" style="color:var(--color-text-secondary);"><strong style="color:var(--color-text-primary);">You approve every email</strong> before it sends.</span></li>
                 <li style="display:flex;align-items:flex-start;gap:12px;"><i class="ph ph-robot" style="color:var(--color-success);font-size:18px;flex-shrink:0;margin-top:4px;"></i><span class="text-base-c" style="color:var(--color-text-secondary);"><strong style="color:var(--color-text-primary);">No AI theater.</strong> AI helped build it; safety engineering runs it.</span></li>
                 <li style="display:flex;align-items:flex-start;gap:12px;"><i class="ph ph-stack" style="color:var(--color-success);font-size:18px;flex-shrink:0;margin-top:4px;"></i><span class="text-base-c" style="color:var(--color-text-secondary);"><strong style="color:var(--color-text-primary);">Protection isn&rsquo;t an upsell.</strong> Every plan ships the full safety platform.</span></li>
-                <li style="display:flex;align-items:flex-start;gap:12px;"><i class="ph ph-hand-waving" style="color:var(--color-success);font-size:18px;flex-shrink:0;margin-top:4px;"></i><span class="text-base-c" style="color:var(--color-text-secondary);"><strong style="color:var(--color-text-primary);">Cancel anytime.</strong> Flat monthly, no contracts. Free for 7 days, no credit card.</span></li>
+                <li style="display:flex;align-items:flex-start;gap:12px;"><i class="ph ph-hand-waving" style="color:var(--color-success);font-size:18px;flex-shrink:0;margin-top:4px;"></i><span class="text-base-c" style="color:var(--color-text-secondary);"><strong style="color:var(--color-text-primary);">Cancel anytime.</strong> Flat monthly, no contracts.</span></li>
             </ul>
             <p class="text-sm-c" style="color:var(--color-text-muted);margin:0;text-align:right;">Chuck Mullaney</p>
         </div>
@@ -2785,7 +2783,7 @@ window.__lwStartClassic = function () {
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Full activity audit trail</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Connect Claude, ChatGPT, or Gemini to run your account</span></li>
                 </ul>
-                <button class="btn-secondary pricing-cta" style="width:100%;justify-content:center;">Start Free Trial</button>
+                <button class="btn-secondary pricing-cta" style="width:100%;justify-content:center;">Join Waitlist</button>
             </div>
             <!-- Concierge (featured) -->
             <div class="card pricing-featured" style="padding:36px 28px;border:2px solid var(--color-accent);position:relative;overflow:hidden;">
@@ -2807,7 +2805,7 @@ window.__lwStartClassic = function () {
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Priority support</span></li>
                     <li style="display:flex;align-items:flex-start;gap:8px;"><i class="ph ph-check" style="color:var(--color-success);font-size:16px;flex-shrink:0;margin-top:3px;"></i><span class="text-sm-c">Connect Claude, ChatGPT, or Gemini to run your account</span></li>
                 </ul>
-                <button class="btn-primary pricing-cta" style="width:100%;justify-content:center;">Start Free Trial</button>
+                <button class="btn-primary pricing-cta" style="width:100%;justify-content:center;">Join Waitlist</button>
             </div>
             <!-- Agency -->
             <div class="card" style="padding:32px 24px;">
@@ -2830,8 +2828,6 @@ window.__lwStartClassic = function () {
         </div>
         <!-- Risk-reversal badge cluster -->
         <div style="display:flex;align-items:center;justify-content:center;gap:14px;flex-wrap:wrap;margin-top:40px;" class="reveal">
-            <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--color-surface-1);border:1px solid var(--color-border);border-radius:6px;"><i class="ph ph-calendar-check" style="font-size:18px;color:var(--color-success);"></i><span class="font-display text-sm-c" style="font-weight:600;">7 days free</span></span>
-            <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--color-surface-1);border:1px solid var(--color-border);border-radius:6px;"><i class="ph ph-credit-card" style="font-size:18px;color:var(--color-success);"></i><span class="font-display text-sm-c" style="font-weight:600;">No credit card</span></span>
             <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--color-surface-1);border:1px solid var(--color-border);border-radius:6px;"><i class="ph ph-hand-waving" style="font-size:18px;color:var(--color-success);"></i><span class="font-display text-sm-c" style="font-weight:600;">Cancel anytime</span></span>
             <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--color-surface-1);border:1px solid var(--color-border);border-radius:6px;"><i class="ph ph-shield-check" style="font-size:18px;color:var(--color-success);"></i><span class="font-display text-sm-c" style="font-weight:600;">Automatic pause protection on every plan</span></span>
             <span style="display:inline-flex;align-items:center;gap:8px;padding:8px 14px;background:var(--color-surface-1);border:1px solid var(--color-border);border-radius:6px;"><i class="ph ph-globe-hemisphere-west" style="font-size:18px;color:var(--color-success);"></i><span class="font-display text-sm-c" style="font-weight:600;">GDPR</span></span>
@@ -2938,8 +2934,7 @@ window.__lwStartClassic = function () {
     <div class="container-c reveal" style="text-align:center;position:relative;">
         <h2 class="font-display text-3xl-c" style="font-weight:700;margin:0 0 16px;">Wake the list. Keep the domain.</h2>
         <p class="text-lg-c" style="color:var(--color-text-secondary);margin:0 0 36px;max-width:560px;margin-left:auto;margin-right:auto;">Your dashboard already showed you the fake number. Come see the real ones.</p>
-        <button class="btn-primary" id="final-cta" style="padding:18px 48px;font-size:var(--text-base);box-shadow:0px 2px 0px 0px oklch(20% 0.02 255 / 0.15),0 8px 24px -4px oklch(38% 0.08 255 / 0.4);">Start Your Free Trial <i class="ph ph-arrow-right" style="font-size:18px;"></i></button>
-        <p class="text-sm-c" style="color:var(--color-text-muted);margin-top:16px;">No credit card &middot; Cancel anytime &middot; 7 days free</p>
+        <button class="btn-primary" id="final-cta" style="padding:18px 48px;font-size:var(--text-base);box-shadow:0px 2px 0px 0px oklch(20% 0.02 255 / 0.15),0 8px 24px -4px oklch(38% 0.08 255 / 0.4);">Join the Waitlist <i class="ph ph-arrow-right" style="font-size:18px;"></i></button>
         <p class="text-sm-c" style="color:var(--color-text-secondary);margin:32px auto 0;max-width:560px;font-style:italic;"><strong style="font-style:normal;color:var(--color-text-primary);">P.S.</strong> Re-engagement isn&rsquo;t instant. The system sends slowly and carefully on purpose. If you want fast and reckless, there are plenty of tools for that. They&rsquo;re how my last 16 years stayed busy. <span style="font-style:normal;">Chuck</span></p>
     </div>
 </section>
@@ -2997,9 +2992,8 @@ window.__lwStartClassic = function () {
 <div id="sticky-cta-bar" style="position:fixed;left:0;right:0;bottom:0;z-index:80;background:var(--color-surface-1);border-top:1px solid var(--color-border);box-shadow:0 -4px 16px -4px oklch(20% 0.02 255 / 0.15);padding:10px 14px;display:none;align-items:center;gap:10px;transform:translateY(110%);transition:transform 0.25s ease;">
     <div style="flex:1;min-width:0;">
         <span class="font-display" style="display:block;font-weight:700;font-size:var(--text-sm);color:var(--color-brand);line-height:1.2;">Wake the list. Keep the domain.</span>
-        <span class="text-xs-c" style="color:var(--color-text-muted);">No credit card &middot; Cancel anytime</span>
     </div>
-    <button class="btn-primary" id="sticky-cta" style="padding:10px 16px;font-size:var(--text-xs);white-space:nowrap;">Start Free Trial</button>
+    <button class="btn-primary" id="sticky-cta" style="padding:10px 16px;font-size:var(--text-xs);white-space:nowrap;">Join Waitlist</button>
     <button id="sticky-cta-dismiss" aria-label="Dismiss" style="background:none;border:none;cursor:pointer;padding:6px;color:var(--color-text-muted);line-height:0;touch-action:manipulation;"><i class="ph ph-x" style="font-size:18px;"></i></button>
 </div>
 <style>
@@ -3092,6 +3086,173 @@ window.__lwStartClassic = function () {
         </div>
     </div>
 </div>
+
+<!-- ========== WAITLIST MODAL ==========
+     Pre-launch signup. The trial modal above (#signup-modal) is left fully
+     intact and functional; it is simply not reachable from the page until
+     launch, when the CTA bindings get pointed back at it. -->
+<div class="modal-overlay" id="waitlist-modal" role="dialog" aria-modal="true" aria-label="Join the waitlist">
+    <div class="modal-content" style="position:relative;padding:18px 26px 22px;">
+        <button id="waitlist-close-btn" style="position:absolute;top:8px;right:8px;background:none;border:none;cursor:pointer;padding:6px;color:var(--color-text-muted);border-radius:50%;touch-action:manipulation;line-height:0;" aria-label="Close modal">
+            <i class="ph ph-x" style="font-size:18px;"></i>
+        </button>
+
+        <!-- Form container -->
+        <div id="waitlist-form-container">
+            <div style="text-align:center;margin-bottom:14px;">
+                <span style="display:inline-flex;align-items:center;gap:6px;background:var(--color-success-subtle);padding:3px 11px;border-radius:100px;margin-bottom:8px;">
+                    <span style="width:6px;height:6px;border-radius:50%;background:var(--color-success);"></span>
+                    <span class="label" style="color:var(--color-success);font-weight:700;">Early Access</span>
+                </span>
+                <h2 class="font-display" style="font-size:var(--text-xl);font-weight:700;margin:0;color:var(--color-brand);line-height:1.15;">Join the Waitlist</h2>
+            </div>
+
+            <form id="waitlist-form" style="display:flex;flex-direction:column;gap:8px;">
+                <div>
+                    <label class="label text-muted" style="display:block;margin-bottom:6px;">First Name</label>
+                    <input type="text" id="waitlistFirstName" class="input" placeholder="First name" required autocomplete="given-name" aria-label="First name">
+                </div>
+
+                <div>
+                    <label class="label text-muted" style="display:block;margin-bottom:6px;">Email Address</label>
+                    <input type="email" id="waitlistEmail" class="input" placeholder="you@company.com" required autocomplete="email" aria-label="Email address">
+                </div>
+
+                <div id="waitlist-error" style="display:none;align-items:center;gap:8px;color:var(--color-danger);background:var(--color-danger-subtle);border-radius:4px;padding:10px 14px;">
+                    <i class="ph ph-warning-circle" style="font-size:18px;flex-shrink:0;"></i>
+                    <span id="waitlist-error-text" class="text-sm-c"></span>
+                </div>
+
+                <button type="submit" id="waitlist-submit-btn" class="btn-primary" style="width:100%;justify-content:center;margin-top:4px;">
+                    <span id="waitlist-submit-label">Join the Waitlist</span>
+                    <i class="ph ph-arrow-right" style="font-size:16px;"></i>
+                </button>
+            </form>
+
+            <p class="text-xs-c" style="color:var(--color-text-muted);margin:10px 0 0;text-align:center;">We will only email you about your spot.</p>
+        </div>
+
+        <!-- Success state -->
+        <div id="waitlist-success" style="display:none;text-align:center;padding:12px 0;">
+            <div style="width:64px;height:64px;margin:0 auto 20px;background:var(--color-success-subtle);border-radius:50%;display:flex;align-items:center;justify-content:center;">
+                <i class="ph ph-check-circle" style="font-size:36px;color:var(--color-success);"></i>
+            </div>
+            <h3 class="font-display" style="font-size:var(--text-xl);font-weight:700;margin:0 0 8px;color:var(--color-brand);">You are on the list</h3>
+            <p class="text-sm-c" style="color:var(--color-text-secondary);margin:0 0 4px;">Your spot is saved.</p>
+            <p class="text-xs-c" style="color:var(--color-text-muted);margin:0 0 4px;">We will be in touch the moment a spot opens up.</p>
+        </div>
+    </div>
+</div>
+
+<!-- ========== WAITLIST MODAL JS ==========
+     Deliberately its own IIFE so it shares no variables with the trial
+     modal's script below. Runs at parse time, so window.openWaitlistModal
+     exists before the CTA bindings and before lwBoot's DOMContentLoaded
+     re-binding for template-resident CTAs. -->
+<script>
+(function () {
+    'use strict';
+
+    var wlModal = document.getElementById('waitlist-modal');
+    if (!wlModal) return;
+
+    var wlCloseBtn = document.getElementById('waitlist-close-btn');
+    var wlFormContainer = document.getElementById('waitlist-form-container');
+    var wlSuccess = document.getElementById('waitlist-success');
+    var wlError = document.getElementById('waitlist-error');
+    var wlErrorText = document.getElementById('waitlist-error-text');
+    var wlSubmitBtn = document.getElementById('waitlist-submit-btn');
+    var wlSubmitLabel = document.getElementById('waitlist-submit-label');
+    var wlForm = document.getElementById('waitlist-form');
+    var wlFirstName = document.getElementById('waitlistFirstName');
+    var wlEmail = document.getElementById('waitlistEmail');
+
+    function wlReset() {
+        wlFormContainer.style.display = '';
+        wlSuccess.style.display = 'none';
+        wlError.style.display = 'none';
+        wlFirstName.value = '';
+        wlEmail.value = '';
+        wlSubmitBtn.disabled = false;
+        wlSubmitLabel.textContent = 'Join the Waitlist';
+    }
+
+    function wlShowError(msg) {
+        wlErrorText.textContent = msg;
+        wlError.style.display = 'flex';
+    }
+
+    function openWaitlistModal() {
+        wlReset();
+        wlModal.classList.add('active');
+        document.body.style.overflow = 'hidden';
+        setTimeout(function () {
+            if (wlFirstName) wlFirstName.focus();
+        }, 100);
+    }
+
+    function closeWaitlistModal() {
+        wlModal.classList.remove('active');
+        document.body.style.overflow = '';
+    }
+
+    // Expose globally (mirrors window.openSignupModal, which stays defined
+    // below for the trial flow that gets switched back on at launch).
+    window.openWaitlistModal = openWaitlistModal;
+    window.closeWaitlistModal = closeWaitlistModal;
+
+    wlCloseBtn.addEventListener('click', closeWaitlistModal);
+    wlModal.addEventListener('click', function (e) {
+        if (e.target === wlModal) closeWaitlistModal();
+    });
+    document.addEventListener('keydown', function (e) {
+        if (e.key === 'Escape' && wlModal.classList.contains('active')) closeWaitlistModal();
+    });
+
+    wlForm.addEventListener('submit', function (e) {
+        e.preventDefault();
+        wlError.style.display = 'none';
+
+        var firstName = (wlFirstName.value || '').trim();
+        var email = (wlEmail.value || '').trim();
+
+        if (!firstName) {
+            wlShowError('Please enter your first name.');
+            return;
+        }
+        if (!email || email.indexOf('@') === -1 || email.indexOf('.') === -1) {
+            wlShowError('Please enter a valid email address.');
+            return;
+        }
+
+        wlSubmitBtn.disabled = true;
+        wlSubmitLabel.textContent = 'Saving your spot\u2026';
+
+        fetch('/api/waitlist', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ firstName: firstName, email: email })
+        }).then(function (resp) {
+            return resp.json().catch(function () { return {}; }).then(function (data) {
+                return { ok: resp.ok, data: data };
+            });
+        }).then(function (result) {
+            if (!result.ok || !result.data.success) {
+                wlShowError(result.data.error || 'Something went wrong. Please try again.');
+                wlSubmitBtn.disabled = false;
+                wlSubmitLabel.textContent = 'Join the Waitlist';
+                return;
+            }
+            wlFormContainer.style.display = 'none';
+            wlSuccess.style.display = 'block';
+        }).catch(function () {
+            wlShowError('Could not reach the server. Please try again.');
+            wlSubmitBtn.disabled = false;
+            wlSubmitLabel.textContent = 'Join the Waitlist';
+        });
+    });
+})();
+</script>
 
 <!-- ========== JAVASCRIPT ========== -->
 <script>
@@ -3239,18 +3400,20 @@ window.__lwStartClassic = function () {
             });
     });
 
-    // All CTA buttons open modal
+    // All CTA buttons open the waitlist modal. Pre-launch there is no trial to
+    // start, so nothing on the page points at openSignupModal; swap these back
+    // to openSignupModal at launch to re-enable the trial flow.
     var ctaButtons = [
-        'nav-cta', 'mobile-cta', 'hero-cta', 'dilemma-cta', 'roi-cta', 'final-cta', 'proof-cta', 'sticky-cta'
+        'nav-cta', 'mobile-cta', 'hero-cta', 'dilemma-cta', 'roi-cta', 'final-cta', 'proof-cta', 'sticky-cta', 'lw-wall-cta'
     ];
     ctaButtons.forEach(function(id) {
         var btn = document.getElementById(id);
-        if (btn) btn.addEventListener('click', openSignupModal);
+        if (btn) btn.addEventListener('click', window.openWaitlistModal);
     });
 
     // Pricing CTAs
     document.querySelectorAll('.pricing-cta').forEach(function(btn) {
-        btn.addEventListener('click', openSignupModal);
+        btn.addEventListener('click', window.openWaitlistModal);
     });
 
     // ── Mobile Menu ──
@@ -3422,7 +3585,12 @@ window.__lwStartClassic = function () {
 
     function updateStickyBar() {
         if (!stickyBar || stickyDismissed) return;
-        if (window.scrollY > 600 && !modal.classList.contains('active')) {
+        // Check BOTH modals: the trial modal is preserved but unreachable
+        // pre-launch, so the waitlist modal is the one that actually opens.
+        var waitlistModalEl = document.getElementById('waitlist-modal');
+        var anyModalOpen = modal.classList.contains('active') ||
+            (waitlistModalEl && waitlistModalEl.classList.contains('active'));
+        if (window.scrollY > 600 && !anyModalOpen) {
             stickyBar.classList.add('sticky-visible');
         } else {
             stickyBar.classList.remove('sticky-visible');
