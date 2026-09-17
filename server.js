@@ -32,6 +32,8 @@ if (!ADMIN_PASSWORD) {
 const ACTIVE_CAMPAIGN_URL = process.env.ACTIVE_CAMPAIGN_URL || 'https://reengage22324.activehosted.com';
 const ACTIVE_CAMPAIGN_API_KEY = process.env.ACTIVE_CAMPAIGN_API_KEY || '';
 const ACTIVE_CAMPAIGN_LIST_ID = process.env.ACTIVE_CAMPAIGN_LIST_ID || '4';
+// Waitlist list is a SEPARATE list from the trial list above. Do not merge the two.
+const ACTIVE_CAMPAIGN_WAITLIST_LIST_ID = process.env.ACTIVE_CAMPAIGN_WAITLIST_LIST_ID || '15';
 
 // Resend Email Configuration
 const RESEND_API_KEY = process.env.RESEND_API_KEY || '';
@@ -1100,6 +1102,83 @@ app.post('/api/register', async (req, res) => {
     }
 
     return res.json({ success: true });
+});
+
+// ── Waitlist signup ──────────────────────────────────────────────────────────
+// Pre-launch capture. This creates NO platform account: it only lands the person
+// on the ActiveCampaign waitlist list. Deliberately a separate helper from
+// addContactToList so the trial path's behavior is provably unchanged.
+async function addContactToWaitlist(contactId) {
+    const listResponse = await fetch(`${ACTIVE_CAMPAIGN_URL}/api/3/contactLists`, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+            'Api-Token': ACTIVE_CAMPAIGN_API_KEY,
+        },
+        body: JSON.stringify({
+            contactList: {
+                list: ACTIVE_CAMPAIGN_WAITLIST_LIST_ID,
+                contact: contactId,
+                status: 1,
+            },
+        }),
+    });
+
+    if (!listResponse.ok) {
+        let errorData = {};
+        try { errorData = await listResponse.json(); } catch { errorData = {}; }
+        // "already on this list" is a success for an idempotent signup form.
+        if (errorData.message?.includes('already')) return;
+        console.error('Error adding contact to waitlist list:', errorData);
+        throw new Error('AC waitlist list add failed');
+    }
+}
+
+app.post('/api/waitlist', async (req, res) => {
+    const { firstName, email } = req.body || {};
+
+    if (!firstName || typeof firstName !== 'string' || !firstName.trim()) {
+        return res.status(400).json({ error: 'First name is required.' });
+    }
+    if (!email || typeof email !== 'string' || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.trim())) {
+        return res.status(400).json({ error: 'Please enter a valid email address.' });
+    }
+
+    if (!ACTIVE_CAMPAIGN_API_KEY) {
+        // Never log the key itself, only the fact that it is absent.
+        console.error('ACTIVE_CAMPAIGN_API_KEY is not set — cannot record waitlist signup');
+        return res.status(500).json({ error: 'Server configuration error. Please try again later.' });
+    }
+
+    const cleanFirstName = firstName.trim();
+    const cleanEmail = email.trim();
+
+    try {
+        // contact/sync = create-or-update, so repeat submissions are harmless.
+        const syncResp = await fetch(`${ACTIVE_CAMPAIGN_URL}/api/3/contact/sync`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json', 'Api-Token': ACTIVE_CAMPAIGN_API_KEY },
+            body: JSON.stringify({ contact: { email: cleanEmail, firstName: cleanFirstName } }),
+        });
+
+        if (!syncResp.ok) {
+            console.error('AC waitlist contact sync failed with status', syncResp.status);
+            return res.status(502).json({ error: 'We could not save your spot just now. Please try again in a moment.' });
+        }
+
+        const data = await syncResp.json();
+        const contactId = data.contact && data.contact.id;
+        if (!contactId) {
+            console.error('AC waitlist contact sync returned no contact id');
+            return res.status(502).json({ error: 'We could not save your spot just now. Please try again in a moment.' });
+        }
+
+        await addContactToWaitlist(contactId);
+        return res.json({ success: true });
+    } catch (error) {
+        console.error('Waitlist signup failed:', error && error.message);
+        return res.status(502).json({ error: 'We could not save your spot just now. Please try again in a moment.' });
+    }
 });
 
 // Admin page route.
